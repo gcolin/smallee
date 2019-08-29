@@ -1,0 +1,3 @@
+net.gcolin.rest.ext.jaxb.JaxbCollectionProvider
+net.gcolin.rest.ext.jaxb.JaxbElementProvider
+net.gcolin.rest.ext.jaxb.JaxbProvider

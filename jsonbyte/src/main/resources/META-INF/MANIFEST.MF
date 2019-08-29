@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: json
+Bundle-SymbolicName: json
+Bundle-Version: 1.0.0.qualifier
+Import-Package: javax.json;version="1.0",
+ javax.json.stream;version="1.0",javax.json.spi;version="1.0"
+Export-Package: 
+ net.gcolin.json;version="1.0";uses:="javax.json,javax.json.spi,javax.json.stream"
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0

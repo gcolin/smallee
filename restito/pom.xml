@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                         http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.gcolin.smallee</groupId>
+		<artifactId>smallee</artifactId>
+		<version>1.0</version>
+	</parent>
+	<artifactId>resitio</artifactId>
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>rest-core</module>
+		<module>rest-servlet</module>
+		<module>rest-ext-cdi</module>
+		<module>rest-ext-datasource</module>
+		<module>rest-ext-freemarker</module>
+		<module>rest-ext-gzip</module>
+		<module>rest-ext-jaxb</module>
+		<module>rest-ext-json</module>
+		<module>rest-ext-jsp</module>
+		<module>rest-ext-validation</module>
+		<module>rest-ext-xml</module>
+		<module>rest-ext-atinject</module>
+		<module>rest-sample</module>
+		<module>rest-sample-cdi</module>
+	</modules>
+	
+</project>

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gcolin-atinject-cdi-like
+Bundle-SymbolicName: gcolin-atinject-cdi-like
+Bundle-Version: 1.1
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: net.gcolin.di.atinject.cdi;version="1.1"
+Import-Package: net.gcolin.di.atinject;version="1.1",
+  net.gcolin.common.reflect;version="1.0",
+  javax.enterprise.event;version="1.0",
+  javax.enterprise.util;version="1.0",
+  javax.inject;version="1.0",
+  net.gcolin.di.atinject.event;version="1.1",
+  net.gcolin.di.atinject.producer;version="1.1",
+  net.gcolin.di.atinject.web;version="1.1"

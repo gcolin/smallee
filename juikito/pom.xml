@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                         http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.gcolin.smallee</groupId>
+		<artifactId>smallee</artifactId>
+		<version>1.0</version>
+	</parent>
+	<artifactId>juikito</artifactId>
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>di-core</module>
+		<module>atinject</module>
+		<module>atinject-el</module>
+		<module>atinject-loader</module>
+		<module>atinject-jmx</module>
+		<module>atinject-producer</module>
+		<module>atinject-event</module>
+		<module>atinject-jsp</module>
+		<module>atinject-web</module>
+		<module>atinject-jndi</module>
+		<module>atinject-interceptor</module>
+		<module>atinject-jpa</module>
+		<module>atinject-web-example</module>
+	</modules>
+	
+</project>

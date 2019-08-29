@@ -1,0 +1,4 @@
+net.gcolin.rest.ext.json.JsonArrayProvider
+net.gcolin.rest.ext.json.JsonObjectProvider
+net.gcolin.rest.ext.json.JsonStructureProvider
+net.gcolin.rest.ext.json.JsonProvider

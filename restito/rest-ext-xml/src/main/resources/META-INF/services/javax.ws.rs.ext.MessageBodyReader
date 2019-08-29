@@ -1,0 +1,4 @@
+net.gcolin.rest.ext.xml.DomSourceProvider
+net.gcolin.rest.ext.xml.SaxSourceProvider
+net.gcolin.rest.ext.xml.StAxSourceProvider
+net.gcolin.rest.ext.xml.StreamSourceProvider

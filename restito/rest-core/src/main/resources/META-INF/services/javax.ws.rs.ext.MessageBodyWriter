@@ -1,0 +1,11 @@
+net.gcolin.rest.provider.ByteArrayProvider
+net.gcolin.rest.provider.FileProvider
+net.gcolin.rest.provider.FormProvider
+net.gcolin.rest.provider.FormProvider2
+net.gcolin.rest.provider.InputStreamProvider
+net.gcolin.rest.provider.ReaderProvider
+net.gcolin.rest.provider.StringProvider
+net.gcolin.rest.provider.StreamingOutputMessageBodyWriter
+net.gcolin.rest.provider.NumberProvider
+net.gcolin.rest.provider.BooleanProvider
+net.gcolin.rest.provider.CharacterProvider
