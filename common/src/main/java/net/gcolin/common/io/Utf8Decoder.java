@@ -42,21 +42,21 @@ public class Utf8Decoder extends Decoder {
       } else {
         if ((r1 & 0xE0) == 0xC0) {
           if (bi >= inSize - 1) {
-            break;
+        	  throwBadEncoding();
           } else {
-            out[ci] = (char) (r1 << 6 ^ in[++bi] ^ 0xF80);
+            out[ci] = (char) ((r1 & 0x1F) << 6 | (in[++bi] & 0x3f));
           }
         } else if ((r1 & 0xF0) == 0xE0) {
           if (bi >= inSize - 2) {
-            break;
+        	  throwBadEncoding();
           } else {
-            out[ci] = (char) (r1 << 12 ^ in[++bi] << 6 ^ in[++bi] ^ 0xFFFE1F80);
+        	out[ci] = (char) ((r1 & 0xF) << 12 | (in[++bi] & 0x3f) << 6 | (in[++bi] & 0x3f));
           }
         } else if ((r1 & 0xF8) == 0xF0) {
           if (bi >= inSize - 3) {
-            break;
+        	  throwBadEncoding();
           } else {
-            int point = r1 << 18 ^ in[++bi] << 12 ^ in[++bi] << 6 ^ in[++bi] ^ 0x381F80;
+            int point =  (r1 & 0x7) << 18 |  (in[++bi] & 0x3f) << 12 | (in[++bi] & 0x3f) << 6 | (in[++bi] & 0x3f);
             out[ci] = Character.highSurrogate(point);
             out[++ci] = Character.lowSurrogate(point);
           }

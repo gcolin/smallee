@@ -61,7 +61,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class Io {
 
-  public static final int BUFFER_SIZE = 8 * 1024;
+  private static final String CREATED = " created";
+public static final int BUFFER_SIZE = 8 * 1024;
   public static final int POOL_SIZE = 100;
   private static final Queue<byte[]> BYTES_POOL = new ConcurrentQueue<>(POOL_SIZE);
   private static final Queue<char[]> CHAR_POOL = new ConcurrentQueue<>(POOL_SIZE);
@@ -274,7 +275,7 @@ public class Io {
   public static void copy(Path directory, Path dest) throws IOException {
     if (Files.exists(directory)) {
       if (dest.toFile().mkdirs() && Logs.LOG.isLoggable(Level.FINE)) {
-        Logs.LOG.fine(dest + " created");
+        Logs.LOG.fine(dest + CREATED);
       }
       Files.walkFileTree(directory, new CopyFileVisitor(directory, dest));
     }
@@ -549,7 +550,7 @@ public class Io {
         String currentEntry = entry.getName();
         File destFile = new File(extractFolder, currentEntry);
         if (destFile.getParentFile().mkdirs() && Logs.LOG.isLoggable(Level.FINE)) {
-          Logs.LOG.fine(destFile.getParentFile() + " created");
+          Logs.LOG.fine(destFile.getParentFile() + CREATED);
         }
         if (!entry.isDirectory()) {
           unzipEntry(zip, entry, destFile);
@@ -565,7 +566,7 @@ public class Io {
     InputStream in = null;
     try {
       if (destFile.getParentFile().mkdirs() && Logs.LOG.isLoggable(Level.FINE)) {
-        Logs.LOG.fine(destFile.getParentFile() + " created");
+        Logs.LOG.fine(destFile.getParentFile() + CREATED);
       }
       out = new FileOutputStream(destFile);
       in = zip.getInputStream(entry);

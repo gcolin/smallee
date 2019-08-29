@@ -38,7 +38,8 @@ import javax.management.StandardMBean;
  */
 public class Jmx {
 
-  private static final Logger LOG = Logger.getLogger(Jmx.class.getName());
+  private static final String CANNOT_REGISTER_MBEAN = "cannot register mbean";
+private static final Logger LOG = Logger.getLogger(Jmx.class.getName());
 
   private Jmx() {}
 
@@ -60,7 +61,7 @@ public class Jmx {
       }
     } catch (MalformedObjectNameException | InstanceAlreadyExistsException
         | MBeanRegistrationException | NotCompliantMBeanException ex) {
-      LOG.log(Level.SEVERE, "cannot register mbean", ex);
+      LOG.log(Level.SEVERE, CANNOT_REGISTER_MBEAN, ex);
     }
   }
 
@@ -78,7 +79,7 @@ public class Jmx {
       }
     } catch (MalformedObjectNameException | MBeanRegistrationException
         | InstanceNotFoundException ex) {
-      LOG.log(Level.SEVERE, "cannot register mbean", ex);
+      LOG.log(Level.SEVERE, CANNOT_REGISTER_MBEAN, ex);
     }
   }
 
@@ -93,7 +94,7 @@ public class Jmx {
       mbs.registerMBean(mbean, name);
     } catch (MalformedObjectNameException | InstanceAlreadyExistsException
         | MBeanRegistrationException | NotCompliantMBeanException ex) {
-      Logs.LOG.log(Level.SEVERE, "cannot register mbean", ex);
+      Logs.LOG.log(Level.SEVERE, CANNOT_REGISTER_MBEAN, ex);
     }
   }
 }

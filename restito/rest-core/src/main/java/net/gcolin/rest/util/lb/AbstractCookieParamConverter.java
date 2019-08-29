@@ -89,7 +89,7 @@ public abstract class AbstractCookieParamConverter<T extends Cookie> {
     String comment = null;
     int maxAge = NewCookie.DEFAULT_MAX_AGE;
     boolean secure = false;
-    boolean httpOnly = false;
+    boolean httpOnly = true;
     Date expiry = null;
 
     public MutableCookie(String name, String value) {

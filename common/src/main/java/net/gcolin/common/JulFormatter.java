@@ -78,7 +78,8 @@ public class JulFormatter extends Formatter {
         str.append('\n');
       }
 
-      return prec = str.toString();
+      prec = str.toString();
+      return prec;
     }
 
     private void appendTrail(StringBuilder str, int length, int value) {

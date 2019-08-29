@@ -104,7 +104,7 @@ public class ReflectTest {
     Assert.assertEquals(Pair.class, Reflect.toClass(genericType));
 
     Type type = Pair.class.getDeclaredField("key").getGenericType();
-    Assert.assertNull(Reflect.toClass(type));
+    Assert.assertEquals(Object.class, Reflect.toClass(type));
   }
 
   @Test

@@ -261,10 +261,10 @@ public class JNodeBuilder {
 		STANDARD_ADAPTER.put(byte.class, STANDARD_ADAPTER.get(Byte.class));
 	}
 
-	public Map<Class<?>, JsonbAdapter<Object, Object>> adapters = new ConcurrentHashMap<>();
-	public Map<Class<?>, JsonbDeserializerExtended<Object>> deserializers = new ConcurrentHashMap<>();
-	public Map<Class<?>, JsonbSerializerExtended<Object>> serializers = new ConcurrentHashMap<>();
-	public Map<Type, JNode> nodesByClass = new ConcurrentHashMap<>();
+	public final Map<Class<?>, JsonbAdapter<Object, Object>> adapters = new ConcurrentHashMap<>();
+	public final Map<Class<?>, JsonbDeserializerExtended<Object>> deserializers = new ConcurrentHashMap<>();
+	public final Map<Class<?>, JsonbSerializerExtended<Object>> serializers = new ConcurrentHashMap<>();
+	public final Map<Type, JNode> nodesByClass = new ConcurrentHashMap<>();
 	private JsonbConfig config;
 	private PropertyNamingStrategy nameStrategy;
 	private Comparator<JProperty> orderStrategy;

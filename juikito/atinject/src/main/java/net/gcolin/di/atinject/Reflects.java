@@ -38,163 +38,155 @@ import net.gcolin.common.reflect.Reflect;
  */
 public class Reflects {
 
-  private static final Function<Method, String> METHOD_HASH_ACCEPT = m -> {
-    StringBuilder str = new StringBuilder();
-    if (!Modifier.isPublic(m.getModifiers()) && !Modifier.isProtected(m.getModifiers())) {
-      String n = m.getDeclaringClass().getName();
-      str.append(n.substring(0, n.lastIndexOf('.'))).append(":");
-    }
-    str.append(m.getName());
-    str.append(m.getReturnType());
-    Class<?>[] array = m.getParameterTypes();
-    for (int i = 0, l = array.length; i < l; i++) {
-      str.append(";").append(array[i]);
-    }
-    return str.toString();
-  };
-  private static final Predicate<Method> METHOD_HASH_ADD = m -> Modifier.isStatic(m.getModifiers())
-      || Modifier.isPublic(m.getModifiers()) || Modifier.isProtected(m.getModifiers());
+	private static final Function<Method, String> METHOD_HASH_ACCEPT = m -> {
+		StringBuilder str = new StringBuilder();
+		if (!Modifier.isPublic(m.getModifiers()) && !Modifier.isProtected(m.getModifiers())) {
+			String n = m.getDeclaringClass().getName();
+			str.append(n.substring(0, n.lastIndexOf('.'))).append(":");
+		}
+		str.append(m.getName());
+		str.append(m.getReturnType());
+		Class<?>[] array = m.getParameterTypes();
+		for (int i = 0, l = array.length; i < l; i++) {
+			str.append(";").append(array[i]);
+		}
+		return str.toString();
+	};
+	private static final Predicate<Method> METHOD_HASH_ADD = m -> Modifier.isStatic(m.getModifiers())
+			|| Modifier.isPublic(m.getModifiers()) || Modifier.isProtected(m.getModifiers());
 
-  private static final Predicate<Field> FIELD_INJECT_STATIC_ACCEPT =
-      f -> f.isAnnotationPresent(Inject.class) && Modifier.isStatic(f.getModifiers());
+	private static final Predicate<Field> FIELD_INJECT_STATIC_ACCEPT = f -> f.isAnnotationPresent(Inject.class)
+			&& Modifier.isStatic(f.getModifiers());
 
-  private static final Predicate<Method> METHOD_INJECT_STATIC_ACCEPT =
-      m -> m.isAnnotationPresent(Inject.class) && Modifier.isStatic(m.getModifiers());
+	private static final Predicate<Method> METHOD_INJECT_STATIC_ACCEPT = m -> m.isAnnotationPresent(Inject.class)
+			&& Modifier.isStatic(m.getModifiers());
 
-  private static final Predicate<Method> METHOD_POSTCONSTRUCT_ACCEPT =
-      m -> Reflect.hasAnnotation(m.getAnnotations(), "javax.annotation.PostConstruct")
-          && m.getParameterTypes().length == 0;
+	private static final Predicate<Method> METHOD_POSTCONSTRUCT_ACCEPT = m -> Reflect.hasAnnotation(m.getAnnotations(),
+			"javax.annotation.PostConstruct") && m.getParameterTypes().length == 0;
 
-  private static final Predicate<Method> METHOD_PREDESTROY_ACCEPT =
-      m -> Reflect.hasAnnotation(m.getAnnotations(), "javax.annotation.PreDestroy")
-          && m.getParameterTypes().length == 0;
+	private static final Predicate<Method> METHOD_PREDESTROY_ACCEPT = m -> Reflect.hasAnnotation(m.getAnnotations(),
+			"javax.annotation.PreDestroy") && m.getParameterTypes().length == 0;
 
-  private Reflects() {}
+	private Reflects() {
+	}
 
-  public static Field[][] findStaticFields(Class<?> clazz) {
-    return Reflect.find(clazz, Reflect.FIELD_ITERATOR, FIELD_INJECT_STATIC_ACCEPT,
-        Reflect.array(Field.class));
-  }
+	public static Field[][] findStaticFields(Class<?> clazz) {
+		return Reflect.find(clazz, Reflect.FIELD_ITERATOR, FIELD_INJECT_STATIC_ACCEPT, Reflect.array(Field.class));
+	}
 
-  public static InjectionPoint[] findInjectPoints(Class<?> clazz, Environment env) {
-    InjectionPointBuilder[] builders = env.getInjectionPointBuilders();
-    List<InjectionPoint> all = new ArrayList<>();
-    InjectionPointBuilder builder;
-    if (builders.length == 1) {
-      builder = builders[0];
-    } else {
-      builder = new InjectionPointBuilder() {
+	public static InjectionPoint[] findInjectPoints(Class<?> clazz, Environment env) {
+		InjectionPointBuilder[] builders = env.getInjectionPointBuilders();
+		List<InjectionPoint> all = new ArrayList<>();
+		InjectionPointBuilder builder;
+		if (builders.length == 1) {
+			builder = builders[0];
+		} else {
+			builder = new InjectionPointBuilder() {
 
-        @Override
-        public InjectionPoint create(Field field, Environment env) {
-          for (int i = 0; i < builders.length; i++) {
-            InjectionPoint ip = builders[i].create(field, env);
-            if (ip != null) {
-              return ip;
-            }
-          }
-          return null;
-        }
+				@Override
+				public InjectionPoint create(Field field, Environment env) {
+					for (int i = 0; i < builders.length; i++) {
+						InjectionPoint ip = builders[i].create(field, env);
+						if (ip != null) {
+							return ip;
+						}
+					}
+					return null;
+				}
 
-        @Override
-        public InjectionPoint create(Method method, Environment env) {
-          for (int i = 0; i < builders.length; i++) {
-            InjectionPoint ip = builders[i].create(method, env);
-            if (ip != null) {
-              return ip;
-            }
-          }
-          return null;
-        }
+				@Override
+				public InjectionPoint create(Method method, Environment env) {
+					for (int i = 0; i < builders.length; i++) {
+						InjectionPoint ip = builders[i].create(method, env);
+						if (ip != null) {
+							return ip;
+						}
+					}
+					return null;
+				}
 
-      };
-    }
+			};
+		}
 
-    Class<?> cl = clazz;
-    Set<String> upper = new HashSet<>();
-    Set<String> allmethods = new HashSet<>();
-    while (cl != Object.class && cl != null) {
-      Method[] methods = cl.getDeclaredMethods();
-      for (int i = methods.length - 1; i >= 0; i--) {
-        Method method = methods[i];
-        String hash = METHOD_HASH_ACCEPT.apply(method);
-        if (!upper.contains(hash)) {
-          boolean add = METHOD_HASH_ADD.test(method);
-          if (add) {
-            upper.add(hash);
-          }
-          if (!allmethods.contains(hash)) {
-            InjectionPoint ip = builder.create(method, env);
-            if (ip != null) {
-              all.add(ip);
-            }
-          }
-          if (!add) {
-            allmethods.add(hash);
-          }
-        }
-      }
-      Field[] fields = cl.getDeclaredFields();
-      for (int i = fields.length - 1; i >= 0; i--) {
-        InjectionPoint ip = builder.create(fields[i], env);
-        if (ip != null) {
-          all.add(ip);
-        }
-      }
-      cl = cl.getSuperclass();
-    }
-    if (all.isEmpty()) {
-      return null;
-    }
-    InjectionPoint[] ips = new InjectionPoint[all.size()];
-    for (int i = 0, j = ips.length - 1; j >= 0; i++, j--) {
-      ips[i] = all.get(j);
-    }
-    return ips;
-  }
+		Class<?> cl = clazz;
+		Set<String> upper = new HashSet<>();
+		Set<String> allmethods = new HashSet<>();
+		while (cl != Object.class && cl != null) {
+			Method[] methods = cl.getDeclaredMethods();
+			for (int i = methods.length - 1; i >= 0; i--) {
+				Method method = methods[i];
+				String hash = METHOD_HASH_ACCEPT.apply(method);
+				if (!upper.contains(hash)) {
+					boolean add = METHOD_HASH_ADD.test(method);
+					if (add) {
+						upper.add(hash);
+					}
+					if (!allmethods.contains(hash)) {
+						InjectionPoint ip = builder.create(method, env);
+						if (ip != null) {
+							all.add(ip);
+						}
+					}
+					if (!add) {
+						allmethods.add(hash);
+					}
+				}
+			}
+			Field[] fields = cl.getDeclaredFields();
+			for (int i = fields.length - 1; i >= 0; i--) {
+				InjectionPoint ip = builder.create(fields[i], env);
+				if (ip != null) {
+					all.add(ip);
+				}
+			}
+			cl = cl.getSuperclass();
+		}
+		if (all.isEmpty()) {
+			return null;
+		}
+		InjectionPoint[] ips = new InjectionPoint[all.size()];
+		for (int i = 0, j = ips.length - 1; j >= 0; i++, j--) {
+			ips[i] = all.get(j);
+		}
+		return ips;
+	}
 
-  public static Method[][] findStaticMethods(Class<?> clazz) {
-    return Reflect.find(clazz, Reflect.METHOD_ITERATOR, METHOD_INJECT_STATIC_ACCEPT,
-        Reflect.array(Method.class));
-  }
+	public static Method[][] findStaticMethods(Class<?> clazz) {
+		return Reflect.find(clazz, Reflect.METHOD_ITERATOR, METHOD_INJECT_STATIC_ACCEPT, Reflect.array(Method.class));
+	}
 
-  public static Method[][] findPredestroyMethods(Class<?> clazz) {
-    return Reflect.find(clazz, Reflect.METHOD_ITERATOR, METHOD_PREDESTROY_ACCEPT,
-        Reflect.array(Method.class));
-  }
+	public static Method[][] findPredestroyMethods(Class<?> clazz) {
+		return Reflect.find(clazz, Reflect.METHOD_ITERATOR, METHOD_PREDESTROY_ACCEPT, Reflect.array(Method.class));
+	}
 
-  public static Method[][] findPostconstructMethods(Class<?> clazz) {
-    return Reflect.find(clazz, Reflect.METHOD_ITERATOR, METHOD_POSTCONSTRUCT_ACCEPT,
-        Reflect.array(Method.class));
-  }
+	public static Method[][] findPostconstructMethods(Class<?> clazz) {
+		return Reflect.find(clazz, Reflect.METHOD_ITERATOR, METHOD_POSTCONSTRUCT_ACCEPT, Reflect.array(Method.class));
+	}
 
-  public static Class<?> getInterface(Class<?> c) {
-    for (Class<?> i : c.getInterfaces()) {
-      if (i.getSimpleName().equals("I" + c.getSimpleName())) {
-        return i;
-      }
-    }
-    return c;
-  }
+	public static Class<?> getInterface(Class<?> c) {
+		if (c.getInterfaces().length > 0) {
+			return c.getInterfaces()[0];
+		}
+		return c;
+	}
 
-  public static boolean hasAnnotation(Annotation[] array,
-      Set<Class<? extends Annotation>> possiblities) {
-    for (int i = 0; i < array.length; i++) {
-      if(possiblities.contains(array[i].annotationType())) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public static <T extends Annotation> T getAnnotation(Annotation[] array,
-      Set<Class<? extends Annotation>> possiblities) {
-    for (int i = 0; i < array.length; i++) {
-      if(possiblities.contains(array[i].annotationType())) {
-        return (T) array[i];
-      }
-    }
-    return null;
-  }
+	public static boolean hasAnnotation(Annotation[] array, Set<Class<? extends Annotation>> possiblities) {
+		for (int i = 0; i < array.length; i++) {
+			if (possiblities.contains(array[i].annotationType())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Annotation> T getAnnotation(Annotation[] array,
+			Set<Class<? extends Annotation>> possiblities) {
+		for (int i = 0; i < array.length; i++) {
+			if (possiblities.contains(array[i].annotationType())) {
+				return (T) array[i];
+			}
+		}
+		return null;
+	}
 }

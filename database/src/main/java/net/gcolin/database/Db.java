@@ -63,11 +63,11 @@ public class Db {
 	}
 
 	public static Long getNextVal(String seqName, Connection c, DbAdapter adapter) throws SQLException {
-		return new QueryRunner().query(c, String.format(adapter.nextVal, seqName), GET_LONG);
+		return new QueryRunner().query(c, String.format(adapter.getNextVal(), seqName), GET_LONG);
 	}
 	
 	public static Object[] getOffsetLimit(int start, int length, DbAdapter adapter) {
-		if(adapter.offsetIdx == 0) {
+		if(adapter.getOffsetIdx() == 0) {
 			return new Object[] {start, length};
 		} else {
 			return new Object[] {length, start};

@@ -24,6 +24,7 @@ public abstract class AbstractManager<T extends HasKey> {
 	private String updateQuery;
 	private Object[] filterArgument;
 	private String where = "";
+	private String order = "";
 	@Inject private ConnectionManager connectionManager;
 
 	public AbstractManager(Class<T> type, String listQuery, String addQuery, String updateQuery) {
@@ -32,15 +33,19 @@ public abstract class AbstractManager<T extends HasKey> {
 		this.updateQuery = updateQuery;
 		this.type = type;
 	}
+	
+	public void setOrder(String order) {
+		this.order = order;
+	}
 
 	public void setFilter(String filter, Object... filterArgument) {
 		this.filterArgument = filterArgument;
-		where = " where " + filter;
+		where = filter;
 	}
 
 	public List<T> list() throws SQLException {
 		return new QueryRunner().query(connectionManager.getConnection(),
-				listQuery + where + connectionManager.getAdapter().offsetlimit, rs -> {
+				listQuery + where + order + connectionManager.getAdapter().getOffsetlimit(), rs -> {
 					List<T> list = new ArrayList<>();
 					while (rs.next()) {
 						list.add(convert(rs));
@@ -51,7 +56,7 @@ public abstract class AbstractManager<T extends HasKey> {
 
 	public Long count() throws SQLException {
 		return new QueryRunner().query(connectionManager.getConnection(),
-				"select count(id) from " + type.getSimpleName() + where, Db.GET_LONG, getCountArguments());
+				"select count(c.id) from " + type.getSimpleName() + " c " + where, Db.GET_LONG, getCountArguments());
 	}
 
 	public void load(Long id) throws SQLException {
@@ -143,8 +148,8 @@ public abstract class AbstractManager<T extends HasKey> {
 			args = new Object[filterArgument.length + 2];
 			System.arraycopy(filterArgument, 0, args, 0, filterArgument.length);
 		}
-		args[args.length - 2 + adapter.offsetIdx] = start;
-		args[args.length - 2 + adapter.limitIdx] = length;
+		args[args.length - 2 + adapter.getOffsetIdx()] = start;
+		args[args.length - 2 + adapter.getLimitIdx()] = length;
 		return args;
 	}
 

@@ -55,23 +55,50 @@ public class DbAdapter {
         ALL = Collections.unmodifiableMap(map);
     }
 
-    public String offsetlimit;
-    public String limit1;
-    public String nextVal;
-    public int offsetIdx = 0;
-    public int limitIdx = 1;
-    public BiFunction<Double, Double, String> toPoint;
+    private final String offsetlimit;
+    private final String limit1;
+    private final String nextVal;
+    private final int offsetIdx;
+    private final int limitIdx;
+    private final BiFunction<Double, Double, String> toPoint;
 
     public DbAdapter(String offsetlimit, String nextVal, String limit1, boolean reverse,
             BiFunction<Double, Double, String> toPoint) {
         this.offsetlimit = offsetlimit;
+        this.toPoint = toPoint;
         this.nextVal = nextVal;
         this.limit1 = limit1;
-        this.toPoint = toPoint;
         if (reverse) {
-            this.offsetIdx = 1;
-            this.limitIdx = 0;
+            offsetIdx = 1;
+            limitIdx = 0;
+        } else {
+        	offsetIdx = 0;
+            limitIdx = 1;
         }
     }
+
+	public String getOffsetlimit() {
+		return offsetlimit;
+	}
+
+	public String getLimit1() {
+		return limit1;
+	}
+
+	public String getNextVal() {
+		return nextVal;
+	}
+
+	public int getOffsetIdx() {
+		return offsetIdx;
+	}
+
+	public int getLimitIdx() {
+		return limitIdx;
+	}
+
+	public BiFunction<Double, Double, String> getToPoint() {
+		return toPoint;
+	}
 
 }
