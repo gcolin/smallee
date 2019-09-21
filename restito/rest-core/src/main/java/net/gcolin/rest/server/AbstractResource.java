@@ -15,23 +15,22 @@
 
 package net.gcolin.rest.server;
 
-import net.gcolin.common.route.HasPath;
-import net.gcolin.rest.Logs;
-import net.gcolin.rest.MessageBodyWriterDecorator;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
+
+import net.gcolin.common.route.HasPath;
+import net.gcolin.rest.Logs;
+import net.gcolin.rest.MessageBodyWriterDecorator;
 
 /**
  * A partial server REST service.
@@ -75,8 +74,8 @@ public abstract class AbstractResource extends ResourceSelector implements Resou
         ((Consumer<ResourceInfo>) wi).accept(this);
       }
     } catch (NoSuchMethodException | SecurityException ex) {
-      if (Logs.LOG.isLoggable(Level.FINER)) {
-        Logs.LOG.log(Level.FINER, "cannot inject ResourceInfo in " + wi, ex);
+      if (Logs.LOG.isTraceEnabled()) {
+        Logs.LOG.trace("cannot inject ResourceInfo in " + wi, ex);
       }
     }
   }

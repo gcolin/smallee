@@ -21,9 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +36,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
@@ -40,9 +43,8 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
-import org.apache.commons.dbutils.DbUtils;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.gcolin.common.io.Io;
 
@@ -54,7 +56,7 @@ import net.gcolin.common.io.Io;
  */
 public class Db {
 
-	public static final Logger LOG = Logger.getLogger("net.gcolin.database");
+	public static final Logger LOG = LoggerFactory.getLogger("net.gcolin.database");
 	public static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 
 	public static final ResultSetHandler<Long> GET_LONG = rs -> rs.next() ? rs.getLong(1) : 0;
@@ -62,15 +64,83 @@ public class Db {
 	private Db() {
 	}
 
-	public static Long getNextVal(String seqName, Connection c, DbAdapter adapter) throws SQLException {
-		return new QueryRunner().query(c, String.format(adapter.getNextVal(), seqName), GET_LONG);
+	public static <T> T query(DataSource ds, String sql, ResultSetHandler<T> result) throws SQLException {
+		try (Connection conn = ds.getConnection()) {
+			return query(conn, sql, result);
+		}
 	}
-	
+
+	public static <T> T query(DataSource ds, String sql, ResultSetHandler<T> result, Object[] args, int[] types)
+			throws SQLException {
+		try (Connection conn = ds.getConnection()) {
+			return query(conn, sql, result, args, types);
+		}
+	}
+
+	public static <T> T query(Connection conn, String sql, ResultSetHandler<T> result) throws SQLException {
+		try (Statement stmt = conn.createStatement()) {
+			try (ResultSet rs = stmt.executeQuery(sql)) {
+				return result.handle(rs);
+			}
+		}
+	}
+
+	public static <T> T query(Connection conn, String sql, ResultSetHandler<T> result, Object[] args, int[] types)
+			throws SQLException {
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			for (int i = 0; i < args.length; i++) {
+				if (args[i] == null) {
+					stmt.setNull(i + 1, types[i]);
+				} else {
+					stmt.setObject(i + 1, args[i], types[i]);
+				}
+			}
+			try (ResultSet rs = stmt.executeQuery()) {
+				return result.handle(rs);
+			}
+		}
+	}
+
+	public static int update(DataSource ds, String sql) throws SQLException {
+		try (Connection conn = ds.getConnection()) {
+			return update(conn, sql);
+		}
+	}
+
+	public static <T> int update(DataSource ds, String sql, Object[] args, int[] types) throws SQLException {
+		try (Connection conn = ds.getConnection()) {
+			return update(conn, sql, args, types);
+		}
+	}
+
+	public static int update(Connection c, String sql) throws SQLException {
+		try (Statement stmt = c.createStatement()) {
+			return stmt.executeUpdate(sql);
+		}
+	}
+
+	public static <T> int update(Connection conn, String sql, Object[] args, int[] types) throws SQLException {
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			for (int i = 0; i < args.length; i++) {
+				if (args[i] == null) {
+					stmt.setNull(i + 1, types[i]);
+				} else {
+					stmt.setObject(i + 1, args[i], types[i]);
+				}
+			}
+			return stmt.executeUpdate();
+		}
+	}
+
+	public static Long getNextVal(String seqName, Connection c, DbAdapter adapter) throws SQLException {
+		return query(c, String.format(adapter.getNextVal(), seqName), GET_LONG);
+	}
+
 	public static Object[] getOffsetLimit(int start, int length, DbAdapter adapter) {
-		if(adapter.getOffsetIdx() == 0) {
-			return new Object[] {start, length};
+		if (adapter.getOffsetIdx() == 0) {
+			return new Object[] { start, length };
 		} else {
-			return new Object[] {length, start};
+			return new Object[] { length, start };
 		}
 	}
 
@@ -82,7 +152,7 @@ public class Db {
 	}
 
 	public static void init(ClassLoader cl, String type, DataSource datasource) throws SQLException {
-		Db.LOG.log(Level.INFO, "init database for database {0}", type);
+		Db.LOG.info("init database for database {}", type);
 		Connection conn = datasource.getConnection();
 		conn.setAutoCommit(false);
 		String current = null;
@@ -91,7 +161,7 @@ public class Db {
 			List<String> all = new ArrayList<>();
 			while (en.hasMoreElements()) {
 				URL u = en.nextElement();
-				Db.LOG.log(Level.INFO, "find sql file : {0}", u);
+				Db.LOG.info("find sql file : {}", u);
 				try (InputStream in = u.openStream()) {
 					all.add(Io.toString(in));
 				}
@@ -103,7 +173,7 @@ public class Db {
 				for (String part : sql.split(";")) {
 					String trim = current = part.trim();
 					if (!trim.isEmpty()) {
-						new QueryRunner().update(conn, trim);
+						update(conn, trim);
 					}
 				}
 			}
@@ -112,11 +182,11 @@ public class Db {
 			conn.rollback();
 			throw new DbException(current, e);
 		} finally {
-			DbUtils.close(conn);
+			Io.close(conn);
 		}
 		Db.LOG.info("database initialized");
 	}
-	
+
 	public static Map<String, String> getProperties(ClassLoader cl) {
 		String path = System.getProperty("db");
 		InputStream in = null;
@@ -127,7 +197,12 @@ public class Db {
 				throw new DbException("cannot open " + path, e1);
 			}
 		} else {
-			in = Db.class.getClassLoader().getResourceAsStream("META-INF/db.properties");
+			String file = "META-INF/db.properties";
+			String type = System.getProperty("dbType");
+			if (type != null) {
+				file = "META-INF/db." + type + ".properties";
+			}
+			in = Db.class.getClassLoader().getResourceAsStream(file);
 		}
 		if (in == null) {
 			throw new DbException("missing file META-INF/db.properties");
@@ -143,5 +218,12 @@ public class Db {
 			properties.put(e.getKey().toString(), e.getValue().toString());
 		}
 		return properties;
+	}
+
+	public static Timestamp toTimestamp(Date date) {
+		if (date == null) {
+			return null;
+		}
+		return new Timestamp(date.getTime());
 	}
 }

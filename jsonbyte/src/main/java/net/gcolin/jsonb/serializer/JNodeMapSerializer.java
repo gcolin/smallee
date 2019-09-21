@@ -15,21 +15,19 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-import net.gcolin.jsonb.build.JContext;
-import net.gcolin.jsonb.build.JNode;
-import net.gcolin.jsonb.build.JNodeBuilder;
-
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
+import net.gcolin.jsonb.build.JContext;
+import net.gcolin.jsonb.build.JNode;
+import net.gcolin.jsonb.build.JNodeBuilder;
 
 /**
  * A map serializer.
@@ -71,20 +69,6 @@ public class JNodeMapSerializer implements JsonbSerializerExtended<Object> {
   }
 
   @Override
-  public void serialize(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.writeStartObject0();
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(byte[] key, Object obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.writeStartObject0(key);
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
   public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
       SerializationContext ctx) {
     generator.writeStartObject0(key);
@@ -120,18 +104,6 @@ public class JNodeMapSerializer implements JsonbSerializerExtended<Object> {
     ch[ch.length - 2] = QUOTE;
     ch[ch.length - 1] = TWOPOINT;
     return ch;
-  }
-
-  @SuppressWarnings("unchecked")
-  private void serialize1(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    for (Entry<Object, Object> entry : ((Map<Object, Object>) obj).entrySet()) {
-      Object val = entry.getValue();
-      if (val != null) {
-        mapValueNode.getSerializer().serialize(serializeKey(entry.getKey()), val, generator, ctx);
-      }
-    }
-    generator.writeEnd0();
   }
 
   @SuppressWarnings("unchecked")

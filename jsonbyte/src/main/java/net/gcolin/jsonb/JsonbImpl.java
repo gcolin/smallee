@@ -15,17 +15,6 @@
 
 package net.gcolin.jsonb;
 
-import net.gcolin.common.io.Io;
-import net.gcolin.common.io.StringReader;
-import net.gcolin.common.io.StringWriter;
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.build.JContext;
-import net.gcolin.jsonb.build.JNode;
-import net.gcolin.jsonb.build.JNodeBuilder;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -46,6 +35,15 @@ import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.json.stream.JsonParser;
+
+import net.gcolin.common.io.Io;
+import net.gcolin.common.io.StringReader;
+import net.gcolin.common.io.StringWriter;
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.build.JContext;
+import net.gcolin.jsonb.build.JNode;
+import net.gcolin.jsonb.build.JNodeBuilder;
 
 /**
  * The {@code JsonbImpl} implements {@code Jsonb}.
@@ -185,13 +183,7 @@ public class JsonbImpl implements Jsonb, SerializationContext, DeserializationCo
   public <T> void serialize(T object, JsonGenerator generator) {
     Class<?> clazz = object.getClass();
     JNode node = builder.build(null, (Class<Object>) clazz, clazz, null, null, new JContext());
-    if (generator.getClass() == Utf8JsonGeneratorImpl.class) {
-      try {
-        node.getSerializer().serialize(object, (Utf8JsonGeneratorImpl) generator, this);
-      } catch (IOException ex) {
-        throw new JsonbException(ex.getMessage(), ex);
-      }
-    } else if (generator instanceof JsonGeneratorImpl) {
+    if (generator instanceof JsonGeneratorImpl) {
       node.getSerializer().serialize(object, (JsonGeneratorImpl) generator, this);
     } else {
       node.getSerializer().serialize(object, generator, this);

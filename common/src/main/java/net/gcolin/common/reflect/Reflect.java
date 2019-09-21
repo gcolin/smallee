@@ -15,12 +15,6 @@
 
 package net.gcolin.common.reflect;
 
-import net.gcolin.common.Logs;
-import net.gcolin.common.collection.ArrayQueue;
-import net.gcolin.common.collection.Func;
-import net.gcolin.common.lang.Pair;
-import net.gcolin.common.lang.Strings;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
@@ -45,8 +39,15 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.gcolin.common.collection.ArrayQueue;
+import net.gcolin.common.collection.Func;
+import net.gcolin.common.lang.Pair;
+import net.gcolin.common.lang.Strings;
 
 /**
  * Utility class for helping reflection
@@ -56,6 +57,7 @@ import java.util.stream.Collectors;
  */
 public class Reflect {
 
+	private static final Logger LOG = LoggerFactory.getLogger(Reflect.class);
 	private static final String CANNOT_CREATE = "cannot create ";
 	private static final String SET = "set";
 	private static final String GET = "get";
@@ -354,8 +356,8 @@ public class Reflect {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException ex) {
 			String msg = CANNOT_CREATE + className;
-			Logs.LOG.severe(msg);
-			Logs.LOG.log(Level.FINE, msg, ex);
+			LOG.error(msg);
+			LOG.debug(msg, ex);
 			return null;
 		}
 	}
@@ -373,8 +375,8 @@ public class Reflect {
 		} catch (IllegalStateException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException ex) {
 			String msg = CANNOT_CREATE + clazz;
-			Logs.LOG.severe(msg);
-			Logs.LOG.log(Level.FINE, msg, ex);
+			LOG.error(msg);
+			LOG.debug(msg, ex);
 			return null;
 		}
 	}
@@ -526,7 +528,7 @@ public class Reflect {
 				return null;
 			}
 		} catch (NoSuchMethodException | SecurityException ex) {
-			Logs.LOG.log(Level.FINE, ex.getMessage(), ex);
+			LOG.debug(ex.getMessage(), ex);
 			return null;
 		}
 	}
@@ -544,7 +546,7 @@ public class Reflect {
 		try {
 			return clazz.getMethod(methodName, target);
 		} catch (NoSuchMethodException | SecurityException ex) {
-			Logs.LOG.log(Level.FINE, ex.getMessage(), ex);
+			LOG.debug(ex.getMessage(), ex);
 			return null;
 		}
 	}
@@ -632,7 +634,7 @@ public class Reflect {
 			Reflect.class.getClassLoader().loadClass(clazz);
 			return true;
 		} catch (ClassNotFoundException ex) {
-			Logs.LOG.log(Level.FINE, ex.getMessage(), ex);
+			LOG.debug(ex.getMessage(), ex);
 			return false;
 		}
 	}
@@ -690,7 +692,7 @@ public class Reflect {
 		try {
 			return clazz.getMethod(methodName, parameters).getReturnType() == returnType;
 		} catch (NoSuchMethodException | SecurityException ex) {
-			Logs.LOG.log(Level.FINE, ex.getMessage(), ex);
+			LOG.debug(ex.getMessage(), ex);
 			return false;
 		}
 	}
@@ -707,7 +709,7 @@ public class Reflect {
 			cl.loadClass(className);
 			return true;
 		} catch (ClassNotFoundException ex) {
-			Logs.LOG.log(Level.FINE, ex.getMessage(), ex);
+			LOG.debug(ex.getMessage(), ex);
 			return false;
 		}
 	}
@@ -725,7 +727,7 @@ public class Reflect {
 			clazz.getMethod(methodName, params);
 			return true;
 		} catch (NoSuchMethodException | SecurityException ex) {
-			Logs.LOG.log(Level.FINE, ex.getMessage(), ex);
+			LOG.debug(ex.getMessage(), ex);
 			return false;
 		}
 	}
@@ -787,7 +789,7 @@ public class Reflect {
 			return obj.getClass().getMethod(method).invoke(obj);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException ex) {
-			Logs.LOG.log(Level.WARNING, ex.getMessage(), ex);
+			LOG.warn(ex.getMessage(), ex);
 			return null;
 		}
 	}
@@ -804,7 +806,7 @@ public class Reflect {
 			return obj.getMethod(method).invoke(null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException ex) {
-			Logs.LOG.log(Level.WARNING, ex.getMessage(), ex);
+			LOG.warn(ex.getMessage(), ex);
 			return null;
 		}
 	}
@@ -821,7 +823,7 @@ public class Reflect {
 		try {
 			return executeStatic(cl.loadClass(className), method);
 		} catch (ClassNotFoundException ex) {
-			Logs.LOG.log(Level.WARNING, ex.getMessage(), ex);
+			LOG.warn(ex.getMessage(), ex);
 			return null;
 		}
 	}

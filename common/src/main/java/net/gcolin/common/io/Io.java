@@ -15,9 +15,6 @@
 
 package net.gcolin.common.io;
 
-import net.gcolin.common.Logs;
-import net.gcolin.common.collection.ConcurrentQueue;
-
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -47,10 +44,13 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
+import org.slf4j.LoggerFactory;
+
+import net.gcolin.common.collection.ConcurrentQueue;
 
 /**
  * Utility class for I/O Contain a pool for byte array and a pool for char array The pool state is
@@ -61,7 +61,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class Io {
 
-  private static final String CREATED = " created";
+  private static final String CREATED = "{} created";
 public static final int BUFFER_SIZE = 8 * 1024;
   public static final int POOL_SIZE = 100;
   private static final Queue<byte[]> BYTES_POOL = new ConcurrentQueue<>(POOL_SIZE);
@@ -274,8 +274,8 @@ public static final int BUFFER_SIZE = 8 * 1024;
    */
   public static void copy(Path directory, Path dest) throws IOException {
     if (Files.exists(directory)) {
-      if (dest.toFile().mkdirs() && Logs.LOG.isLoggable(Level.FINE)) {
-        Logs.LOG.fine(dest + CREATED);
+      if (dest.toFile().mkdirs()) {
+        LoggerFactory.getLogger(Io.class).debug(CREATED, dest);
       }
       Files.walkFileTree(directory, new CopyFileVisitor(directory, dest));
     }
@@ -310,7 +310,7 @@ public static final int BUFFER_SIZE = 8 * 1024;
       try {
         close(cl.getInputStream());
       } catch (IOException ex) {
-        Logs.LOG.log(Level.FINE, "cannot close url", ex);
+        LoggerFactory.getLogger(Io.class).debug("cannot close url", ex);
       }
     }
   }
@@ -325,7 +325,7 @@ public static final int BUFFER_SIZE = 8 * 1024;
       try {
         cl.close();
       } catch (IOException ex) {
-        Logs.LOG.log(Level.FINE, "cannot close", ex);
+        LoggerFactory.getLogger(Io.class).debug("cannot close", ex);
       }
     }
   }
@@ -340,7 +340,7 @@ public static final int BUFFER_SIZE = 8 * 1024;
       try {
         cl.close();
       } catch (Exception ex) {
-        Logs.LOG.log(Level.FINE, "cannot close", ex);
+        LoggerFactory.getLogger(Io.class).debug("cannot close", ex);
       }
     }
   }
@@ -549,8 +549,8 @@ public static final int BUFFER_SIZE = 8 * 1024;
         ZipEntry entry = zipFileEntries.nextElement();
         String currentEntry = entry.getName();
         File destFile = new File(extractFolder, currentEntry);
-        if (destFile.getParentFile().mkdirs() && Logs.LOG.isLoggable(Level.FINE)) {
-          Logs.LOG.fine(destFile.getParentFile() + CREATED);
+        if (destFile.getParentFile().mkdirs()) {
+        	LoggerFactory.getLogger(Io.class).debug(CREATED, destFile.getParentFile());
         }
         if (!entry.isDirectory()) {
           unzipEntry(zip, entry, destFile);
@@ -565,8 +565,8 @@ public static final int BUFFER_SIZE = 8 * 1024;
     OutputStream out = null;
     InputStream in = null;
     try {
-      if (destFile.getParentFile().mkdirs() && Logs.LOG.isLoggable(Level.FINE)) {
-        Logs.LOG.fine(destFile.getParentFile() + CREATED);
+      if (destFile.getParentFile().mkdirs()) {
+    	  LoggerFactory.getLogger(Io.class).debug(CREATED, destFile.getParentFile());
       }
       out = new FileOutputStream(destFile);
       in = zip.getInputStream(entry);
@@ -606,7 +606,7 @@ public static final int BUFFER_SIZE = 8 * 1024;
     try {
       return readLines(url == null ? null : url.openStream(), type, transform, charset);
     } catch (IOException ex) {
-      Logs.LOG.log(Level.SEVERE, "cannot load " + url, ex);
+      LoggerFactory.getLogger(Io.class).error("cannot load " + url, ex);
       return (T[]) Array.newInstance(type, 0);
     }
   }
@@ -640,7 +640,7 @@ public static final int BUFFER_SIZE = 8 * 1024;
         list.add(transform.apply(line));
       }
     } catch (IOException ex) {
-      Logs.LOG.log(Level.SEVERE, "cannot load " + in, ex);
+      LoggerFactory.getLogger(Io.class).error("cannot load " + in, ex);
     } finally {
       close(in);
     }

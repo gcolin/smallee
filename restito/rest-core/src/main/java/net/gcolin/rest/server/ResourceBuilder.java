@@ -15,14 +15,6 @@
 
 package net.gcolin.rest.server;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.common.route.Router;
-import net.gcolin.rest.Environment;
-import net.gcolin.rest.FastMediaType;
-import net.gcolin.rest.Logs;
-import net.gcolin.rest.param.Param;
-import net.gcolin.rest.util.ReflectRest;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -37,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -45,6 +36,14 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.common.route.Router;
+import net.gcolin.rest.Environment;
+import net.gcolin.rest.FastMediaType;
+import net.gcolin.rest.Logs;
+import net.gcolin.rest.param.Param;
+import net.gcolin.rest.util.ReflectRest;
 
 /**
  * Build REST services from an object or a class.
@@ -132,7 +131,7 @@ public class ResourceBuilder {
       context.setHttpMethods(Arrays.stream(component.getMethods()).collect(Collectors.toSet()));
       buildResources(context);
     } catch (Exception ex) {
-      Logs.LOG.log(Level.SEVERE, ex.getMessage(), ex);
+      Logs.LOG.error(ex.getMessage(), ex);
     }
     return context.getResources();
   }
@@ -179,12 +178,12 @@ public class ResourceBuilder {
       context.setCurrentClazz(clazz);
       context.setHttpMethods(httpMethods);
       if (isNotPublicRestMethod(method)) {
-        Logs.LOG.log(Level.WARNING, "the method {0} MUST be public", method.getName());
+        Logs.LOG.warn("the method {} MUST be public", method.getName());
       } else if (method.getDeclaringClass() != Object.class && !buildResources(context)) {
-        Logs.LOG.log(Level.FINE, "the method {0} must have a http type", method.getName());
+        Logs.LOG.debug("the method {} must have a http type", method.getName());
       }
     } catch (Exception ex) {
-      Logs.LOG.log(Level.SEVERE, ex.getMessage(), ex);
+      Logs.LOG.error(ex.getMessage(), ex);
     }
     return context.getResources();
   }
@@ -207,7 +206,7 @@ public class ResourceBuilder {
       resource.setSingleton(context.getSingleton(), context.getEnv());
       context.getResources().add(resource);
       publishResource(context, getTypes(context.getHttpMethods()), resource);
-      Logs.LOG.log(Level.FINE, "register {0}", context.getMethodPath());
+      Logs.LOG.debug("register {}", context.getMethodPath());
       return true;
     } else if (isRestPossible(method)) {
       return buildResourceFromOverride(context);
@@ -235,9 +234,9 @@ public class ResourceBuilder {
           publishResourceInCollection(resource, type, ra, rs);
         } else {
           ra.add(type, resource);
-          if (Logs.LOG.isLoggable(Level.FINE)) {
-            Logs.LOG.log(Level.FINE, "resource {0} added with the http method {1}",
-                new Object[] {resource.getPath(), ResourceArray.toString(type)});
+          if (Logs.LOG.isDebugEnabled()) {
+            Logs.LOG.debug("resource {} added with the http method {}",
+                resource.getPath(), ResourceArray.toString(type));
           }
         }
       }
@@ -255,9 +254,9 @@ public class ResourceBuilder {
       collection.add((AbstractResource) rs);
     }
     collection.add(resource);
-    if (Logs.LOG.isLoggable(Level.FINE)) {
-      Logs.LOG.log(Level.FINE, "resource {0} already added with the http method {1}",
-          new Object[] {resource.getPath(), ResourceArray.toString(type)});
+    if (Logs.LOG.isDebugEnabled()) {
+      Logs.LOG.debug("resource {} already added with the http method {}",
+          resource.getPath(), ResourceArray.toString(type));
     }
   }
 
@@ -306,8 +305,8 @@ public class ResourceBuilder {
     try {
       return clazz.getMethod(name, parameterTypes);
     } catch (Exception ex) {
-      if (Logs.LOG.isLoggable(Level.FINE)) {
-        Logs.LOG.log(Level.FINE, "cannot find " + name, ex);
+      if (Logs.LOG.isDebugEnabled()) {
+        Logs.LOG.debug("cannot find " + name, ex);
       }
       return null;
     }

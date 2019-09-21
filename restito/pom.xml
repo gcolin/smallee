@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>net.gcolin.smallee</groupId>
 		<artifactId>smallee</artifactId>
-		<version>1.0</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>resitio</artifactId>
+	<artifactId>restito</artifactId>
 	<packaging>pom</packaging>
 	
 	<modules>
@@ -17,6 +17,7 @@
 		<module>rest-ext-cdi</module>
 		<module>rest-ext-datasource</module>
 		<module>rest-ext-freemarker</module>
+		<module>rest-ext-mustache</module>
 		<module>rest-ext-gzip</module>
 		<module>rest-ext-jaxb</module>
 		<module>rest-ext-json</module>

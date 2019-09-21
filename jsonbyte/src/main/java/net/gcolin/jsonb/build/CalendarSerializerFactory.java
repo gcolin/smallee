@@ -15,18 +15,18 @@
 
 package net.gcolin.jsonb.build;
 
+import java.lang.reflect.Type;
+import java.util.Calendar;
+import java.util.Locale;
+
+import javax.json.stream.JsonParser;
+
 import net.gcolin.jsonb.JsonbDeserializerExtended;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.serializer.AbstractNumberDeserializer;
 import net.gcolin.jsonb.serializer.CalendarDeserializer;
 import net.gcolin.jsonb.serializer.CalendarMilliSerializer;
 import net.gcolin.jsonb.serializer.CalendarSerializer;
-
-import java.lang.reflect.Type;
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.json.stream.JsonParser;
 
 /**
  * A factory for generating a {@code Calendar} serializer.

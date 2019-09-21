@@ -15,13 +15,6 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.jsonb.JsonbDeserializerExtended;
-import net.gcolin.jsonb.build.JContext;
-import net.gcolin.jsonb.build.JNode;
-import net.gcolin.jsonb.build.JNodeBuilder;
-import net.gcolin.jsonb.build.Reflects;
-
 import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -37,6 +30,13 @@ import javax.json.bind.JsonbException;
 import javax.json.bind.serializer.DeserializationContext;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.jsonb.JsonbDeserializerExtended;
+import net.gcolin.jsonb.build.JContext;
+import net.gcolin.jsonb.build.JNode;
+import net.gcolin.jsonb.build.JNodeBuilder;
+import net.gcolin.jsonb.build.Reflects;
 
 /**
  * A collection deserializer.

@@ -15,11 +15,11 @@
 
 package net.gcolin.jsonb.build;
 
-import net.gcolin.jsonb.JsonbDeserializerExtended;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
 import java.lang.reflect.Type;
 import java.util.Map;
+
+import net.gcolin.jsonb.JsonbDeserializerExtended;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A Json bean metadata.

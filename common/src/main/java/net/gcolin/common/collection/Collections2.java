@@ -15,8 +15,6 @@
 
 package net.gcolin.common.collection;
 
-import net.gcolin.common.Logs;
-
 import java.lang.reflect.Array;
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -31,7 +29,9 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.Level;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Add some utility method for manipulating collections
@@ -214,8 +214,9 @@ public class Collections2 {
 			try {
 				collection.add(it.next());
 			} catch (ServiceConfigurationError ex) {
-				Logs.LOG.info(ex.getMessage());
-				Logs.LOG.log(Level.FINE, ex.getMessage(), ex);
+				Logger logger = LoggerFactory.getLogger(Collections2.class);
+				logger.info(ex.getMessage());
+				logger.debug(ex.getMessage(), ex);
 			}
 		}
 	}

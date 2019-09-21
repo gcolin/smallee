@@ -30,8 +30,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Singleton;
 
@@ -59,7 +57,6 @@ public class Events implements Event<Object>, Resolver {
 	private Map<String, Queue<Runnable>> asyncQueue = new HashMap<>();
 	private static AtomicInteger index = new AtomicInteger(0);
 	private ExecutorService executor;
-	private Logger log = Logger.getLogger("net.gcolin.di.atinject.event");
 	private JmxExtension jmx;
 
 	public Events(Environment environment, JmxExtension jmx) {
@@ -91,8 +88,8 @@ public class Events implements Event<Object>, Resolver {
 				asyncItem.queue = new AsyncQueue(async.value(), executor, new ArrayQueue<>(), async.size());
 				jmx.add(asyncItem.queue);
 				asyncQueue.put(async.value(), asyncItem.queue);
-			} else if (asyncItem.queue.size() != async.size() && log.isLoggable(Level.WARNING)) {
-				log.warning("the queue " + async.value() + " is used many times with different sizes ("
+			} else if (asyncItem.queue.size() != async.size() && environment.getLog().isWarnEnabled()) {
+				environment.getLog().warn("the queue " + async.value() + " is used many times with different sizes ("
 						+ asyncItem.queue.size() + " and " + async.size() + ")");
 			}
 		} else {

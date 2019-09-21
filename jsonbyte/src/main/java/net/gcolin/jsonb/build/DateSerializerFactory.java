@@ -15,21 +15,19 @@
 
 package net.gcolin.jsonb.build;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbDeserializerExtended;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-import net.gcolin.jsonb.serializer.AbstractNumberDeserializer;
-import net.gcolin.jsonb.serializer.DateDeserializer;
-import net.gcolin.jsonb.serializer.DateSerializer;
-
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Date;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonParser;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbDeserializerExtended;
+import net.gcolin.jsonb.JsonbSerializerExtended;
+import net.gcolin.jsonb.serializer.AbstractNumberDeserializer;
+import net.gcolin.jsonb.serializer.DateDeserializer;
+import net.gcolin.jsonb.serializer.DateSerializer;
 
 /**
  * A factory for generating a {@code Date} serializer.
@@ -55,18 +53,6 @@ public class DateSerializerFactory implements SerializerFactory {
       public void serialize(String key, Date obj, JsonGenerator generator,
           SerializationContext ctx) {
         generator.write(key, obj.getTime());
-      }
-
-      @Override
-      public void serialize(Date obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-          throws IOException {
-        generator.write0(obj.getTime());
-      }
-
-      @Override
-      public void serialize(byte[] key, Date obj, Utf8JsonGeneratorImpl generator,
-          SerializationContext ctx) throws IOException {
-        generator.write0(key, obj.getTime());
       }
 
       @Override

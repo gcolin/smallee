@@ -15,15 +15,13 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
-import java.io.IOException;
 import java.util.Calendar;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A {@code Calendar} serializer in milliseconds.
@@ -42,18 +40,6 @@ public class CalendarMilliSerializer implements JsonbSerializerExtended<Calendar
   public void serialize(String key, Calendar obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, obj.getTime().getTime());
-  }
-
-  @Override
-  public void serialize(Calendar obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.write0(obj.getTime().getTime());
-  }
-
-  @Override
-  public void serialize(byte[] key, Calendar obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.write0(key, obj.getTime().getTime());
   }
 
   @Override

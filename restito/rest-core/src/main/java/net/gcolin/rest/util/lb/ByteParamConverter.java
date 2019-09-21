@@ -30,7 +30,7 @@ public class ByteParamConverter implements Converter<Byte> {
     try {
       return Byte.parseByte(str);
     } catch (NumberFormatException ex) {
-      Logs.LOG.fine(ex.getMessage());
+      Logs.LOG.debug(ex.getMessage());
     }
     return null;
   }

@@ -23,10 +23,8 @@ import java.io.OutputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.commons.dbutils.QueryRunner;
 
 import net.gcolin.common.io.Io;
 import net.gcolin.di.atinject.Environment;
@@ -50,7 +48,7 @@ public class DbExtension implements Extension {
 			File file = new File(dbPath);
 			if (!file.exists()) {
 				if (file.mkdirs()) {
-					Db.LOG.log(Level.FINE, "directory created {0}", file);
+					Db.LOG.debug("directory created {}", file);
 				}
 				File derbyProperties = new File(file, "derby.properties");
 				try (InputStream in = Db.class.getClassLoader().getResourceAsStream("derby.properties")) {
@@ -58,7 +56,7 @@ public class DbExtension implements Extension {
 						Io.copy(in, out);
 					}
 				} catch (IOException ex) {
-					Db.LOG.log(Level.SEVERE, "cannot create derby.properties", ex);
+					Db.LOG.error("cannot create derby.properties", ex);
 				}
 			}
 		}
@@ -68,16 +66,28 @@ public class DbExtension implements Extension {
 		s.setUrl(props.get("url"));
 		s.setUsername(props.get("user"));
 		s.setPassword(props.get("password"));
-		s.setMaxTotal(10);
-		s.setMinIdle(0);
+		String max = props.get("maxPoolSize");
+		if (max == null) {
+			s.setMaxTotal(10);
+		} else {
+			s.setMaxTotal(Integer.parseInt(max.trim()));
+		}
+		String min = props.get("minPoolSize");
+		if (min == null) {
+			s.setMinIdle(0);
+		} else {
+			s.setMinIdle(Integer.parseInt(min.trim()));
+		}
 		env.bind(new DbDatasource(DbAdapter.ALL.get(props.get("type")), s));
 		String testQuery = props.get("testQuery");
 		
 		try {
-			new QueryRunner(s).query(testQuery, Db.GET_LONG);
+			Db.query(s, testQuery, Db.GET_LONG);
 		} catch (SQLException e1) {
-			Db.LOG.log(Level.FINE, "test query fail: " + testQuery, e1);
-			Db.LOG.warning("load database");
+			if(Db.LOG.isDebugEnabled()) {
+				Db.LOG.debug("test query fail: " + testQuery, e1);
+			}
+			Db.LOG.warn("load database");
 			try {
 				Db.init(env.getClassLoader(), props.get("type"), s);
 			} catch (SQLException e) {
@@ -97,7 +107,7 @@ public class DbExtension implements Extension {
 						Db.LOG.info("shutdown derby");
 						DriverManager.getConnection("jdbc:derby:;shutdown=true").close();
 					} catch (SQLException e) {
-						Db.LOG.log(Level.SEVERE, "cannot shutdown derby cleanly", e);
+						Db.LOG.error("cannot shutdown derby cleanly", e);
 					}
 				}
 			});
@@ -106,7 +116,7 @@ public class DbExtension implements Extension {
 			try {
 				((AutoCloseable) db.getSource()).close();
 			} catch (Exception e) {
-				Db.LOG.log(Level.SEVERE, e.getMessage(), e);
+				Db.LOG.error(e.getMessage(), e);
 			}
 		}
 		Db.VALIDATOR_FACTORY.close();

@@ -15,14 +15,14 @@
 
 package net.gcolin.jsonb.build;
 
-import net.gcolin.common.reflect.Reflect;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.function.Function;
 
 import javax.json.bind.JsonbException;
+
+import net.gcolin.common.reflect.Reflect;
 
 /**
  * Some reflection utilities.

@@ -19,7 +19,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.logging.Level;
 
 import net.gcolin.common.reflect.Reflect;
 import net.gcolin.di.core.InjectException;
@@ -201,7 +200,7 @@ public class InstanceBuilder implements InstanceCreator {
 
 	protected InstanceBuilderMetaData buildMetaData() {
 		Class<?> clazz = provider.getResolvedType();
-		env.getLog().log(Level.FINE, "create metadata of {0}", clazz);
+		env.getLog().debug("create metadata of {}", clazz);
 		InstanceBuilderMetaData m = new InstanceBuilderMetaData();
 		InstanceFactoryBuilder[] ifb = env.getInstanceFactoryBuilders();
 		for (int i = 0; i < ifb.length && m.getInstanceFactory() == null; i++) {

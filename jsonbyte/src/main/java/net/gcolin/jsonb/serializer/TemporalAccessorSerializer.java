@@ -15,16 +15,14 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A {@code TemporalAccessor} serializer.
@@ -49,18 +47,6 @@ public class TemporalAccessorSerializer implements JsonbSerializerExtended<Tempo
   public void serialize(String key, TemporalAccessor obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, formatter.format(obj));
-  }
-
-  @Override
-  public void serialize(TemporalAccessor obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.write0Quoted(formatter.format(obj));
-  }
-
-  @Override
-  public void serialize(byte[] key, TemporalAccessor obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.write0Quoted(key, formatter.format(obj));
   }
 
   @Override

@@ -15,16 +15,13 @@
 
 package net.gcolin.jsonb.serializer;
 
+import javax.json.bind.serializer.SerializationContext;
+import javax.json.stream.JsonGenerator;
+
 import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.build.JNode;
 import net.gcolin.jsonb.build.JProperty;
-
-import java.io.IOException;
-
-import javax.json.bind.serializer.SerializationContext;
-import javax.json.stream.JsonGenerator;
 
 /**
  * A POJO serializer.
@@ -53,20 +50,6 @@ public class JNodeObjectSerializer implements JsonbSerializerExtended<Object> {
   }
 
   @Override
-  public void serialize(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.writeStartObject0();
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(byte[] key, Object obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.writeStartObject0(key);
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
   public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
       SerializationContext ctx) {
     generator.writeStartObject0(key);
@@ -90,20 +73,6 @@ public class JNodeObjectSerializer implements JsonbSerializerExtended<Object> {
       }
     }
     generator.writeEnd();
-  }
-
-  private void serialize1(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    JProperty[] props = node.getElementList();
-    if (props != null) {
-      for (int i = 0; i < props.length; i++) {
-        Object val = props[i].getGetter().get(obj);
-        if (val != null) {
-          props[i].getNode().getSerializer().serialize(props[i].getUtf8name(), val, generator, ctx);
-        }
-      }
-    }
-    generator.writeEnd0();
   }
 
   private void serialize2(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {

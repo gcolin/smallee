@@ -14,12 +14,11 @@
  */
 package net.gcolin.di.atinject.jsp;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
+
+import org.slf4j.LoggerFactory;
 
 import net.gcolin.di.atinject.Environment;
 import net.gcolin.di.atinject.Extension;
@@ -42,7 +41,7 @@ public class JspExtension implements Extension {
       try {
         jspContext.addELResolver(new EnvElResolver(env));
       } catch (Exception ex) {
-        Logger.getLogger(this.getClass().getName()).log(Level.FINER, ex.getMessage(), ex);
+        LoggerFactory.getLogger(this.getClass()).trace(ex.getMessage(), ex);
       }
     }
   }

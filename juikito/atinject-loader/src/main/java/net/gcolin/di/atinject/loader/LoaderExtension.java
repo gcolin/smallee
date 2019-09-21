@@ -16,6 +16,7 @@ package net.gcolin.di.atinject.loader;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import net.gcolin.common.io.Io;
@@ -30,24 +31,25 @@ import net.gcolin.di.core.InjectException;
  * @since 1.0
  */
 public class LoaderExtension implements Extension {
-  
-  @Override
-  public void doStart(Environment env) {
-    try {
-      Enumeration<URL> urls = env.getClassLoader().getResources("META-INF/atinject");
-      while(urls.hasMoreElements()) {
-        URL url = urls.nextElement();
-        env.add(Io.readLines(url, Class.class, name -> {
-          try {
-            return env.getClassLoader().loadClass(name);
-          } catch (ClassNotFoundException ex) {
-            throw new InjectException(ex);
-          }
-        }));
-      }
-    } catch (IOException ex) {
-      throw new InjectException(ex);
-    }
-  }
+
+	@Override
+	public void doStart(Environment env) {
+		try {
+			Enumeration<URL> urls = env.getClassLoader().getResources("META-INF/atinject");
+			while (urls.hasMoreElements()) {
+				URL url = urls.nextElement();
+				env.add(Arrays.stream(Io.readLines(url, Class.class, name -> {
+					try {
+						return env.getClassLoader().loadClass(name);
+					} catch (ClassNotFoundException ex) {
+						env.getLog().warn(ex.getMessage(), ex);
+						return null;
+					}
+				})).filter(x -> x != null).toArray(n -> new Class[n]));
+			}
+		} catch (IOException ex) {
+			throw new InjectException(ex);
+		}
+	}
 
 }

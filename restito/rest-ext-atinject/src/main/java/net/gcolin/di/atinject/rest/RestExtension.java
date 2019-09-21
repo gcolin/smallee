@@ -16,8 +16,6 @@ package net.gcolin.di.atinject.rest;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletContext;
@@ -46,13 +44,12 @@ public class RestExtension implements Extension {
 
   @Override
   public void doStarted(Environment environment) {
-    Logger log = Logger.getLogger(this.getClass().getName());
     Map<String, RestServlet> servlets = new HashMap<>();
     for (Class<?> clazz : environment.getBeanClasses()) {
       if (Application.class.isAssignableFrom(clazz)) {
         ApplicationPath apppath = clazz.getAnnotation(ApplicationPath.class);
         if (apppath == null) {
-          log.info(clazz
+          environment.getLog().info(clazz
               + " is an javax.ws.rs.core.Application and does not have @ApplicationPath: ignore it");
           continue;
         }
@@ -81,7 +78,7 @@ public class RestExtension implements Extension {
         } catch (ServletException ex) {
           throw new InjectException(ex);
         }
-        log.log(Level.INFO, "start rest app {0} in the context {1}/*", new Object[] {clazz.getName(), path});
+        environment.getLog().info("start rest app {} in the context {}/*", clazz.getName(), path);
       }
     }
   }

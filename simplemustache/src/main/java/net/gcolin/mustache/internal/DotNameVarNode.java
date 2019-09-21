@@ -13,19 +13,24 @@
  * the License.
  */
 
-package net.gcolin.common;
-
-import java.util.logging.Logger;
+package net.gcolin.mustache.internal;
 
 /**
- * The logger of this project. Maybe a bad practice but it is fast and light.
- * 
  * @author Gaël COLIN
  * @since 1.0
  */
-public class Logs {
+public class DotNameVarNode extends VarNode {
 
-  public static final Logger LOG = Logger.getLogger("net.gcolin.common");
+	private String[] names;
 
-  private Logs() {}
+	public DotNameVarNode(String name, String[] filters) {
+		super(name, filters);
+		this.names = name.split("\\.");
+	}
+
+	@Override
+	protected Object get(Context ctx) {
+		return ctx.get(names);
+	}
+
 }

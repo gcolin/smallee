@@ -15,9 +15,9 @@
 
 package net.gcolin.jsonb.build;
 
-import net.gcolin.common.lang.Strings;
-
 import javax.json.bind.config.PropertyNamingStrategy;
+
+import net.gcolin.common.lang.Strings;
 
 /**
  * Implements the upper camel case PropertyNamingStrategy.

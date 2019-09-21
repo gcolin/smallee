@@ -15,11 +15,6 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
-import java.io.IOException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -27,6 +22,9 @@ import java.util.Locale;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A {@code Date} serializer.
@@ -53,18 +51,6 @@ public class DateSerializer extends AbstractDateSerializer
   @Override
   public void serialize(String key, Date obj, JsonGenerator generator, SerializationContext ctx) {
     generator.write(key, format(obj));
-  }
-
-  @Override
-  public void serialize(Date obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.write0Quoted(format(obj));
-  }
-
-  @Override
-  public void serialize(byte[] key, Date obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.write0Quoted(key, format(obj));
   }
 
   @Override

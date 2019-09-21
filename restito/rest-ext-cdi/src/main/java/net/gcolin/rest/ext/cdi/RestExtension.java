@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
@@ -38,6 +36,9 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.gcolin.common.reflect.Reflect;
 import net.gcolin.rest.server.Contexts;
 import net.gcolin.rest.servlet.RestServlet;
@@ -50,7 +51,7 @@ import net.gcolin.rest.servlet.RestServlet;
  */
 public class RestExtension implements Extension {
 
-  private final Logger log = Logger.getLogger(RestExtension.class.getName());
+  private final Logger log = LoggerFactory.getLogger(RestExtension.class);
   private List<AnnotatedType<?>> apps = new ArrayList<AnnotatedType<?>>();
   private Map<String, RestServlet> servlets = new HashMap<>();
 
@@ -96,10 +97,10 @@ public class RestExtension implements Extension {
         } else {
           servlet.app(app, false);
         }
-        log.log(Level.INFO, "start rest app {0} in the context {1}/*",
+        log.info("start rest app {} in the context {}/*",
             new Object[] {appType.getJavaClass().getName(), path});
       } catch (Exception ex) {
-        log.log(Level.SEVERE, "cannot add rest application " + appType.getJavaClass().getName(),
+        log.error("cannot add rest application " + appType.getJavaClass().getName(),
             ex);
       }
 

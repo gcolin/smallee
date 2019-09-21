@@ -15,15 +15,13 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A {@code BigDecimal} serializer.
@@ -42,18 +40,6 @@ public class BigDecimalSerializer implements JsonbSerializerExtended<BigDecimal>
   public void serialize(String key, BigDecimal obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, obj);
-  }
-
-  @Override
-  public void serialize(byte[] key, BigDecimal obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.write0(key, obj.toString());
-  }
-
-  @Override
-  public void serialize(BigDecimal obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.write0(obj.toString());
   }
 
   @Override

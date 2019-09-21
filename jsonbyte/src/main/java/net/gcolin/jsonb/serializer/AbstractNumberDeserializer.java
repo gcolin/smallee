@@ -15,14 +15,14 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.jsonb.JsonbDeserializerExtended;
-
 import java.lang.reflect.Type;
 
 import javax.json.bind.JsonbException;
 import javax.json.bind.serializer.DeserializationContext;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
+
+import net.gcolin.jsonb.JsonbDeserializerExtended;
 
 /**
  * A number deserializer.

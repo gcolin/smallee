@@ -7,16 +7,18 @@
 	<groupId>net.gcolin.smallee</groupId>
 	<artifactId>smallee</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<!-- mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install 
 		sonar:sonar site:site site:stage -->
 	<modules>
 		<module>common</module>
+		<module>simplemustache</module>
 		<module>database</module>
+		<module>jaccepte</module>
 		<module>jsonbyte</module>
 		<module>juikito</module>
 		<module>restito</module>
-		<module>smalltomcat</module>
+		<module>micro</module>
 	</modules>
 
 	<distributionManagement>
@@ -193,6 +195,11 @@
 			</dependency>
 			<dependency>
 				<groupId>net.gcolin.smallee</groupId>
+				<artifactId>simplemustache</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.gcolin.smallee</groupId>
 				<artifactId>database</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -228,7 +235,17 @@
 			</dependency>
 			<dependency>
 				<groupId>net.gcolin.smallee</groupId>
+				<artifactId>atinject-cdi-like</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.gcolin.smallee</groupId>
 				<artifactId>atinject-jmx</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.gcolin.smallee</groupId>
+				<artifactId>atinject-config</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -293,6 +310,11 @@
 			</dependency>
 			<dependency>
 				<groupId>net.gcolin.smallee</groupId>
+				<artifactId>rest-ext-mustache</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.gcolin.smallee</groupId>
 				<artifactId>rest-ext-freemarker</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -330,6 +352,17 @@
 				<groupId>net.gcolin.smallee</groupId>
 				<artifactId>jaccepte</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.28</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>1.7.28</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>javax.json</groupId>

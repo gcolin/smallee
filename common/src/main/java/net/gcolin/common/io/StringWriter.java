@@ -47,7 +47,7 @@ public class StringWriter extends Writer {
   }
 
   @Override
-  public void write(int ch) throws IOException {
+  public void write(int ch) {
     if (current.length == index) {
       enlarge();
     }
@@ -55,7 +55,7 @@ public class StringWriter extends Writer {
   }
 
   @Override
-  public void write(String cbuf, int off, int len) throws IOException {
+  public void write(String cbuf, int off, int len) {
     if (current.length - index < len) {
       int rem = len;
       int offset = off;
@@ -76,7 +76,7 @@ public class StringWriter extends Writer {
   }
 
   @Override
-  public void write(char[] cbuf, int off, int len) throws IOException {
+  public void write(char[] cbuf, int off, int len) {
     if (current.length - index < len) {
       int rem = len;
       int offset = off;

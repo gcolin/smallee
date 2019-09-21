@@ -15,9 +15,6 @@
 
 package net.gcolin.common.reflect;
 
-import net.gcolin.common.Logs;
-import net.gcolin.common.collection.Collections2;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +22,11 @@ import java.net.URLClassLoader;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.gcolin.common.collection.Collections2;
 
 /**
  * Utility class for scanning classes.
@@ -82,8 +83,9 @@ public class Scan {
         try {
           consumer.accept(classLoader.loadClass(name));
         } catch (Throwable ex) {
-          if (Logs.LOG.isLoggable(Level.FINE)) {
-            Logs.LOG.log(Level.FINE, "cannot load class : " + name, ex);
+        	Logger logger = LoggerFactory.getLogger(Scan.class);
+          if (logger.isDebugEnabled()) {
+        	  logger.debug("cannot load class : " + name, ex);
           }
         }
       }

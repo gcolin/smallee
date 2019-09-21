@@ -15,15 +15,6 @@
 
 package net.gcolin.rest.client;
 
-import net.gcolin.common.collection.Collections2;
-import net.gcolin.common.io.Io;
-import net.gcolin.common.reflect.Injector;
-import net.gcolin.rest.ConfigurableImpl;
-import net.gcolin.rest.Environment;
-import net.gcolin.rest.Logs;
-import net.gcolin.rest.RestConfiguration;
-import net.gcolin.rest.provider.SimpleProviders;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -46,6 +36,15 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.UriBuilder;
+
+import net.gcolin.common.collection.Collections2;
+import net.gcolin.common.io.Io;
+import net.gcolin.common.reflect.Injector;
+import net.gcolin.rest.ConfigurableImpl;
+import net.gcolin.rest.Environment;
+import net.gcolin.rest.Logs;
+import net.gcolin.rest.RestConfiguration;
+import net.gcolin.rest.provider.SimpleProviders;
 
 /**
  * The Client implementation.
@@ -86,7 +85,7 @@ public class ClientImpl extends ConfigurableImpl<Client> implements Client {
         try {
           asyncInvocationExecutor = INJECTORS[i].get(ThreadPoolExecutor.class);
         } catch (Exception ex) {
-          Logs.LOG.log(Level.FINE, "cannot retrieve ThreadPoolExecutor from injector", ex);
+          Logs.LOG.debug("cannot retrieve ThreadPoolExecutor from injector", ex);
         }
       }
       if (asyncInvocationExecutor == null) {

@@ -15,11 +15,6 @@
 
 package net.gcolin.jsonb.build;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.jsonb.JsonbDeserializerExtended;
-import net.gcolin.jsonb.serializer.AbstractNumberDeserializer;
-import net.gcolin.jsonb.serializer.AbstractStringDeserializer;
-
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
@@ -31,6 +26,11 @@ import javax.json.bind.serializer.DeserializationContext;
 import javax.json.bind.serializer.JsonbDeserializer;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.jsonb.JsonbDeserializerExtended;
+import net.gcolin.jsonb.serializer.AbstractNumberDeserializer;
+import net.gcolin.jsonb.serializer.AbstractStringDeserializer;
 
 /**
  * A factory for adapting a {@code JsonbDeserializer} to a {@code JsonbDeserializerExtended}.

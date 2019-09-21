@@ -22,10 +22,10 @@ import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import net.gcolin.common.Logs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The {@code Strings} class provides various helper method for manipulating String.
@@ -35,6 +35,7 @@ import net.gcolin.common.Logs;
  */
 public final class Strings {
 
+	private static final Logger LOG = LoggerFactory.getLogger(Strings.class);
 	public static final String FMT_LOCALE = "javax.servlet.jsp.jstl.fmt.locale.session";
 	private static final String MISSING_SEP = "!!!";
 	private static final int BLANK_SIZE = 33;
@@ -409,8 +410,8 @@ public final class Strings {
 		try {
 			return rb.getString(key);
 		} catch (MissingResourceException ex) {
-			if (Logs.LOG.isLoggable(Level.FINER)) {
-				Logs.LOG.log(Level.FINER, key + " is missing in " + rb, ex);
+			if(LOG.isTraceEnabled()) {
+				LOG.trace(key + " is missing in " + rb, ex);
 			}
 			return MISSING_SEP + key + MISSING_SEP;
 		}

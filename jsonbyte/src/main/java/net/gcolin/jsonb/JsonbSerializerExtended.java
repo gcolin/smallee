@@ -15,15 +15,11 @@
 
 package net.gcolin.jsonb;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import javax.json.bind.serializer.JsonbSerializer;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
 
 /**
  * The {@code JsonbSerializerExtended} adds some methods for a faster serialization.
@@ -34,17 +30,6 @@ import javax.json.stream.JsonGenerator;
 public interface JsonbSerializerExtended<T> extends JsonbSerializer<T> {
 
   void serialize(String key, T obj, JsonGenerator generator, SerializationContext ctx);
-
-  default void serialize(T obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    serialize(obj, (JsonGenerator) generator, ctx);
-  }
-
-  default void serialize(byte[] key, T obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    String key0 = new String(key, 1, key.length - 3, StandardCharsets.UTF_8);
-    serialize(key0, obj, (JsonGenerator) generator, ctx);
-  }
 
   default void serialize(char[] key, T obj, JsonGeneratorImpl generator, SerializationContext ctx) {
     serialize(new String(key, 1, key.length - 3), obj, (JsonGenerator) generator, ctx);

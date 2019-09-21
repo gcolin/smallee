@@ -15,10 +15,10 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonStringImpl;
-
 import javax.json.JsonString;
 import javax.json.stream.JsonParser;
+
+import net.gcolin.json.JsonStringImpl;
 
 /**
  * A {@code JsonString} deserializer.

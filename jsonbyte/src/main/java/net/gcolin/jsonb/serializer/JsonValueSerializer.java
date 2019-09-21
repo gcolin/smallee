@@ -15,15 +15,12 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
-import java.io.IOException;
-
 import javax.json.JsonValue;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A {@code JsonValue} serializer.
@@ -42,18 +39,6 @@ public class JsonValueSerializer implements JsonbSerializerExtended<JsonValue> {
   public void serialize(String key, JsonValue obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, obj);
-  }
-
-  @Override
-  public void serialize(JsonValue obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.write(obj);
-  }
-
-  @Override
-  public void serialize(byte[] key, JsonValue obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.write0(key, obj);
   }
 
   @Override

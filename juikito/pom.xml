@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.gcolin.smallee</groupId>
 		<artifactId>smallee</artifactId>
-		<version>1.0</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>juikito</artifactId>
 	<packaging>pom</packaging>
@@ -14,6 +14,7 @@
 	<modules>
 		<module>di-core</module>
 		<module>atinject</module>
+		<module>atinject-config</module>
 		<module>atinject-el</module>
 		<module>atinject-loader</module>
 		<module>atinject-jmx</module>
@@ -25,6 +26,7 @@
 		<module>atinject-interceptor</module>
 		<module>atinject-jpa</module>
 		<module>atinject-web-example</module>
+		<module>atinject-cdi-like</module>
 	</modules>
 	
 </project>

@@ -27,50 +27,49 @@ import javax.ws.rs.core.MultivaluedMap;
  * @author Gaël COLIN
  * @since 1.0
  */
-public class UnmodifiableMultivaluedMap<K, V> extends UnmodifiableMap<K, List<V>>
-    implements
-      MultivaluedMap<K, V> {
+public class UnmodifiableMultivaluedMap<K, V> extends UnmodifiableMap<K, List<V>> implements MultivaluedMap<K, V> {
 
-  private MultivaluedMap<K, V> map;
+	private static final long serialVersionUID = 6179840439849509758L;
+	private MultivaluedMap<K, V> map;
 
-  public UnmodifiableMultivaluedMap(MultivaluedMap<K, V> map) {
-    super(map);
-    this.map = map;
-  }
+	public UnmodifiableMultivaluedMap(MultivaluedMap<K, V> map) {
+		super(map);
+		this.map = map;
+	}
 
-  @Override
-  public void putSingle(K key, V value) {
-    throw new UnsupportedOperationException();
-  }
+	@Override
+	public void putSingle(K key, V value) {
+		throw new UnsupportedOperationException();
+	}
 
-  @Override
-  public void add(K key, V value) {
-    throw new UnsupportedOperationException();
-  }
+	@Override
+	public void add(K key, V value) {
+		throw new UnsupportedOperationException();
+	}
 
-  @Override
-  public V getFirst(K key) {
-    return map.getFirst(key);
-  }
+	@Override
+	public V getFirst(K key) {
+		return map.getFirst(key);
+	}
 
-  @Override
-  public void addAll(K key, @SuppressWarnings("unchecked") V... newValues) {
-    throw new UnsupportedOperationException();
-  }
+	@Override
+	public void addAll(K key, @SuppressWarnings("unchecked") V... newValues) {
+		throw new UnsupportedOperationException();
+	}
 
-  @Override
-  public void addAll(K key, List<V> valueList) {
-    throw new UnsupportedOperationException();
-  }
+	@Override
+	public void addAll(K key, List<V> valueList) {
+		throw new UnsupportedOperationException();
+	}
 
-  @Override
-  public void addFirst(K key, V value) {
-    throw new UnsupportedOperationException();
-  }
+	@Override
+	public void addFirst(K key, V value) {
+		throw new UnsupportedOperationException();
+	}
 
-  @Override
-  public boolean equalsIgnoreValueOrder(MultivaluedMap<K, V> otherMap) {
-    return map.equalsIgnoreValueOrder(otherMap);
-  }
+	@Override
+	public boolean equalsIgnoreValueOrder(MultivaluedMap<K, V> otherMap) {
+		return map.equalsIgnoreValueOrder(otherMap);
+	}
 
 }

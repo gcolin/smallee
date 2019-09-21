@@ -15,37 +15,12 @@
 
 package net.gcolin.rest.servlet;
 
-import net.gcolin.common.io.ByteArrayOutputStream;
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.common.route.Router;
-import net.gcolin.common.route.RouterResponse;
-import net.gcolin.rest.Environment;
-import net.gcolin.rest.FeatureBuilder;
-import net.gcolin.rest.Logs;
-import net.gcolin.rest.RestConfiguration;
-import net.gcolin.rest.RuntimeDelegateImpl;
-import net.gcolin.rest.param.SingletonParam;
-import net.gcolin.rest.provider.Configurator;
-import net.gcolin.rest.provider.SimpleProviders;
-import net.gcolin.rest.provider.SingletonSupplier;
-import net.gcolin.rest.server.AbstractResource;
-import net.gcolin.rest.server.Builder;
-import net.gcolin.rest.server.Contexts;
-import net.gcolin.rest.server.ResourceArray;
-import net.gcolin.rest.server.ResourceSelector;
-import net.gcolin.rest.server.RestContainer;
-import net.gcolin.rest.server.ServerFeatureBuilder;
-import net.gcolin.rest.server.ServerInvocationContext;
-import net.gcolin.rest.server.ServerProviders;
-import net.gcolin.rest.server.ServerResponse;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.ServiceLoader;
 
 import javax.servlet.Servlet;
@@ -72,6 +47,30 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.RuntimeDelegate;
+
+import net.gcolin.common.io.ByteArrayOutputStream;
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.common.route.Router;
+import net.gcolin.common.route.RouterResponse;
+import net.gcolin.rest.Environment;
+import net.gcolin.rest.FeatureBuilder;
+import net.gcolin.rest.Logs;
+import net.gcolin.rest.RestConfiguration;
+import net.gcolin.rest.RuntimeDelegateImpl;
+import net.gcolin.rest.param.SingletonParam;
+import net.gcolin.rest.provider.Configurator;
+import net.gcolin.rest.provider.SimpleProviders;
+import net.gcolin.rest.provider.SingletonSupplier;
+import net.gcolin.rest.server.AbstractResource;
+import net.gcolin.rest.server.Builder;
+import net.gcolin.rest.server.Contexts;
+import net.gcolin.rest.server.ResourceArray;
+import net.gcolin.rest.server.ResourceSelector;
+import net.gcolin.rest.server.RestContainer;
+import net.gcolin.rest.server.ServerFeatureBuilder;
+import net.gcolin.rest.server.ServerInvocationContext;
+import net.gcolin.rest.server.ServerProviders;
+import net.gcolin.rest.server.ServerResponse;
 
 /**
  * Servlet for dispatching requests to Rest.
@@ -115,7 +114,7 @@ public class RestServlet implements RestContainer, Servlet {
         throw new ServletException("cannot find " + application, ex);
       }
     } else if (apps.isEmpty()) {
-      Logs.LOG.warning("cannot find jax rs application");
+      Logs.LOG.warn("cannot find jax rs application");
     }
   }
 
@@ -203,10 +202,10 @@ public class RestServlet implements RestContainer, Servlet {
       featureBuilder.build();
       providers.flush(env);
 
-      Logs.LOG.log(Level.INFO, "start jax rs application : {0} in {1}ms",
-          new Object[] {apps, System.currentTimeMillis() - start});
+      Logs.LOG.info("start jax rs application : {} in {}ms",
+          apps, System.currentTimeMillis() - start);
       
-      Logs.LOG.log(Level.INFO, router.toString());
+      Logs.LOG.info(router.toString());
 
       dirty = false;
     }
@@ -320,7 +319,7 @@ public class RestServlet implements RestContainer, Servlet {
       }
 
       if (!done) {
-        Logs.LOG.log(Level.SEVERE, "cannot execute " + context.getResource().getResourceMethod(), ex);
+        Logs.LOG.error("cannot execute " + context.getResource().getResourceMethod(), ex);
 
         if (ex instanceof WebApplicationException
             && ((WebApplicationException) ex).getResponse() != null) {

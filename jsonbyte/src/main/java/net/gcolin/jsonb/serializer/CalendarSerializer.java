@@ -15,11 +15,6 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
-import java.io.IOException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
@@ -28,6 +23,9 @@ import java.util.TimeZone;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A {@code Calendar} serializer.
@@ -57,18 +55,6 @@ public class CalendarSerializer extends AbstractDateSerializer
     TimeZone tz = obj.getTimeZone();
     return formatter.format(
         ZonedDateTime.ofInstant(obj.toInstant(), tz == null ? ZoneOffset.UTC : tz.toZoneId()));
-  }
-
-  @Override
-  public void serialize(Calendar obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.write0Quoted(serialize(obj));
-  }
-
-  @Override
-  public void serialize(byte[] key, Calendar obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.write0Quoted(key, serialize(obj));
   }
 
   @Override

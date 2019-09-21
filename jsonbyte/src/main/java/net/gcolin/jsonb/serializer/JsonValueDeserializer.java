@@ -15,10 +15,6 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.BigDecimalJsonNumber;
-import net.gcolin.json.JsonStringImpl;
-import net.gcolin.jsonb.JsonbDeserializerExtended;
-
 import java.lang.reflect.Type;
 
 import javax.json.JsonValue;
@@ -26,6 +22,10 @@ import javax.json.bind.JsonbException;
 import javax.json.bind.serializer.DeserializationContext;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
+
+import net.gcolin.json.BigDecimalJsonNumber;
+import net.gcolin.json.JsonStringImpl;
+import net.gcolin.jsonb.JsonbDeserializerExtended;
 
 /**
  * A {@code JsonValue} deserializer.

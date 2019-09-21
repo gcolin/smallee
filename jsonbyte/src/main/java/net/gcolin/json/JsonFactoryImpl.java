@@ -67,14 +67,11 @@ public class JsonFactoryImpl
 
 	@Override
 	public JsonGenerator createGenerator(OutputStream out) {
-		return Utf8JsonGeneratorImpl.take(out);
+		return createGenerator(out, StandardCharsets.UTF_8);
 	}
 
 	@Override
 	public JsonGenerator createGenerator(OutputStream out, Charset charset) {
-		if (StandardCharsets.UTF_8.equals(charset)) {
-			return Utf8JsonGeneratorImpl.take(out);
-		}
 		return createGenerator(Io.writer(out, charset.name()));
 	}
 

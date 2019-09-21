@@ -15,13 +15,10 @@
 
 package net.gcolin.jsonb.serializer;
 
-import java.io.IOException;
-
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
 import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.build.JContext;
 import net.gcolin.jsonb.build.JNode;
@@ -56,18 +53,6 @@ public class ObjectSerializer implements JsonbSerializerExtended<Object> {
 
   @Override
   public void serialize(String key, Object obj, JsonGenerator generator, SerializationContext ctx) {
-    node(obj).getSerializer().serialize(key, obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    node(obj).getSerializer().serialize(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(byte[] key, Object obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
     node(obj).getSerializer().serialize(key, obj, generator, ctx);
   }
 

@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.gcolin.smallee</groupId>
-		<artifactId>resitio</artifactId>
-		<version>1.0</version>
+		<artifactId>restito</artifactId>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>rest-ext-atinject</artifactId>
 	<dependencies>

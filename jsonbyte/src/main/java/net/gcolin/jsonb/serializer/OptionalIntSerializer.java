@@ -15,15 +15,13 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
-import java.io.IOException;
 import java.util.OptionalInt;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * An {@code OptionalInt} serializer.
@@ -45,22 +43,6 @@ public class OptionalIntSerializer implements JsonbSerializerExtended<OptionalIn
       SerializationContext ctx) {
     if (obj.isPresent()) {
       generator.write(key, obj.getAsInt());
-    }
-  }
-
-  @Override
-  public void serialize(OptionalInt obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    if (obj.isPresent()) {
-      generator.write0(obj.getAsInt());
-    }
-  }
-
-  @Override
-  public void serialize(byte[] key, OptionalInt obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    if (obj.isPresent()) {
-      generator.write0(key, obj.getAsInt());
     }
   }
 

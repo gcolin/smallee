@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintValidator;
@@ -41,6 +39,9 @@ import javax.validation.metadata.ConstraintDescriptor;
 import javax.validation.metadata.ConstructorDescriptor;
 import javax.validation.metadata.ElementDescriptor.ConstraintFinder;
 import javax.validation.metadata.MethodDescriptor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.gcolin.common.collection.Func;
 import net.gcolin.common.jmx.Jmx;
@@ -55,7 +56,7 @@ import net.gcolin.common.reflect.Reflect;
 public class ValidatorImpl implements Validator, ExecutableValidator, Closeable, ValidatorBean {
 
   private static final String WITH_GROUPS = " with groups ";
-  public static final Logger LOG = Logger.getLogger("net.gcolin.validator");
+  public static final Logger LOG = LoggerFactory.getLogger("net.gcolin.validator");
   private static Class<?>[] DEFAULT_GROUP = {Default.class};
   private ValidatorConfigurationImpl configuration;
   private ValidatorFactoryImpl factory;
@@ -75,7 +76,7 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
     this.factory = factory;
     this.configuration = configuration;
     startJmx();
-    LOG.fine("create new Validator");
+    LOG.debug("create new Validator");
   }
 
   /**
@@ -131,8 +132,8 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
     String key = createKey(cl, groups).toString();
     BeanValidator<T> item = (BeanValidator) cache.get(key);
     if (item == null) {
-      if (LOG.isLoggable(Level.FINE)) {
-        LOG.fine("create BeanValidator for " + cl + WITH_GROUPS + Arrays.asList(groups));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("create BeanValidator for " + cl + WITH_GROUPS + Arrays.asList(groups));
       }
       BeanDescriptorImpl bd = (BeanDescriptorImpl) getConstraintsForClass(cl);
       ConstraintFinder finder = bd.findConstraints();
@@ -163,8 +164,8 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
     String key = createKey(beanType, groups).append('@').append(propertyName).toString();
     BeanValidator<T> item = (BeanValidator) cache.get(key);
     if (item == null) {
-      if (LOG.isLoggable(Level.FINE)) {
-        LOG.fine("create BeanValidator for " + beanType + " and property " + propertyName
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("create BeanValidator for " + beanType + " and property " + propertyName
             + WITH_GROUPS + Arrays.asList(groups));
       }
       BeanDescriptorImpl bd = (BeanDescriptorImpl) getConstraintsForClass(beanType);
@@ -248,8 +249,8 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
     String key = createKey(bean.getClass(), groups).append("@p@").append(method).toString();
     MethodValidator<T> item = (MethodValidator) cacheExecutabe.get(key);
     if (item == null) {
-      if (LOG.isLoggable(Level.FINE)) {
-        LOG.fine("create MethodValidator for parameters on " + method + WITH_GROUPS
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("create MethodValidator for parameters on " + method + WITH_GROUPS
             + Arrays.asList(groups));
       }
       BeanDescriptor bd = getConstraintsForClass(bean.getClass());
@@ -277,8 +278,8 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
     String key = createKey(bean.getClass(), groups).append("@r@").append(method).toString();
     MethodValidator<T> item = (MethodValidator) cacheExecutabe.get(key);
     if (item == null) {
-      if (LOG.isLoggable(Level.FINE)) {
-        LOG.fine("create MethodValidator for return value on " + method + WITH_GROUPS
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("create MethodValidator for return value on " + method + WITH_GROUPS
             + Arrays.asList(groups));
       }
       BeanDescriptor bd = getConstraintsForClass(bean.getClass());
@@ -307,8 +308,8 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
     String key = createKey(beanClass, groups).append("@p@").append(constructor).toString();
     MethodValidator<T> item = (MethodValidator) cacheExecutabe.get(key);
     if (item == null) {
-      if (LOG.isLoggable(Level.FINE)) {
-        LOG.fine("create MethodValidator for parameters on " + constructor + WITH_GROUPS
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("create MethodValidator for parameters on " + constructor + WITH_GROUPS
             + Arrays.asList(groups));
       }
       BeanDescriptor bd = getConstraintsForClass(beanClass);
@@ -337,8 +338,8 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
     String key = createKey(beanClass, groups).append("@r@").append(constructor).toString();
     MethodValidator<T> item = (MethodValidator) cacheExecutabe.get(key);
     if (item == null) {
-      if (LOG.isLoggable(Level.FINE)) {
-        LOG.fine("create MethodValidator for return value on " + constructor + WITH_GROUPS
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("create MethodValidator for return value on " + constructor + WITH_GROUPS
             + Arrays.asList(groups));
       }
       BeanDescriptor bd = getConstraintsForClass(beanClass);

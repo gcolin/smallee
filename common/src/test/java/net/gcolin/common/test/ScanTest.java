@@ -15,7 +15,6 @@
 
 package net.gcolin.common.test;
 
-import net.gcolin.common.Logs;
 import net.gcolin.common.io.Io;
 import net.gcolin.common.reflect.Scan;
 
@@ -31,105 +30,107 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class ScanTest {
 
-  @Test
-  public void scanBadUrl() throws MalformedURLException {
-    try {
-      Scan.classes(new URL("asdffg"), x -> {
-      }, ScanTest.class.getClassLoader());
-      Assert.fail();
-    } catch (Exception ex) {
-      // ok
-    }
-  }
+	private static final Logger LOG = Logger.getLogger(ScanTest.class.getName());
 
-  @Test
-  public void scanFsBadClassPath() throws MalformedURLException {
-    Set<Class<?>> set = new HashSet<>();
-    Scan.classes(FileFinder.getTest().toURI().toURL(), x -> set.add(x),
-        AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-          public ClassLoader run() {
-            return new URLClassLoader(new URL[0], null);
-          }
-        }));
-    Assert.assertTrue(set.isEmpty());
-  }
+	@Test
+	public void scanBadUrl() throws MalformedURLException {
+		try {
+			Scan.classes(new URL("asdffg"), x -> {
+			}, ScanTest.class.getClassLoader());
+			Assert.fail();
+		} catch (Exception ex) {
+			// ok
+		}
+	}
 
-  @Test
-  public void scanFs() throws MalformedURLException {
-    Set<Class<?>> set = new HashSet<>();
-    Scan.classes(FileFinder.getTest().toURI().toURL(), x -> set.add(x),
-        ScanTest.class.getClassLoader());
-    Assert.assertFalse(set.isEmpty());
-    Assert.assertTrue(set.contains(ScanTest.class));
-  }
+	@Test
+	public void scanFsBadClassPath() throws MalformedURLException {
+		Set<Class<?>> set = new HashSet<>();
+		Scan.classes(FileFinder.getTest().toURI().toURL(), x -> set.add(x),
+				AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+					public ClassLoader run() {
+						return new URLClassLoader(new URL[0], null);
+					}
+				}));
+		Assert.assertTrue(set.isEmpty());
+	}
 
-  @Test
-  public void scanJarBadClassPath() throws IOException {
-    File dir = FileFinder.getTest();
-    File tmpzip = new File(dir.getParentFile(), "test-classes.jar");
-    Io.zip(tmpzip, dir);
+	@Test
+	public void scanFs() throws MalformedURLException {
+		Set<Class<?>> set = new HashSet<>();
+		Scan.classes(FileFinder.getTest().toURI().toURL(), x -> set.add(x), ScanTest.class.getClassLoader());
+		Assert.assertFalse(set.isEmpty());
+		Assert.assertTrue(set.contains(ScanTest.class));
+	}
 
-    Set<Class<?>> set = new HashSet<>();
-    Scan.classes(tmpzip.toURI().toURL(), x -> set.add(x),
-        AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-          public ClassLoader run() {
-            return new URLClassLoader(new URL[0], null);
-          }
-        }));
-    Assert.assertTrue(set.isEmpty());
+	@Test
+	public void scanJarBadClassPath() throws IOException {
+		File dir = FileFinder.getTest();
+		File tmpzip = new File(dir.getParentFile(), "test-classes.jar");
+		Io.zip(tmpzip, dir);
 
-    if (!tmpzip.delete()) {
-      Logs.LOG.warning("cannot delete " + tmpzip);
-    }
-  }
+		Set<Class<?>> set = new HashSet<>();
+		Scan.classes(tmpzip.toURI().toURL(), x -> set.add(x),
+				AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+					public ClassLoader run() {
+						return new URLClassLoader(new URL[0], null);
+					}
+				}));
+		Assert.assertTrue(set.isEmpty());
 
-  @Test
-  public void scanJar() throws IOException {
-    File dir = FileFinder.getTest();
-    File tmpzip = new File(dir.getParentFile(), "test-classes.jar");
-    Io.zip(tmpzip, dir);
+		if (!tmpzip.delete()) {
+			LOG.warning("cannot delete " + tmpzip);
+		}
+	}
 
-    Set<Class<?>> set = new HashSet<>();
-    Scan.classes(tmpzip.toURI().toURL(), x -> set.add(x), ScanTest.class.getClassLoader());
-    Assert.assertFalse(set.isEmpty());
-    Assert.assertTrue(set.contains(ScanTest.class));
+	@Test
+	public void scanJar() throws IOException {
+		File dir = FileFinder.getTest();
+		File tmpzip = new File(dir.getParentFile(), "test-classes.jar");
+		Io.zip(tmpzip, dir);
 
-    if (!tmpzip.delete()) {
-      Logs.LOG.warning("cannot delete " + tmpzip);
-    }
-  }
+		Set<Class<?>> set = new HashSet<>();
+		Scan.classes(tmpzip.toURI().toURL(), x -> set.add(x), ScanTest.class.getClassLoader());
+		Assert.assertFalse(set.isEmpty());
+		Assert.assertTrue(set.contains(ScanTest.class));
 
-  @Test
-  public void scanResourceInJar() throws IOException {
-    File dir = FileFinder.getTestResources();
-    File tmpzip = new File(dir.getParentFile(), "test-classes.jar");
-    Io.zip(tmpzip, dir);
+		if (!tmpzip.delete()) {
+			LOG.warning("cannot delete " + tmpzip);
+		}
+	}
 
-    Set<String> set = new HashSet<>();
-    Scan.resources(tmpzip.toURI().toURL(), (path, url) -> {
-      if (path.equals("lipsum.txt")) {
-        set.add(path);
-      }
-    });
-    Assert.assertFalse(set.isEmpty());
-    Assert.assertEquals(1, set.size());
-    if (!tmpzip.delete()) {
-      Logs.LOG.warning("cannot delete " + tmpzip);
-    }
-  }
+	@Test
+	public void scanResourceInJar() throws IOException {
+		File dir = FileFinder.getTestResources();
+		File tmpzip = new File(dir.getParentFile(), "test-classes.jar");
+		Io.zip(tmpzip, dir);
 
-  @Test
-  public void scanResourceInFs() throws IOException {
-    Set<String> set = new HashSet<>();
-    Scan.resources(FileFinder.getTestResources().toURI().toURL(), (path, url) -> {
-      if (path.equals("lipsum.txt")) {
-        set.add(path);
-      }
-    });
-    Assert.assertFalse(set.isEmpty());
-    Assert.assertEquals(1, set.size());
-  }
+		Set<String> set = new HashSet<>();
+		Scan.resources(tmpzip.toURI().toURL(), (path, url) -> {
+			if (path.equals("lipsum.txt")) {
+				set.add(path);
+			}
+		});
+		Assert.assertFalse(set.isEmpty());
+		Assert.assertEquals(1, set.size());
+		if (!tmpzip.delete()) {
+			LOG.warning("cannot delete " + tmpzip);
+		}
+	}
+
+	@Test
+	public void scanResourceInFs() throws IOException {
+		Set<String> set = new HashSet<>();
+		Scan.resources(FileFinder.getTestResources().toURI().toURL(), (path, url) -> {
+			if (path.equals("lipsum.txt")) {
+				set.add(path);
+			}
+		});
+		Assert.assertFalse(set.isEmpty());
+		Assert.assertEquals(1, set.size());
+	}
 }

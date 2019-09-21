@@ -15,13 +15,14 @@
 
 package net.gcolin.di.atinject;
 
-import net.gcolin.common.reflect.Reflect;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.gcolin.common.reflect.Reflect;
 
 /**
  * Extract the priority with the annotation {@code javax.annotation.Priority}.
@@ -46,9 +47,9 @@ public class PriorityFinder {
             .loadClass("javax.annotation.Priority");
         priorityValue = priority.getMethod("value");
       } catch (ClassNotFoundException | NoSuchMethodException | SecurityException ex) {
-        Logger log = Logger.getLogger("net.gcolin.di.atinject.PriorityFinder");
-        log.severe("cannot find javax.annotation.Priority");
-        log.log(Level.FINE, ex.getMessage(), ex);
+        Logger log = LoggerFactory.getLogger("net.gcolin.di.atinject.PriorityFinder");
+        log.error("cannot find javax.annotation.Priority");
+        log.debug(ex.getMessage(), ex);
       }
     }
   }
@@ -66,7 +67,7 @@ public class PriorityFinder {
         try {
           return (Integer) priorityValue.invoke(priorityAnnotation);
         } catch (IllegalAccessException | InvocationTargetException ex) {
-          Logger.getLogger("net.gcolin.di.atinject.PriorityFinder").log(Level.FINE, ex.getMessage(), ex);
+          LoggerFactory.getLogger("net.gcolin.di.atinject.PriorityFinder").debug(ex.getMessage(), ex);
           return Integer.MAX_VALUE;
         }
       }

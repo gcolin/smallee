@@ -15,14 +15,14 @@
 
 package net.gcolin.jsonb.build;
 
+import java.lang.reflect.Type;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalQuery;
+
 import net.gcolin.jsonb.JsonbDeserializerExtended;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.serializer.TemporalAccessorDeserializer;
 import net.gcolin.jsonb.serializer.TemporalAccessorSerializer;
-
-import java.lang.reflect.Type;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalQuery;
 
 /**
  * A factory for generating a {@code TemporalAccessor} serializer.

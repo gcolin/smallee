@@ -15,17 +15,16 @@
 
 package net.gcolin.rest.util.lb;
 
-import net.gcolin.common.lang.NumberUtil;
-import net.gcolin.common.lang.Strings;
-import net.gcolin.rest.Logs;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
+
+import net.gcolin.common.lang.NumberUtil;
+import net.gcolin.common.lang.Strings;
+import net.gcolin.rest.Logs;
 
 /**
  * @author Gaël COLIN
@@ -158,7 +157,7 @@ public abstract class AbstractCookieParamConverter<T extends Cookie> {
     } else {
       CookieDeserializer cd = deserializer.get(name);
       if (cd == null) {
-        Logs.LOG.log(Level.WARNING, "unknown parameter {0}", name);
+        Logs.LOG.warn("unknown parameter {}", name);
       } else {
         cd.deserialize(cookie, val);
       }

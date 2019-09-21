@@ -15,10 +15,10 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.json.BigDecimalJsonNumber;
-
 import javax.json.JsonNumber;
 import javax.json.stream.JsonParser;
+
+import net.gcolin.json.BigDecimalJsonNumber;
 
 /**
  * A {@code JsonNumber} deserializer.

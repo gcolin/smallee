@@ -15,7 +15,8 @@
 
 package net.gcolin.common;
 
-import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A small utility class to test speed.
@@ -27,6 +28,7 @@ public class Time {
 
   private static long init;
   private static boolean mute;
+  private static final Logger LOG = LoggerFactory.getLogger(Time.class);
 
   private Time() {}
 
@@ -53,10 +55,10 @@ public class Time {
    * @return the delta time.
    */
   public static long tock(String msg) {
-    if (Logs.LOG.isLoggable(Level.INFO)) {
+    if (LOG.isInfoEnabled()) {
       long time = System.currentTimeMillis() - init;
       if (!mute) {
-        Logs.LOG.info(time + " : " + msg + " in " + time + " ms");
+        LOG.info(time + " : " + msg + " in " + time + " ms");
       }
       return time;
     }
@@ -77,10 +79,10 @@ public class Time {
    * @return the delta time.
    */
   public static long tocknano(String msg) {
-    if (Logs.LOG.isLoggable(Level.INFO)) {
+    if (LOG.isInfoEnabled()) {
       long time = System.nanoTime() - init;
       if (!mute) {
-        Logs.LOG.info(time + " : " + msg + " in " + time + " nano");
+        LOG.info(time + " : " + msg + " in " + time + " nano");
       }
       return time;
     }

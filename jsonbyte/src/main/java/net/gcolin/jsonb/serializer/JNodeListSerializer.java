@@ -15,20 +15,18 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-import net.gcolin.jsonb.build.JContext;
-import net.gcolin.jsonb.build.JNode;
-import net.gcolin.jsonb.build.JNodeBuilder;
-
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
+import net.gcolin.jsonb.build.JContext;
+import net.gcolin.jsonb.build.JNode;
+import net.gcolin.jsonb.build.JNodeBuilder;
 
 /**
  * A list serializer.
@@ -69,20 +67,6 @@ public class JNodeListSerializer implements JsonbSerializerExtended<Object> {
   }
 
   @Override
-  public void serialize(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.writeStartArray0();
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(byte[] key, Object obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.writeStartArray0(key);
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
   public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
       SerializationContext ctx) {
     generator.writeStartArray0(key);
@@ -102,16 +86,6 @@ public class JNodeListSerializer implements JsonbSerializerExtended<Object> {
       component.getSerializer().serialize(list.get(i), generator, ctx);
     }
     generator.writeEnd();
-  }
-
-  @SuppressWarnings("unchecked")
-  private void serialize1(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    List<Object> list = (List<Object>) obj;
-    for (int i = 0; i < list.size(); i++) {
-      component.getSerializer().serialize(list.get(i), generator, ctx);
-    }
-    generator.writeEnd0();
   }
 
   @SuppressWarnings("unchecked")

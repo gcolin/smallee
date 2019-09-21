@@ -15,9 +15,6 @@
 
 package net.gcolin.jsonb.build;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
@@ -28,6 +25,9 @@ import javax.json.bind.adapter.JsonbAdapter;
 import javax.json.bind.serializer.JsonbSerializer;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
  * A factory for adapting a {@code JsonbSerializer} to a {@code JsonbSerializerExtended}.

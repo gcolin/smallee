@@ -1,0 +1,10 @@
+<html>
+  <head><title>Profile of Bob | Twitter</title></head>
+  <body>
+    <div class="content">
+      Here is Bob's profile page
+      123
+    </div>
+    Footer
+  </body>
+</html>

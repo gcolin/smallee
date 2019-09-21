@@ -15,21 +15,19 @@
 
 package net.gcolin.jsonb.serializer;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.json.JsonGeneratorImpl;
-import net.gcolin.json.Utf8JsonGeneratorImpl;
-import net.gcolin.jsonb.JsonbSerializerExtended;
-import net.gcolin.jsonb.build.JContext;
-import net.gcolin.jsonb.build.JNode;
-import net.gcolin.jsonb.build.JNodeBuilder;
-
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.json.JsonGeneratorImpl;
+import net.gcolin.jsonb.JsonbSerializerExtended;
+import net.gcolin.jsonb.build.JContext;
+import net.gcolin.jsonb.build.JNode;
+import net.gcolin.jsonb.build.JNodeBuilder;
 
 /**
  * An array serializer.
@@ -309,20 +307,6 @@ public class JNodeArraySerializer implements JsonbSerializerExtended<Object> {
   }
 
   @Override
-  public void serialize(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    generator.writeStartArray0();
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(byte[] key, Object obj, Utf8JsonGeneratorImpl generator,
-      SerializationContext ctx) throws IOException {
-    generator.writeStartArray0(key);
-    serialize1(obj, generator, ctx);
-  }
-
-  @Override
   public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
       SerializationContext ctx) {
     generator.writeStartArray0(key);
@@ -341,15 +325,6 @@ public class JNodeArraySerializer implements JsonbSerializerExtended<Object> {
       component.getSerializer().serialize(it.next(), generator, ctx);
     }
     generator.writeEnd();
-  }
-  
-  private void serialize1(Object obj, Utf8JsonGeneratorImpl generator, SerializationContext ctx)
-      throws IOException {
-    Iterator<Object> it = iterBuilder.iterator(obj);
-    while (it.hasNext()) {
-      component.getSerializer().serialize(it.next(), generator, ctx);
-    }
-    generator.writeEnd0();
   }
 
   private void serialize2(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {

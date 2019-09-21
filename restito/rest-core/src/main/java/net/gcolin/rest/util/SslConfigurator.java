@@ -33,19 +33,18 @@
 
 package net.gcolin.rest.util;
 
-import net.gcolin.rest.Logs;
-
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.util.Arrays;
-import java.util.logging.Level;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
+
+import net.gcolin.rest.Logs;
 
 /**
  * Utility class, which helps to configure {@link SSLContext} instances.
@@ -681,7 +680,7 @@ public final class SslConfigurator {
               keyStoreInputStream.close();
             }
           } catch (IOException ignored) {
-            Logs.LOG.log(Level.FINER, ignored.getMessage(), ignored);
+            Logs.LOG.trace(ignored.getMessage(), ignored);
           }
         }
       } catch (Exception ex) {
@@ -708,7 +707,7 @@ public final class SslConfigurator {
           String ksName = keyStoreProvider != null ? "provider based"
               : keyStoreBytes != null ? "byte array based" : keyStoreFile;
 
-          Logs.LOG.log(Level.FINE, "Neither key password nor key store password has been set for {0}"
+          Logs.LOG.debug("Neither key password nor key store password has been set for {}"
               + " key store. Ignoring the key store configuration and skipping "
               + "the key manager factory initialization. "
               + "Key manager factory will not be configured in the current SSL "
@@ -745,7 +744,7 @@ public final class SslConfigurator {
               trustStoreInputStream.close();
             }
           } catch (IOException ignored) {
-            Logs.LOG.log(Level.FINER, ignored.getMessage(), ignored);
+            Logs.LOG.trace(ignored.getMessage(), ignored);
           }
         }
       } catch (Exception ex) {

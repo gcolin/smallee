@@ -7,8 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import org.apache.commons.dbutils.DbUtils;
-
+import net.gcolin.common.io.Io;
 import net.gcolin.database.DbAdapter;
 import net.gcolin.database.DbDatasource;
 import net.gcolin.di.atinject.web.RequestScoped;
@@ -30,7 +29,7 @@ public class ConnectionManager {
 	
 	@PreDestroy
 	void end() throws SQLException {
-		DbUtils.close(connection);
+		Io.close(connection);
 	}
 	
 	public DbAdapter getAdapter() {

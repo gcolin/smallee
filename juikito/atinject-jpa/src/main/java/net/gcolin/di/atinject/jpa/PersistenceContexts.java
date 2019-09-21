@@ -17,8 +17,6 @@ package net.gcolin.di.atinject.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,6 +24,9 @@ import javax.persistence.TransactionRequiredException;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.transaction.TransactionalException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains the state of the transaction.
@@ -35,7 +36,7 @@ import javax.transaction.TransactionalException;
  */
 public class PersistenceContexts {
 
-  public static final Logger LOG = Logger.getLogger("net.gcolin.di.cdi.jpa");
+  public static final Logger LOG = LoggerFactory.getLogger("net.gcolin.di.cdi.jpa");
   private static final ThreadLocal<TransactionState> states = new ThreadLocal<>();
 
   static EntityManager getEntityManager(EntityManagerFactory emf) {
@@ -96,7 +97,7 @@ public class PersistenceContexts {
   }
 
   public static void rollback(Exception ex) {
-    LOG.log(Level.FINE, "error in transaction", ex);
+    LOG.debug("error in transaction", ex);
     states.get().rollback();
   }
 
@@ -131,7 +132,7 @@ public class PersistenceContexts {
         if (prec != null) {
           em.put(emf, manager = prec.getEm(emf));
         } else {
-          LOG.fine("start transaction");
+          LOG.debug("start transaction");
           manager = emf.createEntityManager();
           manager.getTransaction().begin();
           em.put(emf, manager);
@@ -142,7 +143,7 @@ public class PersistenceContexts {
 
     public void close() {
       if (em != null && prec == null) {
-        LOG.fine("end transaction");
+        LOG.debug("end transaction");
         try {
           for (EntityManager e : em.values()) {
             e.getTransaction().commit();
@@ -160,7 +161,7 @@ public class PersistenceContexts {
     public void rollback() {
       if (prec == null) {
         if (em != null) {
-          LOG.fine("rollback transaction");
+          LOG.debug("rollback transaction");
           try {
             for (EntityManager e : em.values()) {
               e.getTransaction().rollback();
@@ -207,7 +208,7 @@ public class PersistenceContexts {
       }
       EntityManager manager = em.get(emf);
       if (manager == null) {
-        LOG.fine("start entitymanager without transaction");
+        LOG.debug("start entitymanager without transaction");
         manager = emf.createEntityManager();
         em.put(emf, manager);
       }
@@ -216,7 +217,7 @@ public class PersistenceContexts {
 
     public void close() {
       if (em != null) {
-        LOG.fine("close entitymanager without transaction");
+        LOG.debug("close entitymanager without transaction");
         try {
           for (EntityManager e : em.values()) {
             e.close();
@@ -229,7 +230,7 @@ public class PersistenceContexts {
 
     @Override
     public void rollback() {
-      LOG.fine("cannot rollback entitymanager without transaction");
+      LOG.debug("cannot rollback entitymanager without transaction");
     }
 
     @Override
@@ -262,7 +263,7 @@ public class PersistenceContexts {
       }
       EntityManager manager = em.get(emf);
       if (manager == null) {
-        LOG.fine("start transaction rn");
+        LOG.debug("start transaction rn");
         manager = emf.createEntityManager();
         manager.getTransaction().begin();
         em.put(emf, manager);
@@ -272,7 +273,7 @@ public class PersistenceContexts {
 
     public void close() {
       if (em != null) {
-        LOG.fine("end transaction rn");
+        LOG.debug("end transaction rn");
         try {
           for (EntityManager e : em.values()) {
             e.getTransaction().commit();
@@ -301,7 +302,7 @@ public class PersistenceContexts {
         } finally {
           em = null;
         }
-        LOG.fine("rollback transaction rn");
+        LOG.debug("rollback transaction rn");
       }
     }
 
