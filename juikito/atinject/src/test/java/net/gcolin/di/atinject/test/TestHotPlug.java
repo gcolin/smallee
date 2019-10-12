@@ -51,7 +51,7 @@ public class TestHotPlug {
 
     B b = new B();
     assertNull(b.a);
-    env.put(b);
+    env.put(b, B.class);
     assertSame(b, env.get(B.class));
     assertSame(a, b.a);
   }

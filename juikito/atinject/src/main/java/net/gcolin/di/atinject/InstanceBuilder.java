@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.logging.Level;
 
 import net.gcolin.common.reflect.Reflect;
 import net.gcolin.di.core.InjectException;
@@ -58,8 +59,7 @@ public class InstanceBuilder implements InstanceCreator {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.gcolin.di.atinject.InstanceCreator#createDestroyHandler(java.lang.
+	 * @see net.gcolin.di.atinject.InstanceCreator#createDestroyHandler(java.lang.
 	 * Object)
 	 */
 	@Override
@@ -70,8 +70,7 @@ public class InstanceBuilder implements InstanceCreator {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.gcolin.di.atinject.InstanceCreator#destroyInstance(java.lang.Object)
+	 * @see net.gcolin.di.atinject.InstanceCreator#destroyInstance(java.lang.Object)
 	 */
 	@Override
 	public void destroyInstance(Object o) {
@@ -200,7 +199,7 @@ public class InstanceBuilder implements InstanceCreator {
 
 	protected InstanceBuilderMetaData buildMetaData() {
 		Class<?> clazz = provider.getResolvedType();
-		env.getLog().debug("create metadata of {}", clazz);
+		env.getLog().log(Level.FINE, "create metadata of {0}", clazz);
 		InstanceBuilderMetaData m = new InstanceBuilderMetaData();
 		InstanceFactoryBuilder[] ifb = env.getInstanceFactoryBuilders();
 		for (int i = 0; i < ifb.length && m.getInstanceFactory() == null; i++) {

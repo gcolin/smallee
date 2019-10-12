@@ -17,6 +17,8 @@ package net.gcolin.di.atinject.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +26,6 @@ import javax.persistence.TransactionRequiredException;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.transaction.TransactionalException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Contains the state of the transaction.
@@ -36,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PersistenceContexts {
 
-  public static final Logger LOG = LoggerFactory.getLogger("net.gcolin.di.cdi.jpa");
+  public static final Logger LOG = Logger.getLogger("net.gcolin.di.cdi.jpa");
   private static final ThreadLocal<TransactionState> states = new ThreadLocal<>();
 
   static EntityManager getEntityManager(EntityManagerFactory emf) {
@@ -97,7 +96,7 @@ public class PersistenceContexts {
   }
 
   public static void rollback(Exception ex) {
-    LOG.debug("error in transaction", ex);
+    LOG.log(Level.FINE, "error in transaction", ex);
     states.get().rollback();
   }
 
@@ -132,7 +131,7 @@ public class PersistenceContexts {
         if (prec != null) {
           em.put(emf, manager = prec.getEm(emf));
         } else {
-          LOG.debug("start transaction");
+          LOG.log(Level.FINE, "start transaction");
           manager = emf.createEntityManager();
           manager.getTransaction().begin();
           em.put(emf, manager);
@@ -143,7 +142,7 @@ public class PersistenceContexts {
 
     public void close() {
       if (em != null && prec == null) {
-        LOG.debug("end transaction");
+        LOG.log(Level.FINE, "end transaction");
         try {
           for (EntityManager e : em.values()) {
             e.getTransaction().commit();
@@ -161,7 +160,7 @@ public class PersistenceContexts {
     public void rollback() {
       if (prec == null) {
         if (em != null) {
-          LOG.debug("rollback transaction");
+          LOG.log(Level.FINE, "rollback transaction");
           try {
             for (EntityManager e : em.values()) {
               e.getTransaction().rollback();
@@ -208,7 +207,7 @@ public class PersistenceContexts {
       }
       EntityManager manager = em.get(emf);
       if (manager == null) {
-        LOG.debug("start entitymanager without transaction");
+        LOG.log(Level.FINE, "start entitymanager without transaction");
         manager = emf.createEntityManager();
         em.put(emf, manager);
       }
@@ -217,7 +216,7 @@ public class PersistenceContexts {
 
     public void close() {
       if (em != null) {
-        LOG.debug("close entitymanager without transaction");
+        LOG.log(Level.FINE, "close entitymanager without transaction");
         try {
           for (EntityManager e : em.values()) {
             e.close();
@@ -230,7 +229,7 @@ public class PersistenceContexts {
 
     @Override
     public void rollback() {
-      LOG.debug("cannot rollback entitymanager without transaction");
+      LOG.log(Level.FINE, "cannot rollback entitymanager without transaction");
     }
 
     @Override
@@ -263,7 +262,7 @@ public class PersistenceContexts {
       }
       EntityManager manager = em.get(emf);
       if (manager == null) {
-        LOG.debug("start transaction rn");
+        LOG.log(Level.FINE, "start transaction rn");
         manager = emf.createEntityManager();
         manager.getTransaction().begin();
         em.put(emf, manager);
@@ -273,7 +272,7 @@ public class PersistenceContexts {
 
     public void close() {
       if (em != null) {
-        LOG.debug("end transaction rn");
+        LOG.log(Level.FINE, "end transaction rn");
         try {
           for (EntityManager e : em.values()) {
             e.getTransaction().commit();
@@ -302,7 +301,7 @@ public class PersistenceContexts {
         } finally {
           em = null;
         }
-        LOG.debug("rollback transaction rn");
+        LOG.log(Level.FINE, "rollback transaction rn");
       }
     }
 

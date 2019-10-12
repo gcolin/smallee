@@ -36,14 +36,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.gcolin.common.collection.Collections2;
 import net.gcolin.common.lang.Strings;
@@ -66,7 +64,7 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 	protected static final String CANNOT_INJECT_2 = "cannot inject {0} because there are two possibilities : {1}, {2}";
 	protected static final String CANNOT_INJECT_NO = "cannot inject {0} because there are no possibility";
 	public static final Key NULL_PROVIDER = new Key();
-	private Logger log = LoggerFactory.getLogger("net.gcolin.di");
+	private Logger log = Logger.getLogger("net.gcolin.di");
 
 	private Set<Class<? extends Annotation>> injectAnnotations = new HashSet<>();
 	private Map<Key, AbstractProvider<Object>> providersref = new ConcurrentHashMap<>();
@@ -91,8 +89,8 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 		injectAnnotations.add(net.gcolin.di.atinject.Inject.class);
 		NULL_PROVIDER.setType("null");
 		this.cl = cl;
-		addProviderBuidler(new SingletonProviderBuilder());
-		put(this);
+		addProviderBuilder(new SingletonProviderBuilder());
+		put(this, Environment.class);
 	}
 	
 	public Logger getLog() {
@@ -143,7 +141,7 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 		return cl;
 	}
 
-	public void addProviderBuidler(ProviderBuilder builder) {
+	public void addProviderBuilder(ProviderBuilder builder) {
 		scopes.put(builder.getScope(), builder);
 	}
 	
@@ -449,6 +447,9 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 	}
 
 	protected AbstractProvider<Object> createProvider(Key key, Class<?> clazz, Type genericType) {
+		if(clazz == Environment.class) {
+			System.out.println("");
+		}
 		Class<?> resolved = resolve(key, clazz, genericType);
 
 		if (resolved == null) {
@@ -478,17 +479,21 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 	}
 
 	@SuppressWarnings("unchecked")
-	public void put(Object o) {
-		Class<?> c = o.getClass();
-		Key key = createKey(o.getClass(), o.getClass(), findQualifiers(c.getAnnotations()));
-		AbstractProvider<Object> provider = new SingletonProvider<Object>(o, (Class<Object>) o.getClass());
+	public <E, T extends E> void put(E o, Class<T> c) {
+		Key key = createKey(c, c, findQualifiers(c.getAnnotations()));
+		AbstractProvider<Object> provider = new SingletonProvider<Object>(o, (Class<Object>) c);
 		InstanceCreator builder = new InstanceBuilder(this, true, provider);
-		addProvider(key, o.getClass(), provider);
+		addProvider(key, c, provider);
 		try {
 			builder.bind(o, builder.getMetaData());
 		} catch (Exception e) {
 			throw new InjectException(e);
 		}
+	}
+	
+	@Override
+	public void bind(Object o) {
+		put(o, o.getClass());
 	}
 
 	public Environment addClasses(Class<?>... clazz) {
@@ -680,8 +685,8 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 		}
 	}
 
-	public void bind(Object o) {
-		put(o);
+	public <E, T extends E> void bind(E o, Class<T> t) {
+		put(o, t);
 	}
 
 	public void unbind(Object o) {

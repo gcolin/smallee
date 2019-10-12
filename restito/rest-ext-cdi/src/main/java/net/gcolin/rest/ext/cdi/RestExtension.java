@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
@@ -36,9 +38,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.gcolin.common.reflect.Reflect;
 import net.gcolin.rest.server.Contexts;
 import net.gcolin.rest.servlet.RestServlet;
@@ -51,63 +50,61 @@ import net.gcolin.rest.servlet.RestServlet;
  */
 public class RestExtension implements Extension {
 
-  private final Logger log = LoggerFactory.getLogger(RestExtension.class);
-  private List<AnnotatedType<?>> apps = new ArrayList<AnnotatedType<?>>();
-  private Map<String, RestServlet> servlets = new HashMap<>();
+	private List<AnnotatedType<?>> apps = new ArrayList<AnnotatedType<?>>();
+	private Map<String, RestServlet> servlets = new HashMap<>();
 
-  void processAnnotatedType(@Observes ProcessAnnotatedType<?> event) {
-    ApplicationPath app = event.getAnnotatedType().getAnnotation(ApplicationPath.class);
-    if (app != null
-        && Application.class.isAssignableFrom(event.getAnnotatedType().getJavaClass())) {
-      apps.add(event.getAnnotatedType());
-      event.veto();
-    }
-    if (event.getAnnotatedType().isAnnotationPresent(Provider.class)) {
-      event.veto();
-    }
-  }
+	void processAnnotatedType(@Observes ProcessAnnotatedType<?> event) {
+		ApplicationPath app = event.getAnnotatedType().getAnnotation(ApplicationPath.class);
+		if (app != null && Application.class.isAssignableFrom(event.getAnnotatedType().getJavaClass())) {
+			apps.add(event.getAnnotatedType());
+			event.veto();
+		}
+		if (event.getAnnotatedType().isAnnotationPresent(Provider.class)) {
+			event.veto();
+		}
+	}
 
-  @Produces
-  public ContainerRequestContext getContainerRequestContext() {
-    return Contexts.instance().get();
-  }
+	@Produces
+	public ContainerRequestContext getContainerRequestContext() {
+		return Contexts.instance().get();
+	}
 
-  public void startup(ServletContext sc) {
-    CDI<Object> cdi = CDI.current();
-    BeanManager bm = cdi.getBeanManager();
-    for (AnnotatedType<?> appType : apps) {
-      try {
-        String path = appType.getJavaClass().getAnnotation(ApplicationPath.class).value();
-        if (!path.startsWith("/")) {
-          path = "/" + path;
-        }
-        RestServlet servlet = servlets.get(path);
-        Application app = (Application) Reflect.newInstance(appType.getJavaClass());
-        if (servlet == null) {
-          servlet = new RestServlet();
-          servlet.env(new CdiEnvironment(bm));
-          servlet.app(app, false);
-          Dynamic restServlet = sc.addServlet("rest@" + path, servlet);
-          restServlet.addMapping(path + "/*");
-          restServlet.addMapping(path);
-          restServlet.setMultipartConfig(
-              new MultipartConfigElement(RestServlet.class.getAnnotation(MultipartConfig.class)));
-          restServlet.setLoadOnStartup(1);
-          servlets.put(path, servlet);
-        } else {
-          servlet.app(app, false);
-        }
-        log.info("start rest app {} in the context {}/*",
-            new Object[] {appType.getJavaClass().getName(), path});
-      } catch (Exception ex) {
-        log.error("cannot add rest application " + appType.getJavaClass().getName(),
-            ex);
-      }
+	public void startup(ServletContext sc) {
+		CDI<Object> cdi = CDI.current();
+		BeanManager bm = cdi.getBeanManager();
+		Logger log = Logger.getLogger(RestExtension.class.getName());
+		for (AnnotatedType<?> appType : apps) {
+			try {
+				String path = appType.getJavaClass().getAnnotation(ApplicationPath.class).value();
+				if (!path.startsWith("/")) {
+					path = "/" + path;
+				}
+				RestServlet servlet = servlets.get(path);
+				Application app = (Application) Reflect.newInstance(appType.getJavaClass());
+				if (servlet == null) {
+					servlet = new RestServlet();
+					servlet.env(new CdiEnvironment(bm));
+					servlet.app(app, false);
+					Dynamic restServlet = sc.addServlet("rest@" + path, servlet);
+					restServlet.addMapping(path + "/*");
+					restServlet.addMapping(path);
+					restServlet.setMultipartConfig(
+							new MultipartConfigElement(RestServlet.class.getAnnotation(MultipartConfig.class)));
+					restServlet.setLoadOnStartup(1);
+					servlets.put(path, servlet);
+				} else {
+					servlet.app(app, false);
+				}
+				log.log(Level.INFO, "start rest app {0} in the context {0}/*",
+						new Object[] { appType.getJavaClass().getName(), path });
+			} catch (Exception ex) {
+				log.log(Level.SEVERE, "cannot add rest application " + appType.getJavaClass().getName(), ex);
+			}
 
-    }
-    
-    for (RestServlet servlet : servlets.values()) {
-      servlet.initialize();
-    }
-  }
+		}
+
+		for (RestServlet servlet : servlets.values()) {
+			servlet.initialize();
+		}
+	}
 }

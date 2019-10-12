@@ -135,7 +135,7 @@ public class WebExtension implements Extension {
                   return null;
                 }
               }, cl, env));
-      env.addProviderBuidler(new RequestProviderBuilder(cl));
+      env.addProviderBuilder(new RequestProviderBuilder(cl));
     }
 
     for (Class<? extends Annotation> cl : sessionAnnotations) {
@@ -149,7 +149,7 @@ public class WebExtension implements Extension {
               return null;
             }
           }, cl, env));
-      env.addProviderBuidler(new SessionProviderBuilder(cl));
+      env.addProviderBuilder(new SessionProviderBuilder(cl));
     }
 
     for (Class<? extends Annotation> cl : applicationAnnotations) {
@@ -157,7 +157,7 @@ public class WebExtension implements Extension {
           (AbstractProvider) new SupplierProvider<ServletContext>(ServletContext.class, () -> {
             return contextProvider.get();
           }, cl, env));
-      env.addProviderBuidler(new ApplicationProviderBuilder(cl));
+      env.addProviderBuilder(new ApplicationProviderBuilder(cl));
     }
   }
 }

@@ -27,7 +27,7 @@ public class ConfigExtension implements Extension {
 
   @Override
   public void doStart(Environment environment) {
-    environment.addInjectionPointBuilder(new ConfigInjectionPointBuilder(environment.getClassLoader()));
+    environment.addInjectionPointBuilder(new ConfigInjectionPointBuilder(environment));
   }
   
 }

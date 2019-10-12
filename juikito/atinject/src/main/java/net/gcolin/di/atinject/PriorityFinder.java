@@ -18,9 +18,8 @@ package net.gcolin.di.atinject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.gcolin.common.reflect.Reflect;
 
@@ -37,42 +36,42 @@ import net.gcolin.common.reflect.Reflect;
 @SuppressWarnings("unchecked")
 public class PriorityFinder {
 
-  private static Class<? extends Annotation> priority;
-  private static Method priorityValue;
+	private static Class<? extends Annotation> priority;
+	private static Method priorityValue;
 
-  static {
-    if (Reflect.exists("javax.annotation.Priority", PriorityFinder.class.getClassLoader())) {
-      try {
-        priority = (Class<? extends Annotation>) PriorityFinder.class.getClassLoader()
-            .loadClass("javax.annotation.Priority");
-        priorityValue = priority.getMethod("value");
-      } catch (ClassNotFoundException | NoSuchMethodException | SecurityException ex) {
-        Logger log = LoggerFactory.getLogger("net.gcolin.di.atinject.PriorityFinder");
-        log.error("cannot find javax.annotation.Priority");
-        log.debug(ex.getMessage(), ex);
-      }
-    }
-  }
+	static {
+		if (Reflect.exists("javax.annotation.Priority", PriorityFinder.class.getClassLoader())) {
+			try {
+				priority = (Class<? extends Annotation>) PriorityFinder.class.getClassLoader()
+						.loadClass("javax.annotation.Priority");
+				priorityValue = priority.getMethod("value");
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException ex) {
+				Logger log = Logger.getLogger("net.gcolin.di.atinject.PriorityFinder");
+				log.severe("cannot find javax.annotation.Priority");
+				log.log(Level.FINE, ex.getMessage(), ex);
+			}
+		}
+	}
 
-  /**
-   * The priority of a class.
-   * 
-   * @param clazz a class
-   * @return a priority
-   */
-  public static int getPriority(Class<?> clazz) {
-    if (priority != null) {
-      Object priorityAnnotation = clazz.getAnnotation(priority);
-      if (priorityAnnotation != null) {
-        try {
-          return (Integer) priorityValue.invoke(priorityAnnotation);
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-          LoggerFactory.getLogger("net.gcolin.di.atinject.PriorityFinder").debug(ex.getMessage(), ex);
-          return Integer.MAX_VALUE;
-        }
-      }
-    }
-    return Integer.MAX_VALUE;
-  }
+	/**
+	 * The priority of a class.
+	 * 
+	 * @param clazz a class
+	 * @return a priority
+	 */
+	public static int getPriority(Class<?> clazz) {
+		if (priority != null) {
+			Object priorityAnnotation = clazz.getAnnotation(priority);
+			if (priorityAnnotation != null) {
+				try {
+					return (Integer) priorityValue.invoke(priorityAnnotation);
+				} catch (IllegalAccessException | InvocationTargetException ex) {
+					Logger.getLogger("net.gcolin.di.atinject.PriorityFinder").log(Level.FINE, ex.getMessage(), ex);
+					return Integer.MAX_VALUE;
+				}
+			}
+		}
+		return Integer.MAX_VALUE;
+	}
 
 }

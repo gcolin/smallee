@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import javax.inject.Singleton;
 
@@ -88,8 +89,8 @@ public class Events implements Event<Object>, Resolver {
 				asyncItem.queue = new AsyncQueue(async.value(), executor, new ArrayQueue<>(), async.size());
 				jmx.add(asyncItem.queue);
 				asyncQueue.put(async.value(), asyncItem.queue);
-			} else if (asyncItem.queue.size() != async.size() && environment.getLog().isWarnEnabled()) {
-				environment.getLog().warn("the queue " + async.value() + " is used many times with different sizes ("
+			} else if (asyncItem.queue.size() != async.size() && environment.getLog().isLoggable(Level.WARNING)) {
+				environment.getLog().log(Level.WARNING, "the queue " + async.value() + " is used many times with different sizes ("
 						+ asyncItem.queue.size() + " and " + async.size() + ")");
 			}
 		} else {

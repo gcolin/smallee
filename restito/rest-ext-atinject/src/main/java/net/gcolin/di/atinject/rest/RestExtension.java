@@ -16,6 +16,7 @@ package net.gcolin.di.atinject.rest;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletContext;
@@ -78,7 +79,7 @@ public class RestExtension implements Extension {
         } catch (ServletException ex) {
           throw new InjectException(ex);
         }
-        environment.getLog().info("start rest app {} in the context {}/*", clazz.getName(), path);
+        environment.getLog().log(Level.INFO, "start rest app {0} in the context {0}/*", new Object[] {clazz.getName(), path});
       }
     }
   }

@@ -10,9 +10,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
 
 import net.gcolin.common.io.Io;
 import net.gcolin.common.lang.NumberUtil;
@@ -22,31 +20,30 @@ import net.gcolin.di.atinject.InjectionPointBuilder;
 
 public class ConfigInjectionPointBuilder implements InjectionPointBuilder {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private Map<String, String> properties = new HashMap<>();
 
-	public ConfigInjectionPointBuilder(ClassLoader classLoader) {
-		InputStream in = classLoader.getResourceAsStream("config.properties");
+	public ConfigInjectionPointBuilder(Environment env) {
+		InputStream in = env.getClassLoader().getResourceAsStream("config.properties");
 		if (in != null) {
-			read(in);
+			read(in, env);
 		}
 
 		String configPath = System.getProperty("di.config");
 		if (configPath != null) {
 			File file = new File(configPath);
 			if (!file.exists()) {
-				logger.warn("Cannot find configuration file: {}", configPath);
+				env.getLog().log(Level.WARNING, "Cannot find configuration file: {0}", configPath);
 			} else {
 				try {
-					read(new FileInputStream(file));
+					read(new FileInputStream(file), env);
 				} catch (FileNotFoundException e) {
-					logger.error("cannot load file " + configPath, e);
+					env.getLog().log(Level.SEVERE, "cannot load file " + configPath, e);
 				}
 			}
 		}
 	}
 
-	private void read(InputStream in) {
+	private void read(InputStream in, Environment env) {
 		try {
 			Properties props = new Properties();
 			props.load(in);
@@ -54,7 +51,7 @@ public class ConfigInjectionPointBuilder implements InjectionPointBuilder {
 				properties.put(name, props.getProperty(name));
 			}
 		} catch (IOException e) {
-			logger.error("cannot load configuration file", e);
+			env.getLog().log(Level.SEVERE, "cannot load configuration file", e);
 		} finally {
 			Io.close(in);
 		}
@@ -81,7 +78,7 @@ public class ConfigInjectionPointBuilder implements InjectionPointBuilder {
 			} else if (field.getType() == long.class || field.getType() == Long.class) {
 				return new ConfigInjectionPoint(field, NumberUtil.parseLong(v, 0));
 			} else {
-				logger.warn("cannot cast config properties to type {} in {}", field.getType(), field);
+				env.getLog().log(Level.WARNING, "cannot cast config properties to type {0} in {0}", new Object[] {field.getType(), field});
 			}
 		}
 		return null;

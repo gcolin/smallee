@@ -15,8 +15,8 @@
 
 package net.gcolin.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A small utility class to test speed.
@@ -26,66 +26,67 @@ import org.slf4j.LoggerFactory;
  */
 public class Time {
 
-  private static long init;
-  private static boolean mute;
-  private static final Logger LOG = LoggerFactory.getLogger(Time.class);
+	private static long init;
+	private static boolean mute;
+	private static final Logger LOG = Logger.getLogger(Time.class.getName());
 
-  private Time() {}
+	private Time() {
+	}
 
-  /**
-   * Start the time in milliseconds.
-   */
-  public static void tick() {
-    init = System.currentTimeMillis();
-  }
+	/**
+	 * Start the time in milliseconds.
+	 */
+	public static void tick() {
+		init = System.currentTimeMillis();
+	}
 
-  /**
-   * Mute the log.
-   * 
-   * @param mute : true for hidding log messages
-   */
-  public static void mute(boolean mute) {
-    Time.mute = mute;
-  }
+	/**
+	 * Mute the log.
+	 * 
+	 * @param mute : true for hidding log messages
+	 */
+	public static void mute(boolean mute) {
+		Time.mute = mute;
+	}
 
-  /**
-   * Stop the timer in milliseconds.
-   * 
-   * @param msg : message to display
-   * @return the delta time.
-   */
-  public static long tock(String msg) {
-    if (LOG.isInfoEnabled()) {
-      long time = System.currentTimeMillis() - init;
-      if (!mute) {
-        LOG.info(time + " : " + msg + " in " + time + " ms");
-      }
-      return time;
-    }
-    return 0L;
-  }
+	/**
+	 * Stop the timer in milliseconds.
+	 * 
+	 * @param msg : message to display
+	 * @return the delta time.
+	 */
+	public static long tock(String msg) {
+		if (LOG.isLoggable(Level.INFO)) {
+			long time = System.currentTimeMillis() - init;
+			if (!mute) {
+				LOG.info(time + " : " + msg + " in " + time + " ms");
+			}
+			return time;
+		}
+		return 0L;
+	}
 
-  /**
-   * Start the time in nanoseconds.
-   */
-  public static void ticknano() {
-    init = System.nanoTime();
-  }
+	/**
+	 * Start the time in nanoseconds.
+	 */
+	public static void ticknano() {
+		init = System.nanoTime();
+	}
 
-  /**
-   * Stop the timer in nanoseconds.
-   * 
-   * @param msg : message to display
-   * @return the delta time.
-   */
-  public static long tocknano(String msg) {
-    if (LOG.isInfoEnabled()) {
-      long time = System.nanoTime() - init;
-      if (!mute) {
-        LOG.info(time + " : " + msg + " in " + time + " nano");
-      }
-      return time;
-    }
-    return 0L;
-  }
+	/**
+	 * Stop the timer in nanoseconds.
+	 * 
+	 * @param msg : message to display
+	 * @return the delta time.
+	 */
+	public static long tocknano(String msg) {
+		if (LOG.isLoggable(Level.INFO)) {
+			long time = System.nanoTime() - init;
+			if (!mute) {
+				LOG.info(time + " : " + msg + " in " + time + " nano");
+			}
+			return time;
+		}
+		return 0L;
+	}
 }

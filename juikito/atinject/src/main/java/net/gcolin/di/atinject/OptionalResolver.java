@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import net.gcolin.common.reflect.Reflect;
 import net.gcolin.di.core.NotFoundException;
@@ -74,7 +75,7 @@ public class OptionalResolver implements Resolver {
 								.getProvider(getPrimitiveType(), getPrimitiveType(), qualifiers);
 						return new SingletonProvider<Object>(of(delegate.get()), genericType);
 					} catch (NotFoundException ex2) {
-						environment.getLog().debug("cannot find", ex2);
+						environment.getLog().log(Level.FINE, "cannot find", ex2);
 					}
 				}
 			}

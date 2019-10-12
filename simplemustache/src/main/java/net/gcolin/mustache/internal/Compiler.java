@@ -141,7 +141,7 @@ public class Compiler {
 							// end section
 							String section = str.substring(1).trim();
 							if (sectionNames.isEmpty() || !section.equals(sectionNames.peek().getName())) {
-								throw new MustacheException("Failed to close '" + section + "' tag at line " + line);
+								throw new MustacheException("Failed to close '" + section + "' tag at line " + line + "\n" + template);
 							}
 							Section sec = sectionNames.poll();
 

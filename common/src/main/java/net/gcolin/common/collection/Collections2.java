@@ -29,9 +29,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Add some utility method for manipulating collections
@@ -214,9 +213,9 @@ public class Collections2 {
 			try {
 				collection.add(it.next());
 			} catch (ServiceConfigurationError ex) {
-				Logger logger = LoggerFactory.getLogger(Collections2.class);
+				Logger logger = Logger.getLogger(Collections2.class.getName());
 				logger.info(ex.getMessage());
-				logger.debug(ex.getMessage(), ex);
+				logger.log(Level.SEVERE, ex.getMessage(), ex);
 			}
 		}
 	}

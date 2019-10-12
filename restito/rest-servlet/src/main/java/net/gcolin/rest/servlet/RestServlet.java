@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -114,7 +115,7 @@ public class RestServlet implements RestContainer, Servlet {
         throw new ServletException("cannot find " + application, ex);
       }
     } else if (apps.isEmpty()) {
-      Logs.LOG.warn("cannot find jax rs application");
+      Logs.LOG.warning("cannot find jax rs application");
     }
   }
 
@@ -202,8 +203,8 @@ public class RestServlet implements RestContainer, Servlet {
       featureBuilder.build();
       providers.flush(env);
 
-      Logs.LOG.info("start jax rs application : {} in {}ms",
-          apps, System.currentTimeMillis() - start);
+      Logs.LOG.log(Level.INFO, "start jax rs application : {0} in {0}ms",
+          new Object[] {apps, System.currentTimeMillis() - start});
       
       Logs.LOG.info(router.toString());
 
@@ -319,7 +320,7 @@ public class RestServlet implements RestContainer, Servlet {
       }
 
       if (!done) {
-        Logs.LOG.error("cannot execute " + context.getResource().getResourceMethod(), ex);
+        Logs.LOG.log(Level.SEVERE, "cannot execute " + context.getResource().getResourceMethod(), ex);
 
         if (ex instanceof WebApplicationException
             && ((WebApplicationException) ex).getResponse() != null) {

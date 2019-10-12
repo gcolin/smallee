@@ -15,8 +15,7 @@
 
 package net.gcolin.rest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 /**
  * The logger of the module.
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Logs {
 
-  public static final Logger LOG = LoggerFactory.getLogger("net.gcolin.rest");
+  public static final Logger LOG = Logger.getLogger("net.gcolin.rest");
 
   private Logs() {}
 

@@ -22,20 +22,20 @@ import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * The {@code Strings} class provides various helper method for manipulating String.
+ * The {@code Strings} class provides various helper method for manipulating
+ * String.
  * 
  * @author Gaël COLIN
  * @since 1.0
  */
 public final class Strings {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Strings.class);
+	private static final Logger LOG = Logger.getLogger(Strings.class.getName());
 	public static final String FMT_LOCALE = "javax.servlet.jsp.jstl.fmt.locale.session";
 	private static final String MISSING_SEP = "!!!";
 	private static final int BLANK_SIZE = 33;
@@ -89,9 +89,9 @@ public final class Strings {
 	/**
 	 * Remove quotes and trim.
 	 * 
-	 * @param in A string
+	 * @param in    A string
 	 * @param start The string offset
-	 * @param end The end offset
+	 * @param end   The end offset
 	 * @return A string without quotes and space at the end and at the beginning
 	 */
 	public static String unquoteAndTrim(String in, int start, int end) {
@@ -154,7 +154,8 @@ public final class Strings {
 	}
 
 	/**
-	 * Check if the char is a blank character (space, new line, chariot, tabulation).
+	 * Check if the char is a blank character (space, new line, chariot,
+	 * tabulation).
 	 * 
 	 * @param ch A char
 	 * @return true if the char is blank
@@ -164,7 +165,8 @@ public final class Strings {
 	}
 
 	/**
-	 * Check if the string is only composed of blank character (space, new line, chariot, tabulation).
+	 * Check if the string is only composed of blank character (space, new line,
+	 * chariot, tabulation).
 	 * 
 	 * @param str A string
 	 * @return true if the string is blank
@@ -195,7 +197,7 @@ public final class Strings {
 	 * Fast XML encoding.
 	 * 
 	 * @param input A string to encode
-	 * @param attr Is the string in an attribute
+	 * @param attr  Is the string in an attribute
 	 * @return An XML encoded string
 	 */
 	public static String encodeXml(String input, boolean attr) {
@@ -296,7 +298,7 @@ public final class Strings {
 	 * 
 	 * @param input A string to decode
 	 * @param start Start offset
-	 * @param end End offset
+	 * @param end   End offset
 	 * @return An URL encoded string
 	 */
 	public static String decodeUrl(String input, int start, int end) {
@@ -399,7 +401,7 @@ public final class Strings {
 	/**
 	 * Get a message from a resource bundle without throwing exception.
 	 * 
-	 * @param rb The resource bundle
+	 * @param rb  The resource bundle
 	 * @param key The key
 	 * @return The value or !!!key!!!
 	 */
@@ -410,8 +412,8 @@ public final class Strings {
 		try {
 			return rb.getString(key);
 		} catch (MissingResourceException ex) {
-			if(LOG.isTraceEnabled()) {
-				LOG.trace(key + " is missing in " + rb, ex);
+			if (LOG.isLoggable(Level.FINER)) {
+				LOG.log(Level.FINER, key + " is missing in " + rb, ex);
 			}
 			return MISSING_SEP + key + MISSING_SEP;
 		}
@@ -444,9 +446,9 @@ public final class Strings {
 	/**
 	 * Substring and trim.
 	 * 
-	 * @param str A string
+	 * @param str   A string
 	 * @param start Start offset
-	 * @param end End offset
+	 * @param end   End offset
 	 * @return string reduced and trimmed
 	 */
 	public static String substringTrimed(String str, int start, int end) {
@@ -481,19 +483,24 @@ public final class Strings {
 	 * </p>
 	 *
 	 * <p>
-	 * This is the number of changes needed to change one String into another, where each change is a
-	 * single character modification (deletion, insertion or substitution).
+	 * This is the number of changes needed to change one String into another, where
+	 * each change is a single character modification (deletion, insertion or
+	 * substitution).
 	 * </p>
 	 *
 	 * <p>
 	 * The previous implementation of the Levenshtein distance algorithm was from
-	 * <a href="http://www.merriampark.com/ld.htm">http://www.merriampark.com /ld.htm</a>
+	 * <a href="http://www.merriampark.com/ld.htm">http://www.merriampark.com
+	 * /ld.htm</a>
 	 * </p>
 	 *
-	 * <p>Chas Emerick has written an implementation in Java, which avoids an OutOfMemoryError 
-	 * which can occur when my Java implementation is used with very large strings.<br>
+	 * <p>
+	 * Chas Emerick has written an implementation in Java, which avoids an
+	 * OutOfMemoryError which can occur when my Java implementation is used with
+	 * very large strings.<br>
 	 * This implementation of the Levenshtein distance algorithm is from
-	 * <a href="http://www.merriampark.com/ldjava.htm">http://www.merriampark. com/ ldjava.htm</a>
+	 * <a href="http://www.merriampark.com/ldjava.htm">http://www.merriampark. com/
+	 * ldjava.htm</a>
 	 * </p>
 	 *
 	 * <pre>
@@ -525,19 +532,22 @@ public final class Strings {
 		}
 
 		/*
-		 * The difference between this impl. and the previous is that, rather than creating and
-		 * retaining a matrix of size s.length() + 1 by t.length() + 1, we maintain two
-		 * single-dimensional arrays of length s.length() + 1. The first, d, is the 'current working'
-		 * distance array that maintains the newest distance cost counts as we iterate through the
-		 * characters of String s. Each time we increment the index of String t we are comparing, d is
-		 * copied to p, the second int[]. Doing so allows us to retain the previous cost counts as
-		 * required by the algorithm (taking the minimum of the cost count to the left, up one, and
-		 * diagonally up and to the left of the current cost count being calculated). (Note that the
-		 * arrays aren't really copied anymore, just switched...this is clearly much better than cloning
-		 * an array or doing a System.arraycopy() each time through the outer loop.)
+		 * The difference between this impl. and the previous is that, rather than
+		 * creating and retaining a matrix of size s.length() + 1 by t.length() + 1, we
+		 * maintain two single-dimensional arrays of length s.length() + 1. The first,
+		 * d, is the 'current working' distance array that maintains the newest distance
+		 * cost counts as we iterate through the characters of String s. Each time we
+		 * increment the index of String t we are comparing, d is copied to p, the
+		 * second int[]. Doing so allows us to retain the previous cost counts as
+		 * required by the algorithm (taking the minimum of the cost count to the left,
+		 * up one, and diagonally up and to the left of the current cost count being
+		 * calculated). (Note that the arrays aren't really copied anymore, just
+		 * switched...this is clearly much better than cloning an array or doing a
+		 * System.arraycopy() each time through the outer loop.)
 		 * 
-		 * Effectively, the difference between the two implementations is this one does not cause an out
-		 * of memory condition when calculating the LD over two very large strings.
+		 * Effectively, the difference between the two implementations is this one does
+		 * not cause an out of memory condition when calculating the LD over two very
+		 * large strings.
 		 */
 
 		// length of s
@@ -627,7 +637,7 @@ public final class Strings {
 	 * Get the number of a char in a string.
 	 * 
 	 * @param str a string
-	 * @param ch a char
+	 * @param ch  a char
 	 * @return a number
 	 */
 	public static int getNbIndexOf(String str, char ch) {
@@ -643,10 +653,10 @@ public final class Strings {
 	/**
 	 * Convert a collection to string an join them with a delimiter.
 	 * 
-	 * @param <E> the collection element type
+	 * @param <E>        the collection element type
 	 * @param collection a collection
-	 * @param transform a transformer to string
-	 * @param delimiter a delimiter
+	 * @param transform  a transformer to string
+	 * @param delimiter  a delimiter
 	 * @return a string
 	 */
 	public static <E> String join(Iterable<E> collection, Function<E, String> transform, String delimiter) {
@@ -663,10 +673,10 @@ public final class Strings {
 	/**
 	 * Convert an array to string an join them with a delimiter.
 	 * 
-	 * @param <E> the array element type
+	 * @param <E>        the array element type
 	 * @param collection a collection
-	 * @param transform a transformer to string
-	 * @param delimiter a delimiter
+	 * @param transform  a transformer to string
+	 * @param delimiter  a delimiter
 	 * @return a string
 	 */
 	public static <E> String join(E[] collection, Function<E, String> transform, String delimiter) {

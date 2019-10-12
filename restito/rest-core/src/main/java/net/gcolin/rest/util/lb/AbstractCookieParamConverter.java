@@ -18,6 +18,7 @@ package net.gcolin.rest.util.lb;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
@@ -157,7 +158,7 @@ public abstract class AbstractCookieParamConverter<T extends Cookie> {
     } else {
       CookieDeserializer cd = deserializer.get(name);
       if (cd == null) {
-        Logs.LOG.warn("unknown parameter {}", name);
+        Logs.LOG.log(Level.WARNING, "unknown parameter {0}", name);
       } else {
         cd.deserialize(cookie, val);
       }

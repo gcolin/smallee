@@ -186,7 +186,7 @@ public class ValidatorConfigurationImpl
   @Override
   public ValidatorFactory buildValidatorFactory() {
     if (validationFactory == null) {
-      ValidatorImpl.LOG.debug("create Juikito ValidatorFactory");
+      ValidatorImpl.LOG.fine("create Juikito ValidatorFactory");
       validationFactory = new ValidatorFactoryImpl(this);
     } else {
       validationFactory.incr();

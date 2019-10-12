@@ -16,6 +16,8 @@
 package net.gcolin.common.jmx;
 
 import java.lang.management.ManagementFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -26,8 +28,6 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
-import org.slf4j.LoggerFactory;
-
 /**
  * JMX helper.
  * 
@@ -36,62 +36,62 @@ import org.slf4j.LoggerFactory;
  */
 public class Jmx {
 
-  private static final String CANNOT_REGISTER_MBEAN = "cannot register mbean";
+	private static final String CANNOT_REGISTER_MBEAN = "cannot register mbean";
 
-  private Jmx() {}
+	private Jmx() {
+	}
 
-  /**
-   * Publish a JmxBean.
-   * 
-   * @param <T> interface type
-   * @param jmxname JMX path
-   * @param implementation the implementation of type bean
-   * @param mbeanInterface the interface accessible through a JMX console 
-   */
-  public static <T> void publish(String jmxname, T implementation, Class<T> mbeanInterface) {
-    try {
-      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-      ObjectName name = new ObjectName(jmxname);
-      if (!mbs.isRegistered(name)) {
-        StandardMBean mbean = new StandardMBean(implementation, mbeanInterface);
-        mbs.registerMBean(mbean, name);
-      }
-    } catch (MalformedObjectNameException | InstanceAlreadyExistsException
-        | MBeanRegistrationException | NotCompliantMBeanException ex) {
-      LoggerFactory.getLogger(Jmx.class).error(CANNOT_REGISTER_MBEAN, ex);
-    }
-  }
+	/**
+	 * Publish a JmxBean.
+	 * 
+	 * @param <T>            interface type
+	 * @param jmxname        JMX path
+	 * @param implementation the implementation of type bean
+	 * @param mbeanInterface the interface accessible through a JMX console
+	 */
+	public static <T> void publish(String jmxname, T implementation, Class<T> mbeanInterface) {
+		try {
+			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+			ObjectName name = new ObjectName(jmxname);
+			if (!mbs.isRegistered(name)) {
+				StandardMBean mbean = new StandardMBean(implementation, mbeanInterface);
+				mbs.registerMBean(mbean, name);
+			}
+		} catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException
+				| NotCompliantMBeanException ex) {
+			Logger.getLogger(Jmx.class.getName()).log(Level.SEVERE, CANNOT_REGISTER_MBEAN, ex);
+		}
+	}
 
-  /**
-   * Remove a JmxBean.
-   * 
-   * @param jmxname JMX path
-   */
-  public static void unpublish(String jmxname) {
-    try {
-      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-      ObjectName name = new ObjectName(jmxname);
-      if (mbs.isRegistered(name)) {
-        mbs.unregisterMBean(name);
-      }
-    } catch (MalformedObjectNameException | MBeanRegistrationException
-        | InstanceNotFoundException ex) {
-    	LoggerFactory.getLogger(Jmx.class).error(CANNOT_REGISTER_MBEAN, ex);
-    }
-  }
+	/**
+	 * Remove a JmxBean.
+	 * 
+	 * @param jmxname JMX path
+	 */
+	public static void unpublish(String jmxname) {
+		try {
+			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+			ObjectName name = new ObjectName(jmxname);
+			if (mbs.isRegistered(name)) {
+				mbs.unregisterMBean(name);
+			}
+		} catch (MalformedObjectNameException | MBeanRegistrationException | InstanceNotFoundException ex) {
+			Logger.getLogger(Jmx.class.getName()).log(Level.SEVERE, CANNOT_REGISTER_MBEAN, ex);
+		}
+	}
 
-  /**
-   * Enable Common Io bean for managing the buffers.
-   */
-  public static void enable() {
-    try {
-      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-      ObjectName name = new ObjectName("net.gcolin.common:type=IO");
-      StandardMBean mbean = new StandardMBean(new IoController(), IoBean.class);
-      mbs.registerMBean(mbean, name);
-    } catch (MalformedObjectNameException | InstanceAlreadyExistsException
-        | MBeanRegistrationException | NotCompliantMBeanException ex) {
-    	LoggerFactory.getLogger(Jmx.class).error(CANNOT_REGISTER_MBEAN, ex);
-    }
-  }
+	/**
+	 * Enable Common Io bean for managing the buffers.
+	 */
+	public static void enable() {
+		try {
+			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+			ObjectName name = new ObjectName("net.gcolin.common:type=IO");
+			StandardMBean mbean = new StandardMBean(new IoController(), IoBean.class);
+			mbs.registerMBean(mbean, name);
+		} catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException
+				| NotCompliantMBeanException ex) {
+			Logger.getLogger(Jmx.class.getName()).log(Level.SEVERE, CANNOT_REGISTER_MBEAN, ex);
+		}
+	}
 }

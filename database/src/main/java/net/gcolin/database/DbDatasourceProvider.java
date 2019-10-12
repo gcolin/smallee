@@ -22,13 +22,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.logging.Level;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import net.gcolin.common.io.Io;
+import net.gcolin.common.lang.Strings;
 import net.gcolin.di.atinject.Environment;
-import net.gcolin.di.atinject.Extension;
+import net.gcolin.di.atinject.config.Config;
+import net.gcolin.di.atinject.producer.Produces;
+import net.gcolin.di.atinject.web.ApplicationScoped;
 
 /**
  * 
@@ -36,19 +43,45 @@ import net.gcolin.di.atinject.Extension;
  * @since 1.0
  *
  */
-public class DbExtension implements Extension {
+@ApplicationScoped
+public class DbDatasourceProvider {
 
-	@Override
-	public void doStart(Environment env) {
-		Map<String, String> props = Db.getProperties(env.getClassLoader());
-
-		String dbPath = props.get("path");
-		if (dbPath != null) {
+	@Config(name = "db.path")
+	private String dbPath;
+	@Config(name = "db.type")
+	private String type;
+	@Config(name = "db.driver")
+	private String driver;
+	@Config(name = "db.url")
+	private String url;
+	@Config(name = "db.user")
+	private String user;
+	@Config(name = "db.password")
+	private String password;
+	@Config(name = "db.maxPoolSize", defaultValue = "10")
+	private int maxPoolSize;
+	@Config(name = "db.minPoolSize", defaultValue = "0")
+	private int minPoolSize;
+	@Config(name = "db.testQuery")
+	private String testQuery;
+	@Inject
+	private Environment env;
+	
+	private DbDatasource datasource;
+	
+	@Produces
+	public DbDatasource getDbDatasource() {
+		return datasource;
+	}
+	
+	@PostConstruct
+	void init() {
+		if (!Strings.isNullOrEmpty(dbPath)) {
 			System.setProperty("derby.system.home", dbPath);
 			File file = new File(dbPath);
 			if (!file.exists()) {
 				if (file.mkdirs()) {
-					Db.LOG.debug("directory created {}", file);
+					Db.LOG.log(Level.FINE, "directory created {0}", file);
 				}
 				File derbyProperties = new File(file, "derby.properties");
 				try (InputStream in = Db.class.getClassLoader().getResourceAsStream("derby.properties")) {
@@ -56,50 +89,40 @@ public class DbExtension implements Extension {
 						Io.copy(in, out);
 					}
 				} catch (IOException ex) {
-					Db.LOG.error("cannot create derby.properties", ex);
+					Db.LOG.log(Level.SEVERE, "cannot create derby.properties", ex);
 				}
 			}
 		}
-
+		
 		BasicDataSource s = new BasicDataSource();
-		s.setDriverClassName(props.get("driver"));
-		s.setUrl(props.get("url"));
-		s.setUsername(props.get("user"));
-		s.setPassword(props.get("password"));
-		String max = props.get("maxPoolSize");
-		if (max == null) {
-			s.setMaxTotal(10);
-		} else {
-			s.setMaxTotal(Integer.parseInt(max.trim()));
-		}
-		String min = props.get("minPoolSize");
-		if (min == null) {
-			s.setMinIdle(0);
-		} else {
-			s.setMinIdle(Integer.parseInt(min.trim()));
-		}
-		env.bind(new DbDatasource(DbAdapter.ALL.get(props.get("type")), s));
-		String testQuery = props.get("testQuery");
+		s.setDriverClassName(driver);
+		s.setUrl(url);
+		s.setUsername(user);
+		s.setPassword(password);
+		s.setMaxTotal(maxPoolSize);
+		s.setMinIdle(minPoolSize);
 		
 		try {
 			Db.query(s, testQuery, Db.GET_LONG);
 		} catch (SQLException e1) {
-			if(Db.LOG.isDebugEnabled()) {
-				Db.LOG.debug("test query fail: " + testQuery, e1);
+			if(Db.LOG.isLoggable(Level.FINE)) {
+				Db.LOG.log(Level.FINE, "test query fail: " + testQuery, e1);
 			}
-			Db.LOG.warn("load database");
+			Db.LOG.info("load database");
 			try {
-				Db.init(env.getClassLoader(), props.get("type"), s);
+				Db.init(env.getClassLoader(), type, s);
 			} catch (SQLException e) {
 				throw new DbException(e);
 			}
 		}
+		
+		datasource = new DbDatasource(DbAdapter.ALL.get(type), s);
 	}
-
-	@Override
-	public void doStopped(Environment environment) {
-		DbDatasource db = environment.get(DbDatasource.class);
-		if (db.getAdapter() == DbAdapter.DERBY) {
+	
+	
+	@PreDestroy
+	void doStopped() {
+		if (datasource.getAdapter() == DbAdapter.DERBY) {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
@@ -107,16 +130,16 @@ public class DbExtension implements Extension {
 						Db.LOG.info("shutdown derby");
 						DriverManager.getConnection("jdbc:derby:;shutdown=true").close();
 					} catch (SQLException e) {
-						Db.LOG.error("cannot shutdown derby cleanly", e);
+						Db.LOG.log(Level.SEVERE, "cannot shutdown derby cleanly", e);
 					}
 				}
 			});
 		}
-		if (db.getSource() instanceof AutoCloseable) {
+		if (datasource.getSource() instanceof AutoCloseable) {
 			try {
-				((AutoCloseable) db.getSource()).close();
+				((AutoCloseable) datasource.getSource()).close();
 			} catch (Exception e) {
-				Db.LOG.error(e.getMessage(), e);
+				Db.LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 		Db.VALIDATOR_FACTORY.close();
