@@ -367,11 +367,10 @@ public class JNodeBuilder {
 	 * @param serializer   serializer
 	 * @param context      builder context
 	 * @return a node
-	 * @throws JsonbException if an error occurs.
 	 */
 	public JNode build(Type parent, Class<Object> type, Type genericType,
 			JsonbDeserializerExtended<Object> deserializer, JsonbSerializerExtended<Object> serializer,
-			JContext context) throws JsonbException {
+			JContext context) {
 		JNode node = nodesByClass.get(genericType);
 		if (node == null) {
 			node = new JNode();
@@ -516,8 +515,7 @@ public class JNodeBuilder {
 		}
 	}
 
-	private void extractAccessor(Class<Object> type, Type genericType, JNode node, JContext dateInfo)
-			throws JsonbException {
+	private void extractAccessor(Class<Object> type, Type genericType, JNode node, JContext dateInfo) {
 		JContext diAll = dateInfo;
 		if (type.getEnclosingClass() == null) {
 			diAll = new JContext();

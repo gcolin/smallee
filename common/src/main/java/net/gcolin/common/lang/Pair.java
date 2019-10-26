@@ -15,8 +15,8 @@
 
 package net.gcolin.common.lang;
 
-import java.io.Serializable;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * The {@code Pair} class represents an Entry.
@@ -25,9 +25,7 @@ import java.util.Map.Entry;
  * @since 1.0
  * @see Entry
  */
-public class Pair<K, V> implements Entry<K, V>, Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Pair<K, V> implements Entry<K, V> {
 
 	private K key;
 	private V value;
@@ -62,7 +60,7 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
 	}
 
 	public K getLeft() {
-		return key;
+		return getKey();
 	}
 
 	public void setKey(K key) {
@@ -70,15 +68,15 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
 	}
 
 	public void setLeft(K key) {
-		this.key = key;
+		setKey(key);
 	}
 
 	public V getRight() {
-		return value;
+		return getValue();
 	}
 
 	public void setRight(V value) {
-		this.value = value;
+		setValue(value);
 	}
 
 	@Override
@@ -95,29 +93,12 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		@SuppressWarnings("rawtypes")
 		Pair other = (Pair) obj;
-		if (key == null) {
-			if (other.key != null) {
-				return false;
-			}
-		} else if (!key.equals(other.key)) {
-			return false;
-		}
-		if (value == null) {
-			if (other.value != null) {
-				return false;
-			}
-		} else if (!value.equals(other.value)) {
-			return false;
-		}
-		return true;
+		return Objects.equals(key, other.key) && Objects.equals(value, other.value);
 	}
 
 	@Override

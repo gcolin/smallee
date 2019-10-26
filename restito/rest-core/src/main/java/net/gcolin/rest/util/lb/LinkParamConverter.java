@@ -15,13 +15,13 @@
 
 package net.gcolin.rest.util.lb;
 
-import net.gcolin.common.lang.Headers;
-import net.gcolin.rest.LinkImpl;
-
 import java.net.URI;
 import java.util.Map.Entry;
 
 import javax.ws.rs.core.Link;
+
+import net.gcolin.rest.LinkImpl;
+import net.gcolin.rest.util.Headers;
 
 /**
  * Converter String to Link.

@@ -28,7 +28,7 @@ import net.gcolin.mustache.Mustache;
 
 /**
  * Compare compilation with interpreter.
- * <p/>
+ * 
  * User: sam Date: 5/14/11 Time: 9:28 PM
  */
 @Ignore

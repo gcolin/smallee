@@ -39,12 +39,12 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
 
 import net.gcolin.common.reflect.Reflect;
-import net.gcolin.common.route.Router;
 import net.gcolin.rest.Environment;
 import net.gcolin.rest.FastMediaType;
 import net.gcolin.rest.Logs;
 import net.gcolin.rest.param.Param;
 import net.gcolin.rest.util.ReflectRest;
+import net.gcolin.rest.util.Router;
 
 /**
  * Build REST services from an object or a class.
@@ -53,7 +53,7 @@ import net.gcolin.rest.util.ReflectRest;
  * @since 1.0
  */
 public class ResourceBuilder {
-
+	
 	private ServerProviders providers;
 	private Router<ResourceArray> router;
 	private Environment env;

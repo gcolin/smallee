@@ -50,8 +50,7 @@ public class RestExtension implements Extension {
       if (Application.class.isAssignableFrom(clazz)) {
         ApplicationPath apppath = clazz.getAnnotation(ApplicationPath.class);
         if (apppath == null) {
-          environment.getLog().info(clazz
-              + " is an javax.ws.rs.core.Application and does not have @ApplicationPath: ignore it");
+          environment.getLog().log(Level.INFO, "{0} is an javax.ws.rs.core.Application and does not have @ApplicationPath: ignore it", clazz);
           continue;
         }
         ServletContext sc = environment.get(ServletContext.class);
@@ -79,7 +78,7 @@ public class RestExtension implements Extension {
         } catch (ServletException ex) {
           throw new InjectException(ex);
         }
-        environment.getLog().log(Level.INFO, "start rest app {0} in the context {0}/*", new Object[] {clazz.getName(), path});
+        environment.getLog().log(Level.INFO, "start rest app {0} in the context {1}/*", new Object[] {clazz.getName(), path});
       }
     }
   }

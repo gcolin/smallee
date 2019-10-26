@@ -164,7 +164,7 @@ public class JsonPointerImpl implements JsonPointer {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends JsonStructure> T add(T target, JsonValue value) {
-			if (target != null && target instanceof JsonObject) {
+			if (target instanceof JsonObject) {
 				return (T) provider.createObjectBuilder((JsonObject) target).add(key, value).build();
 			} else {
 				throw new JsonException("cannot add");
@@ -192,12 +192,12 @@ public class JsonPointerImpl implements JsonPointer {
 
 		@Override
 		public boolean containsValue(JsonStructure target) {
-			return target != null && target instanceof JsonObject && ((JsonObject) target).get(key) != null;
+			return target instanceof JsonObject && ((JsonObject) target).get(key) != null;
 		}
 
 		@Override
 		public JsonValue getValue(JsonStructure target) {
-			return target != null && target instanceof JsonObject ? ((JsonObject) target).get(key) : null;
+			return target instanceof JsonObject ? ((JsonObject) target).get(key) : null;
 		}
 	}
 

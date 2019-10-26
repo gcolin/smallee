@@ -15,22 +15,14 @@
 
 package net.gcolin.common.test;
 
-import net.gcolin.common.lang.CharIterator;
-import net.gcolin.common.lang.Header;
-import net.gcolin.common.lang.Headers;
-import net.gcolin.common.lang.Strings;
+import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.ResourceBundle;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import net.gcolin.common.lang.CharIterator;
+import net.gcolin.common.lang.Strings;
 
 public class StringsTest {
 
@@ -39,44 +31,6 @@ public class StringsTest {
     Assert.assertFalse(Strings.isIp("168.0.1"));
     Assert.assertTrue(Strings.isIp("192" + ".168.0.1"));
     Assert.assertTrue(Strings.isIp("2001:0db8:0000" + "85a3:0000:0000:ac1f:8001"));
-  }
-
-  @Test
-  public void testUrlEncode() throws ScriptException {
-
-    for (String phrase : new String[] {"hello%𐍈€¢$", "1#\"'@()?¿{}*[]+-%=rRñÑâÂ齉한سؤالθЩ𐍈"}) {
-      String encoded = Strings.encodeUrl(phrase);
-
-      ScriptEngineManager factory = new ScriptEngineManager();
-      ScriptEngine engine = factory.getEngineByName("javascript");
-
-      String jsencoded =
-          (String) engine.eval("encodeURIComponent('" + phrase.replace("'", "\\'") + "')");
-      String decoded = Strings.decodeUrl(encoded);
-      String jsdecoded = Strings.decodeUrl(jsencoded);
-
-      Assert.assertEquals(phrase, decoded);
-      Assert.assertEquals(phrase, jsdecoded);
-    }
-
-    Assert.assertEquals("a\r\n", Strings.decodeUrl("a%0D%0A"));
-
-    for (int i = 1; i < 256; i++) {
-      String str = Strings.decodeUrl(Strings.encodeUrl(String.valueOf((char) i)));
-      Assert.assertEquals(1, str.length());
-      Assert.assertEquals(i, (int) str.charAt(0));
-    }
-
-    String str = "D%8f%ce%82%cd%a3%fe%fc%f2p%2f%8cM%26%1b%10%98%b6%e3%d2";
-    Strings.decodeUrl(str);
-
-    try {
-      Strings.decodeUrl("%");
-      Assert.fail();
-    } catch (IllegalArgumentException ex) {
-      // ok
-    }
-
   }
 
   @Test
@@ -223,20 +177,6 @@ public class StringsTest {
   }
 
   @Test
-  public void getHeaderParametersTest() {
-    Map<String, String> headers = Headers.getParameters("hello");
-    Assert.assertEquals(0, headers.size());
-
-    headers = Headers.getParameters("hello;name=value");
-    Assert.assertEquals(1, headers.size());
-    Assert.assertEquals("value", headers.get("name"));
-
-    headers = Headers.getParameters("hello;name=\"value\"");
-    Assert.assertEquals(1, headers.size());
-    Assert.assertEquals("value", headers.get("name"));
-  }
-
-  @Test
   public void iteratorTest() {
     iteratorTest0(Strings.iterator("h", 0, 1));
     iteratorTest0(Strings.iterator("h".toCharArray(), 0, 1));
@@ -254,43 +194,6 @@ public class StringsTest {
       exthrown = true;
     }
     Assert.assertTrue(exthrown);
-  }
-
-  @Test
-  public void testHeaders() {
-    List<Header> list = Headers.parse("fr,en,es");
-    Assert.assertEquals(3, list.size());
-    Assert.assertEquals("fr", list.get(0).getValue());
-    Assert.assertEquals("en", list.get(1).getValue());
-    Assert.assertEquals("es", list.get(2).getValue());
-
-    list = Headers.parse("en;q=0.9,fr,es;q=0.8;p=q");
-    Assert.assertEquals(3, list.size());
-    Assert.assertEquals("fr", list.get(0).getValue());
-    Assert.assertEquals("en", list.get(1).getValue());
-    Assert.assertEquals("es", list.get(2).getValue());
-
-    list = Headers.parse(" fr , en  ,  es ");
-    Assert.assertEquals(3, list.size());
-    Assert.assertEquals("fr", list.get(0).getValue());
-    Assert.assertEquals("en", list.get(1).getValue());
-    Assert.assertEquals("es", list.get(2).getValue());
-
-    list = Headers.parse("fr,en;q=0.9,es;q=0.7");
-    Assert.assertEquals(3, list.size());
-    Assert.assertEquals("fr", list.get(0).getValue());
-    Assert.assertEquals("en", list.get(1).getValue());
-    Assert.assertEquals("es", list.get(2).getValue());
-
-    Assert.assertEquals(1.0f, list.get(0).getSort(), 0.1f);
-    Assert.assertEquals(0.9f, list.get(1).getSort(), 0.1f);
-    Assert.assertEquals(0.7f, list.get(2).getSort(), 0.1f);
-
-    list = Headers.parse("fr;w=hello,en;p=world;a b=pop");
-    Assert.assertEquals(2, list.size());
-    Assert.assertEquals("hello", list.get(0).getParameters().get("w"));
-    Assert.assertEquals("world", list.get(1).getParameters().get("p"));
-    Assert.assertEquals("pop", list.get(1).getParameters().get("a b"));
   }
 
   @Test

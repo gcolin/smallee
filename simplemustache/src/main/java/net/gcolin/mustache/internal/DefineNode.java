@@ -62,7 +62,7 @@ public class DefineNode extends Node {
 					prec = split;
 				}
 			}
-		} else if (!ctx.getDefines().containsKey(name) && body != null) {
+		} else if (!ctx.getDefines().containsKey(name)) {
 			TransientStringContext cc = new TransientStringContext(ctx);
 			body.write(cc);
 			String out = cc.toString();

@@ -106,7 +106,7 @@ public class Db {
 		}
 	}
 
-	public static <T> int update(DataSource ds, String sql, Object[] args, int[] types) throws SQLException {
+	public static int update(DataSource ds, String sql, Object[] args, int[] types) throws SQLException {
 		try (Connection conn = ds.getConnection()) {
 			return update(conn, sql, args, types);
 		}
@@ -118,7 +118,7 @@ public class Db {
 		}
 	}
 
-	public static <T> int update(Connection conn, String sql, Object[] args, int[] types) throws SQLException {
+	public static int update(Connection conn, String sql, Object[] args, int[] types) throws SQLException {
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			for (int i = 0; i < args.length; i++) {
 				if (args[i] == null) {
@@ -201,7 +201,7 @@ public class Db {
 			if (type != null) {
 				file = "META-INF/db." + type + ".properties";
 			}
-			in = Db.class.getClassLoader().getResourceAsStream(file);
+			in = cl.getResourceAsStream(file);
 		}
 		if (in == null) {
 			throw new DbException("missing file META-INF/db.properties");

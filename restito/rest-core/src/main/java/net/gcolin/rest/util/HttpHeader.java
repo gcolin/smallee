@@ -15,13 +15,6 @@
 
 package net.gcolin.rest.util;
 
-import net.gcolin.common.collection.Func;
-import net.gcolin.common.lang.Header;
-import net.gcolin.common.lang.Headers;
-import net.gcolin.common.lang.Locales;
-import net.gcolin.common.lang.NumberUtil;
-import net.gcolin.rest.FastMediaType;
-
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -40,6 +33,11 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
+
+import net.gcolin.common.collection.Func;
+import net.gcolin.common.lang.Locales;
+import net.gcolin.common.lang.NumberUtil;
+import net.gcolin.rest.FastMediaType;
 
 /**
  * HttpHeaders in lower case.

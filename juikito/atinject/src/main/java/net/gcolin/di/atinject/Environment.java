@@ -447,9 +447,6 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 	}
 
 	protected AbstractProvider<Object> createProvider(Key key, Class<?> clazz, Type genericType) {
-		if(clazz == Environment.class) {
-			System.out.println("");
-		}
 		Class<?> resolved = resolve(key, clazz, genericType);
 
 		if (resolved == null) {

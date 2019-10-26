@@ -15,8 +15,18 @@
 
 package net.gcolin.rest.test.server;
 
-import net.gcolin.common.route.Router;
-import net.gcolin.common.route.RouterResponse;
+import java.io.IOException;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.RuntimeType;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import net.gcolin.rest.Environment;
 import net.gcolin.rest.RestConfiguration;
 import net.gcolin.rest.server.AbstractResource;
@@ -26,18 +36,8 @@ import net.gcolin.rest.server.RestContainer;
 import net.gcolin.rest.server.ServerFeatureBuilder;
 import net.gcolin.rest.server.ServerInvocationContext;
 import net.gcolin.rest.server.ServerProviders;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.io.IOException;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
+import net.gcolin.rest.util.Router;
+import net.gcolin.rest.util.RouterResponse;
 
 /** 
  * @author Gaël COLIN

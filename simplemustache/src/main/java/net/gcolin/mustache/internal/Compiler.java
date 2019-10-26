@@ -427,7 +427,7 @@ public class Compiler {
 		}
 	}
 
-	static enum SectionType {
+	enum SectionType {
 		SECTION, SECTION_NOT, COMPOSE, DEFINE
 	}
 

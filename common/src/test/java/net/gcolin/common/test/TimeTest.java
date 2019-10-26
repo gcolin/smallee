@@ -15,8 +15,6 @@
 
 package net.gcolin.common.test;
 
-import net.gcolin.common.Time;
-
 import org.junit.Test;
 
 public class TimeTest {

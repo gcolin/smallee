@@ -16,14 +16,13 @@
 package net.gcolin.json;
 
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Map;
 
 import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonGenerator;
-
-import net.gcolin.common.io.Io;
 
 /**
  * The {@code JsonPrettyFactoryImpl} class can be all the factories of Json API.
@@ -50,7 +49,7 @@ public class JsonPrettyFactoryImpl
 
   @Override
   public JsonGenerator createGenerator(OutputStream out, Charset charset) {
-    return createGenerator(Io.writer(out, charset.name()));
+    return createGenerator(new OutputStreamWriter(out, charset));
   }
 
 }

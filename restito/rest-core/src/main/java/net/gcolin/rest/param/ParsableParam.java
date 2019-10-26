@@ -15,9 +15,9 @@
 
 package net.gcolin.rest.param;
 
-import net.gcolin.common.lang.Strings;
-
 import javax.ws.rs.ext.ParamConverter;
+
+import net.gcolin.rest.util.UrlEncoder;
 
 /**
  * A Param that uses a ParamConverter.
@@ -86,6 +86,6 @@ public abstract class ParsableParam extends Param {
     if (decoded == null) {
       return null;
     }
-    return Strings.encodeUrl(decoded);
+    return UrlEncoder.DEFAULT.encode(decoded);
   }
 }

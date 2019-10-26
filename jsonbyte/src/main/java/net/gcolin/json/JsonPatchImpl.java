@@ -2,6 +2,7 @@ package net.gcolin.json;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.json.JsonArray;
@@ -23,7 +24,7 @@ public class JsonPatchImpl implements JsonPatch {
 	@SuppressWarnings("unchecked")
 	public JsonPatchImpl(JsonArray array, JsonProvider provider) {
 		this.array = array;
-		List<Function<JsonStructure, JsonStructure>> actions = new ArrayList<>();
+		List<Function<JsonStructure, JsonStructure>> actionsList = new ArrayList<>();
 		for (int i = 0; i < array.size(); i++) {
 			JsonObject op = array.getJsonObject(i);
 			String path = op.getString("path");
@@ -31,7 +32,7 @@ public class JsonPatchImpl implements JsonPatch {
 			JsonValue val = op.get("value");
 			switch (op.getString("op")) {
 			case "test":
-				actions.add(target -> {
+				actionsList.add(target -> {
 					if (pointer.getValue(target).equals(val)) {
 						return target;
 					} else {
@@ -40,19 +41,19 @@ public class JsonPatchImpl implements JsonPatch {
 				});
 				break;
 			case "replace":
-				actions.add(target -> pointer.replace(target, val));
+				actionsList.add(target -> pointer.replace(target, val));
 				break;
 			case "remove":
-				actions.add(target -> pointer.remove(target));
+				actionsList.add(target -> pointer.remove(target));
 				break;
 			case "move": {
 				if (path.startsWith(op.getString("from")) && path.length() > op.getString("from").length()) {
-					actions.add(target -> {
+					actionsList.add(target -> {
 						throw new JsonException("cannot move");
 					});
 				} else {
 					JsonPointer from = provider.createPointer(op.getString("from"));
-					actions.add(target -> {
+					actionsList.add(target -> {
 						JsonValue v = from.getValue(target);
 						JsonStructure s = from.remove(target);
 						return pointer.add(s, v);
@@ -62,21 +63,21 @@ public class JsonPatchImpl implements JsonPatch {
 			}
 			case "copy":
 				JsonPointer from = provider.createPointer(op.getString("from"));
-				actions.add(target -> {
+				actionsList.add(target -> {
 					JsonValue v = from.getValue(target);
 					return pointer.add(target, v);
 				});
 				break;
 			case "add":
-				actions.add(target -> pointer.add(target, val));
+				actionsList.add(target -> pointer.add(target, val));
 				break;
 			default:
 				throw new JsonException("unsupported operation " + op.getString("op"));
 			}
 
 		}
-		this.actions = new Function[actions.size()];
-		actions.toArray(this.actions);
+		this.actions = new Function[actionsList.size()];
+		actionsList.toArray(this.actions);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -111,12 +112,7 @@ public class JsonPatchImpl implements JsonPatch {
 		if (getClass() != obj.getClass())
 			return false;
 		JsonPatchImpl other = (JsonPatchImpl) obj;
-		if (array == null) {
-			if (other.array != null)
-				return false;
-		} else if (!array.equals(other.array))
-			return false;
-		return true;
+		return Objects.equals(array, other.array);
 	}
 
 	public static JsonArray diff(JsonStructure source, JsonStructure target, JsonProvider provider) {
@@ -184,7 +180,6 @@ public class JsonPatchImpl implements JsonPatch {
 				for (int j = 0; j < n; j++) {
 					if (source.get(i).equals(target.get(j))) {
 						c[i + 1][j + 1] = ((c[i][j]) & ~1) + 3;
-						// 3 = (1 << 1) | 1;
 					} else {
 						c[i + 1][j + 1] = Math.max(c[i + 1][j], c[i][j + 1]) & ~1;
 					}

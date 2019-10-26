@@ -15,7 +15,6 @@
 
 package net.gcolin.common.test;
 
-import net.gcolin.common.Time;
 import net.gcolin.common.collection.ArrayQueue;
 
 import org.junit.Assert;
@@ -141,5 +140,16 @@ public class ArrayQueueTest {
       // ok
     }
 
+  }
+  
+  @Test
+  public void testClean() {
+	  ArrayQueue<Integer> queue = new ArrayQueue<Integer>();
+	  queue.add(1);
+	  Assert.assertEquals(1, queue.size());
+	  queue.clear();
+	  Assert.assertEquals(0, queue.size());
+	  queue.clear();
+	  Assert.assertEquals(0, queue.size());
   }
 }

@@ -35,9 +35,6 @@ public class JsonArrayBuilderImpl implements JsonArrayBuilder {
 
 	private List<JsonValue> all = new ArrayList<>();
 
-	public JsonArrayBuilderImpl() {
-	}
-
 	@Override
 	public JsonArrayBuilder add(JsonValue val) {
 		if (val == null) {

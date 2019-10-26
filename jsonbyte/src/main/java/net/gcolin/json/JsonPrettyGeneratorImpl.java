@@ -15,9 +15,8 @@
 
 package net.gcolin.json;
 
-import net.gcolin.common.io.FastOutputStreamWriter;
-
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Queue;
@@ -48,7 +47,7 @@ public class JsonPrettyGeneratorImpl extends JsonGeneratorImpl {
   }
 
   public static JsonPrettyGeneratorImpl take(OutputStream source) {
-    return take(new FastOutputStreamWriter(source, StandardCharsets.UTF_8.displayName()));
+    return take(new OutputStreamWriter(source, StandardCharsets.UTF_8));
   }
 
   /**

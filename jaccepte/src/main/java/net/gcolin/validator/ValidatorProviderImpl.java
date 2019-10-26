@@ -15,9 +15,6 @@
 
 package net.gcolin.validator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.validation.Configuration;
 import javax.validation.ValidatorFactory;
 import javax.validation.spi.BootstrapState;
@@ -32,27 +29,9 @@ import javax.validation.spi.ValidationProvider;
  */
 public class ValidatorProviderImpl implements ValidationProvider<ValidatorConfigurationImpl> {
 
-  private static ValidatorConfigurationImpl DEFAULT_CONFIG = new ValidatorConfigurationImpl();
-  private static final List<ValidatorConfigurationImpl> ALLCONFIGS = new ArrayList<>();
-
-  static {
-    ALLCONFIGS.add(DEFAULT_CONFIG);
-  }
-
-  /**
-   * Clear the provider.
-   */
-  public static void clear() {
-    for (ValidatorConfigurationImpl c : ALLCONFIGS) {
-      c.buildValidatorFactory().close();
-    }
-    ALLCONFIGS.clear();
-    ALLCONFIGS.add(DEFAULT_CONFIG = new ValidatorConfigurationImpl());
-  }
-
   @Override
   public ValidatorConfigurationImpl createSpecializedConfiguration(BootstrapState state) {
-    return DEFAULT_CONFIG;
+    return new ValidatorConfigurationImpl();
   }
 
   @Override

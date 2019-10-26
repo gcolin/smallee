@@ -27,39 +27,56 @@ import java.io.Writer;
 public class NullWriter extends Writer {
 
   @Override
-  public void write(char[] cbuf, int off, int len) throws IOException {}
+  public void write(char[] cbuf, int off, int len) throws IOException {
+	  // Do nothing.
+  }
 
   @Override
-  public void write(String str) throws IOException {}
+  public void write(String str) throws IOException {
+	// Do nothing.
+  }
 
   @Override
-  public void write(int ch) throws IOException {}
+  public void write(int ch) throws IOException {
+	// Do nothing.
+  }
 
   @Override
-  public void write(String str, int off, int len) throws IOException {}
+  public void write(String str, int off, int len) throws IOException {
+	// Do nothing.
+  }
 
   @Override
-  public void write(char[] cbuf) throws IOException {}
+  public void write(char[] cbuf) throws IOException {
+	// Do nothing.
+  }
 
   @Override
   public Writer append(char ch) throws IOException {
+	// Do nothing.
     return this;
   }
 
   @Override
   public Writer append(CharSequence csq) throws IOException {
+	// Do nothing.
     return this;
   }
 
   @Override
   public Writer append(CharSequence csq, int start, int end) throws IOException {
+	// Do nothing.
     return this;
   }
 
   @Override
-  public void flush() throws IOException {}
+  public void flush() throws IOException {
+	// Do nothing.
+  }
 
   @Override
-  public void close() throws IOException {}
+  public void close() throws IOException {
+	// Do nothing.
+  }
 
 }

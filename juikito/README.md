@@ -107,11 +107,11 @@ The extensions also support the *@Priority* annotation and the method *priority*
 
 ### Java 8 Optional
 
-The *java.util.Optional<T>* of Java 8 is supported. The use case of Optional is similar to CDI Instance with more limitations.
+The *java.util.Optional* of Java 8 is supported. The use case of Optional is similar to CDI Instance with more limitations.
 
 ### Java 8 Supplier
 
-The *java.util.Supplier<T>* of Java 8 is supported. It is interpreted as an *javax.inject.Provider<T>*.
+The *java.util.Supplier* of Java 8 is supported. It is interpreted as an *javax.inject.Provider*.
 
 ### Auto discover beans
 

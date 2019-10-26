@@ -35,7 +35,7 @@ public class PropertyDescriptorImpl extends AbstractElementCascadableDescriptor
       PropertyDescriptor {
 
   private String name;
-  private transient Member member;
+  private Member member;
 
   public PropertyDescriptorImpl(Class<?> elementClass) {
     super(elementClass);

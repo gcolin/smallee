@@ -33,7 +33,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class FilePartialFinder extends AbstractPartialFinder {
 
-	private volatile boolean loaded;
+	private boolean loaded;
 	private Path root;
 
 	public FilePartialFinder(String extension, Path root) {

@@ -15,14 +15,14 @@
 
 package net.gcolin.rest.util.lb;
 
-import net.gcolin.common.lang.NumberUtil;
-import net.gcolin.common.lang.Strings;
-
 import java.util.Date;
 
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
+
+import net.gcolin.common.lang.NumberUtil;
+import net.gcolin.rest.util.UrlEncoder;
 
 /**
  * Converter String to NewCookie.
@@ -55,7 +55,7 @@ public class NewCookieParamConverter extends AbstractCookieParamConverter<NewCoo
 
     serializer[0] = (value, str) -> {
       if (value.getComment() != null) {
-        str.append("; Comment=\"").append(Strings.encodeUrl(value.getComment())).append('"');
+        str.append("; Comment=\"").append(UrlEncoder.DEFAULT.encode(value.getComment())).append('"');
       }
     };
 

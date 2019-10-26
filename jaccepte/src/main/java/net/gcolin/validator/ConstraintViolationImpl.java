@@ -141,7 +141,7 @@ public class ConstraintViolationImpl<T> implements ConstraintViolation<T>, Conte
 
   @Override
   public Object getValidatedValue() {
-    return invalidValue;
+    return getInvalidValue();
   }
 
   @Override

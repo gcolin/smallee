@@ -16,8 +16,10 @@
 package net.gcolin.mustache;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import net.gcolin.common.io.Io;
 import net.gcolin.common.io.StringWriter;
@@ -54,7 +56,7 @@ public class UrlPartialFinder extends AbstractPartialFinder {
 		if (val == null) {
 			URL url = fun.get(getPrefix() + key + getExtension());
 			if (url != null) {
-				try (Reader reader = Io.reader(url.openStream(), "utf-8")) {
+				try (Reader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
 					StringWriter sw = new StringWriter();
 					Io.copy(reader, sw);
 					val = sw.toString();

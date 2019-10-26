@@ -15,7 +15,6 @@
 
 package net.gcolin.rest.test;
 
-import net.gcolin.common.Time;
 import net.gcolin.common.collection.Collections2;
 import net.gcolin.rest.FastMediaType;
 import net.gcolin.rest.RuntimeDelegateImpl;
@@ -206,11 +205,11 @@ public class MediaTypeTest {
   }
 
   private void test(Runnable run, String msg) {
-    Time.tick();
-    for (int i = 0; i < 1000000; i++) {
+    //Time.tick();
+    for (int i = 0; i < 1; i++) {
       run.run();
     }
-    Time.tock(msg);
+    //Time.tock(msg);
   }
 
   @Test

@@ -63,6 +63,7 @@ public class JsonParserReaderImpl implements JsonReader {
 
 	@Override
 	public void close() {
+		parser.close();
 	}
 
 }

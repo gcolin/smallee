@@ -22,7 +22,8 @@ import org.junit.Test;
 
 public class PairTest {
 
-  @Test
+  @SuppressWarnings("unlikely-arg-type")
+@Test
   public void test() {
     Pair<String, String> pair = new Pair<>();
     Assert.assertNull(pair.getKey());
@@ -31,6 +32,16 @@ public class PairTest {
     Assert.assertNull(pair.getValue());
 
     pair = new Pair<>("hello", "world");
+    
+    Pair<String, String> pair2 = Pair.of("hello", "world");
+    Assert.assertEquals(pair, pair2);
+    Assert.assertEquals("Pair [key=hello, value=world]", pair2.toString());
+    Assert.assertFalse(pair2.equals(null));
+    Assert.assertTrue(pair2.equals(pair));
+    Assert.assertFalse(pair2.equals("false"));
+    Assert.assertFalse(pair.equals(Pair.of("hello", "world2")));
+    Assert.assertFalse(pair.equals(Pair.of("hello2", "world")));
+    
     Assert.assertEquals("hello", pair.getKey());
     Assert.assertEquals("hello", pair.getLeft());
     Assert.assertEquals("world", pair.getRight());
@@ -41,11 +52,13 @@ public class PairTest {
 
     pair.setRight("h");
     Assert.assertEquals("h", pair.getValue());
+    Assert.assertEquals("h", pair.getRight());
 
     pair.setKey("k");
     Assert.assertEquals("k", pair.getKey());
 
     pair.setLeft("k");
     Assert.assertEquals("k", pair.getKey());
+    Assert.assertEquals("k", pair.getLeft());
   }
 }

@@ -115,10 +115,10 @@ public abstract class Context {
 	 * @return a value
 	 */
 	public Object get(String name) {
-		ArrayQueue<Scope> scopes = getScopes();
-		for (int i = scopes.size() - 1; i >= 0; i--) {
-			if (scopes.get(i).has(name)) {
-				return scopes.get(i).get(name);
+		ArrayQueue<Scope> localScopes = getScopes();
+		for (int i = localScopes.size() - 1; i >= 0; i--) {
+			if (localScopes.get(i).has(name)) {
+				return localScopes.get(i).get(name);
 			}
 		}
 		return null;

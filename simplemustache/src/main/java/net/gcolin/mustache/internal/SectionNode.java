@@ -35,7 +35,7 @@ public class SectionNode extends Node {
 	private Node body;
 	private boolean not;
 	private CompileContext context;
-	private volatile Section section;
+	private Section section;
 	private String[] filters;
 
 	/**
@@ -75,82 +75,81 @@ public class SectionNode extends Node {
 			}
 			return;
 		}
-		Section section = this.section;
-		if (section == null || !section.isCompatible(obj)) {
-			section = createSection(obj, true);
-			this.section = section;
+		synchronized (this) {
+			if (section == null || !section.isCompatible(obj)) {
+				section = createSection(obj, true);
+			}
 		}
-
 		section.execute(ctx, obj);
 	}
 
 	protected Section createSection(Object obj, boolean filter) {
-		Section section;
+		Section newSection;
 		if (filter && filters != null && filters.length > 0) {
-			section = new FilterSection(obj.getClass(), this, filters[filters.length - 1]);
+			newSection = new FilterSection(obj.getClass(), this, filters[filters.length - 1]);
 			for (int i = filters.length - 2; i >= 0; i--) {
-				section = new FilterChainSection(filters[i], section);
+				newSection = new FilterChainSection(filters[i], newSection);
 			}
 		} else if (obj instanceof Boolean) {
 			if (body != null) {
 				if (not) {
-					section = new BooleanNotSection(obj.getClass(), body);
+					newSection = new BooleanNotSection(obj.getClass(), body);
 				} else {
-					section = new BooleanSection(obj.getClass(), body);
+					newSection = new BooleanSection(obj.getClass(), body);
 				}
 			} else {
-				section = new EmptySection(obj.getClass());
+				newSection = new EmptySection(obj.getClass());
 			}
 		} else if (obj instanceof CharSequence) {
 			if (body != null) {
 				if (not) {
-					section = new StringNotSection(obj.getClass(), body);
+					newSection = new StringNotSection(obj.getClass(), body);
 				} else {
-					section = new StringSection(obj.getClass(), body);
+					newSection = new StringSection(obj.getClass(), body);
 				}
 			} else {
-				section = new EmptySection(obj.getClass());
+				newSection = new EmptySection(obj.getClass());
 			}
 		} else if (obj instanceof Number) {
 			if (body != null) {
 				if (not) {
-					section = new NumberNotSection(obj.getClass(), body);
+					newSection = new NumberNotSection(obj.getClass(), body);
 				} else {
-					section = new NumberSection(obj.getClass(), body);
+					newSection = new NumberSection(obj.getClass(), body);
 				}
 			} else {
-				section = new EmptySection(obj.getClass());
+				newSection = new EmptySection(obj.getClass());
 			}
 		} else if (obj instanceof Collection) {
 			if (body != null) {
 				if (not) {
-					section = new CollectionNotSection(obj.getClass(), body);
+					newSection = new CollectionNotSection(obj.getClass(), body);
 				} else if (obj instanceof List) {
-					section = new ListSection(obj.getClass(), body);
+					newSection = new ListSection(obj.getClass(), body);
 				} else if (obj.getClass().isArray()) {
-					section = new ArraySection(obj.getClass(), body);
+					newSection = new ArraySection(obj.getClass(), body);
 				} else if (obj instanceof Iterator) {
-					section = new IteratorSection(obj.getClass(), body);
+					newSection = new IteratorSection(obj.getClass(), body);
 				} else {
-					section = new IterableSection(obj.getClass(), body);
+					newSection = new IterableSection(obj.getClass(), body);
 				}
 			} else {
-				section = new EmptySection(obj.getClass());
+				newSection = new EmptySection(obj.getClass());
 			}
 		} else if (obj instanceof WrapperFunction) {
 			if (not) {
-				section = new EmptySection(obj.getClass());
+				newSection = new EmptySection(obj.getClass());
 			} else {
-				section = new WrapperSection(obj.getClass(), body, context);
+				newSection = new WrapperSection(obj.getClass(), body, context);
 			}
 		} else {
 			if (not || body == null) {
-				section = new EmptySection(obj.getClass());
+				newSection = new EmptySection(obj.getClass());
 			} else {
-				section = new SimpleSection(obj.getClass(), body);
+				newSection = new SimpleSection(obj.getClass(), body);
 			}
 		}
-		return section;
+		return newSection;
 	}
 
 	private abstract static class Section {
@@ -171,7 +170,7 @@ public class SectionNode extends Node {
 
 		private SectionNode node;
 		private String filter;
-		private volatile Section delegate;
+		private Section delegate;
 
 		public FilterSection(Class<?> type, SectionNode node, String filter) {
 			super(type);
@@ -182,15 +181,15 @@ public class SectionNode extends Node {
 		@Override
 		public void execute(Context ctx, Object obj) {
 			Object filterFun = ctx.get(filter);
-			if (filterFun == null || !(filterFun instanceof FilterFunction)) {
+			if (!(filterFun instanceof FilterFunction)) {
 				throw new MustacheException("bad filter " + filter + ". filter must be a FilterFunction");
 			}
 			Object val = ((FilterFunction) filterFun).apply(obj);
 			if (val != null) {
-				Section delegate = this.delegate;
-				if (delegate == null || !delegate.isCompatible(val)) {
-					delegate = node.createSection(val, false);
-					this.delegate = delegate;
+				synchronized (this) {
+					if (delegate == null || !delegate.isCompatible(val)) {
+						delegate = node.createSection(val, false);
+					}
 				}
 				delegate.execute(ctx, val);
 			}
@@ -211,7 +210,7 @@ public class SectionNode extends Node {
 		@Override
 		public void execute(Context ctx, Object obj) {
 			Object filterFun = ctx.get(filter);
-			if (filterFun == null || !(filterFun instanceof FilterFunction)) {
+			if (!(filterFun instanceof FilterFunction)) {
 				throw new MustacheException("bad filter " + filter + ". filter must be a function");
 			}
 			Object val = ((FilterFunction) filterFun).apply(obj);
@@ -244,7 +243,7 @@ public class SectionNode extends Node {
 
 	private static class WrapperSection extends Section {
 
-		private volatile BiFunctionWrapper wrapper;
+		private BiFunctionWrapper wrapper;
 		private Node body;
 		private CompileContext context;
 
@@ -256,9 +255,10 @@ public class SectionNode extends Node {
 
 		@Override
 		public void execute(Context ctx, Object obj) {
-			BiFunctionWrapper wrapper = this.wrapper;
-			if (wrapper == null || obj != wrapper.get()) {
-				this.wrapper = wrapper = new BiFunctionWrapper(body, (WrapperFunction) obj, context);
+			synchronized (this) {
+				if (wrapper == null || obj != wrapper.get()) {
+					wrapper = new BiFunctionWrapper(body, (WrapperFunction) obj, context);
+				}
 			}
 			Object val = wrapper.get(ctx, obj);
 			if (val != null) {
@@ -367,6 +367,7 @@ public class SectionNode extends Node {
 
 		@Override
 		public void execute(Context ctx, Object obj) {
+			// Do nothing it is empty.
 		}
 	}
 

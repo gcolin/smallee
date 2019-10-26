@@ -17,6 +17,7 @@ package net.gcolin.rest.ext.freemarker;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -31,7 +32,6 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import net.gcolin.common.io.Io;
 
 /**
  * Write JspView.
@@ -72,7 +72,7 @@ public class FreemarkerProvider implements MessageBodyWriter<FreemarkerView> {
 			throws IOException {
 		Template tmpl = configuration.getTemplate(entity.getPath());
 
-		try (Writer writer = Io.writer(entityStream, charset)) {
+		try (Writer writer = new OutputStreamWriter(entityStream, charset)) {
 			tmpl.process(entity.getModel(), writer);
 		} catch (TemplateException ex) {
 			throw new IOException(ex);

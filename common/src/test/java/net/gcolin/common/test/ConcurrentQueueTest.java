@@ -15,7 +15,6 @@
 
 package net.gcolin.common.test;
 
-import net.gcolin.common.Time;
 import net.gcolin.common.collection.ConcurrentQueue;
 
 import org.junit.Assert;

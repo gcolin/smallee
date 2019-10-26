@@ -35,7 +35,6 @@ public class SectionScope implements Scope {
 
 	@Override
 	public boolean has(String name) {
-		// TODO Auto-generated method stub
 		return name.equals("-index") || name.equals("-last") || name.equals("-first") || delegate.has(name);
 	}
 

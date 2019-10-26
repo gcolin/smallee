@@ -15,7 +15,6 @@
 
 package net.gcolin.common.collection;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -33,9 +32,8 @@ import java.util.function.Function;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  */
-public class UnmodifiableMap<K, V> implements Map<K, V>, Serializable {
+public class UnmodifiableMap<K, V> implements Map<K, V> {
 
-	private static final long serialVersionUID = 8660062736982852175L;
 	private final Map<K, V> delagate;
 	private transient Set<K> keySet;
 	private transient Set<Map.Entry<K, V>> entrySet;

@@ -84,7 +84,7 @@ public class Scan {
 				String name = Scan.toClassName(path);
 				try {
 					consumer.accept(classLoader.loadClass(name));
-				} catch (Throwable ex) {
+				} catch (Exception ex) {
 					Logger logger = Logger.getLogger(Scan.class.getName());
 					if (logger.isLoggable(Level.FINE)) {
 						logger.log(Level.FINE, "cannot load class : " + name, ex);

@@ -15,16 +15,6 @@
 
 package net.gcolin.rest.servlet;
 
-import net.gcolin.common.collection.Collections2;
-import net.gcolin.common.collection.Func;
-import net.gcolin.common.lang.Header;
-import net.gcolin.common.lang.Headers;
-import net.gcolin.common.lang.Strings;
-import net.gcolin.rest.FastMediaType;
-import net.gcolin.rest.util.HttpHeader;
-import net.gcolin.rest.util.lb.DateHeaderParamConverter;
-import net.gcolin.rest.util.lb.DateParamConverter;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +28,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Variant;
+
+import net.gcolin.common.collection.Collections2;
+import net.gcolin.common.collection.Func;
+import net.gcolin.common.lang.Strings;
+import net.gcolin.rest.FastMediaType;
+import net.gcolin.rest.util.Header;
+import net.gcolin.rest.util.Headers;
+import net.gcolin.rest.util.HttpHeader;
+import net.gcolin.rest.util.lb.DateHeaderParamConverter;
+import net.gcolin.rest.util.lb.DateParamConverter;
 
 /**
  * Request from an HttpServletRequest.

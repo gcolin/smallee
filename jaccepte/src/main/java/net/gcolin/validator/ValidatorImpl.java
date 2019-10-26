@@ -56,7 +56,7 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
 
 	private static final String WITH_GROUPS = " with groups ";
 	public static final Logger LOG = Logger.getLogger("net.gcolin.validator");
-	private static Class<?>[] DEFAULT_GROUP = { Default.class };
+	private static final Class<?>[] DEFAULT_GROUP = { Default.class };
 	private ValidatorConfigurationImpl configuration;
 	private ValidatorFactoryImpl factory;
 	private Map<String, BeanValidator<?>> cache = new ConcurrentHashMap<>();

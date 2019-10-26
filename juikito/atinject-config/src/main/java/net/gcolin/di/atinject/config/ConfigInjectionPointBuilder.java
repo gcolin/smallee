@@ -78,7 +78,7 @@ public class ConfigInjectionPointBuilder implements InjectionPointBuilder {
 			} else if (field.getType() == long.class || field.getType() == Long.class) {
 				return new ConfigInjectionPoint(field, NumberUtil.parseLong(v, 0));
 			} else {
-				env.getLog().log(Level.WARNING, "cannot cast config properties to type {0} in {0}", new Object[] {field.getType(), field});
+				env.getLog().log(Level.WARNING, "cannot cast config properties to type {0} in {1}", new Object[] {field.getType(), field});
 			}
 		}
 		return null;

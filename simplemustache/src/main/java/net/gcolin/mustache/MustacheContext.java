@@ -51,11 +51,10 @@ public class MustacheContext {
 	 * 
 	 * @param partials partials by name
 	 */
-	@SuppressWarnings("unchecked")
 	public MustacheContext(Map<String, String> partials) {
 		this.partials = partials;
 		if (partials == null) {
-			this.partials = Collections.EMPTY_MAP;
+			this.partials = Collections.emptyMap();
 		}
 	}
 
@@ -92,7 +91,8 @@ public class MustacheContext {
 							}
 							MethodGetter getter = null;
 							if (!bindings.containsKey(name)) {
-								bindings.put(name, getter = new MethodGetter(m));
+								getter = new MethodGetter(m);
+								bindings.put(name, new MethodGetter(m));
 							}
 							if (name2 != null && !bindings.containsKey(name2)) {
 								if (getter == null) {
@@ -169,7 +169,7 @@ public class MustacheContext {
 		bindingCache.clear();
 	}
 
-	public boolean remove(Object key, Object value) {
+	public boolean remove(Object key) {
 		return db.remove(key) != null;
 	}
 

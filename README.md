@@ -1,25 +1,53 @@
-<!---
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+# Smallee
 
-   http://www.apache.org/licenses/LICENSE-2.0
+* A dependency injection (JSR-330) with optional modules
+* A rest 2.0 implementation (JSR-339 not fully compliant) with modules
+* A validation implementation 1.0 (not fully compliant)
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License. See accompanying LICENSE file.
--->
 
-# SmallEE
+Works with Java 11.
 
-Group many project in one. Works with Java 11.
+## Setup
+
+Install locally
+
+```
+mvn clean install
+```
+
+
+
+Create the maven site in target/staging
 
 ```
 mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install site:site site:stage
 ```
 
-Get the maven site in target/staging
+## Atinject modules
 
- 
+  * **atinject-cdi-like** CDI annotations support
+  * **atinject-config** Inject configuration from config.properties
+  * **atinject-el** Expression Language support
+  * **atinject-event** CDI like Event
+  * **atinject-injector** javax.interceptor annotations support (experimental)
+  * **atinject-jmx** JMX annotation to expose fields/methods
+  * **atinject-jndi** JNDI Resource annotation support
+  * **atinject-jpa** JPA PersistenceContext/Transactional support (experimental)
+  * **atinject-jsp** JSP bean injection
+  * **atinject-loader** Load beans from META-INF/atinject
+  * **atinject-producer** CDI like Producer 
+  * **atinject-web** CDI like ApplicationScoped/SessionScoped/RequestScoped + Servlet beans injections
+  
+## Rest modules
+
+* **rest-ext-atinject** Load @ApplicationPath with atinject
+* **rest-ext-cdi** Load @ApplicationPath a CDI implementation
+* **rest-ext-datasource** DataSource provider
+* **rest-ext-freemarker** Freemarker view
+* **rest-ext-gzip** Gzip input or outpout
+* **rest-ext-jaxb** Jaxb provider
+* **rest-ext-json** Json provider
+* **rest-ext-jsp** Jsp view
+* **rest-ext-mustache** Mustache view
+* **rest-ext-validation** Parameter validation support
+* **rest-ext-xml** Dom/Sax/Stax providers

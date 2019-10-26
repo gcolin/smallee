@@ -15,15 +15,6 @@
 
 package net.gcolin.rest.servlet;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.common.route.Router;
-import net.gcolin.rest.param.Param;
-import net.gcolin.rest.parambuilder.ParamBuilder;
-import net.gcolin.rest.provider.Configurator;
-import net.gcolin.rest.provider.SimpleProviders;
-import net.gcolin.rest.provider.SingletonSupplier;
-import net.gcolin.rest.server.ServerProviders;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -35,6 +26,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.core.FeatureContext;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.rest.param.Param;
+import net.gcolin.rest.parambuilder.ParamBuilder;
+import net.gcolin.rest.provider.Configurator;
+import net.gcolin.rest.provider.SimpleProviders;
+import net.gcolin.rest.provider.SingletonSupplier;
+import net.gcolin.rest.server.ServerProviders;
+import net.gcolin.rest.util.Router;
 
 /**
  * Custom configuration.

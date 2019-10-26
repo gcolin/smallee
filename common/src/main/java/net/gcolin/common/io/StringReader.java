@@ -50,6 +50,8 @@ public class StringReader extends Reader {
   }
 
   @Override
-  public void close() throws IOException {}
+  public void close() throws IOException {
+	  // Do nothing
+  }
 
 }

@@ -15,13 +15,6 @@
 
 package net.gcolin.rest.server;
 
-import net.gcolin.common.reflect.Reflect;
-import net.gcolin.common.reflect.TypedInvocationHandler;
-import net.gcolin.common.route.Router;
-import net.gcolin.rest.Environment;
-import net.gcolin.rest.FeatureBuilder;
-import net.gcolin.rest.RestConfiguration;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +33,13 @@ import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
+
+import net.gcolin.common.reflect.Reflect;
+import net.gcolin.common.reflect.TypedInvocationHandler;
+import net.gcolin.rest.Environment;
+import net.gcolin.rest.FeatureBuilder;
+import net.gcolin.rest.RestConfiguration;
+import net.gcolin.rest.util.Router;
 
 /**
  * A class for enabling all features of the REST server side.

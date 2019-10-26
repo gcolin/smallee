@@ -28,7 +28,7 @@ public class ConnectionManager {
 	}
 	
 	@PreDestroy
-	void end() throws SQLException {
+	void end() {
 		Io.close(connection);
 	}
 	

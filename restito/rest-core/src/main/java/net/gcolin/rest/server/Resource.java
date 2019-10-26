@@ -15,18 +15,6 @@
 
 package net.gcolin.rest.server;
 
-import net.gcolin.common.route.HasPath;
-import net.gcolin.rest.Environment;
-import net.gcolin.rest.FastMediaType;
-import net.gcolin.rest.MessageBodyReaderDecorator;
-import net.gcolin.rest.MessageBodyWriterDecorator;
-import net.gcolin.rest.param.Param;
-import net.gcolin.rest.param.PostParam;
-import net.gcolin.rest.provider.Provider;
-import net.gcolin.rest.provider.SimpleProviders;
-import net.gcolin.rest.util.Filters;
-import net.gcolin.rest.util.HttpHeader;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -60,6 +48,18 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Providers;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
+
+import net.gcolin.rest.Environment;
+import net.gcolin.rest.FastMediaType;
+import net.gcolin.rest.MessageBodyReaderDecorator;
+import net.gcolin.rest.MessageBodyWriterDecorator;
+import net.gcolin.rest.param.Param;
+import net.gcolin.rest.param.PostParam;
+import net.gcolin.rest.provider.Provider;
+import net.gcolin.rest.provider.SimpleProviders;
+import net.gcolin.rest.util.Filters;
+import net.gcolin.rest.util.HasPath;
+import net.gcolin.rest.util.HttpHeader;
 
 /**
  * A resource that calls the service with a java method.

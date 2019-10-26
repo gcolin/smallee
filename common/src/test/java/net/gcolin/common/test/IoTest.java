@@ -22,12 +22,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -39,8 +35,6 @@ import java.util.logging.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.gcolin.common.io.FastInputStreamReader;
-import net.gcolin.common.io.FastOutputStreamWriter;
 import net.gcolin.common.io.Io;
 
 public class IoTest {
@@ -258,30 +252,6 @@ public class IoTest {
 	}
 
 	@Test
-	public void readerTest() {
-		Reader reader = Io.reader(new ByteArrayInputStream(new byte[0]));
-		Assert.assertTrue(reader instanceof FastInputStreamReader);
-
-		reader = Io.reader(new ByteArrayInputStream(new byte[0]), StandardCharsets.UTF_8.name());
-		Assert.assertTrue(reader instanceof FastInputStreamReader);
-
-		reader = Io.reader(new ByteArrayInputStream(new byte[0]), "KOI8-R");
-		Assert.assertTrue(reader instanceof InputStreamReader);
-	}
-
-	@Test
-	public void writerTest() throws IOException {
-		Writer writer = Io.writer(new ByteArrayOutputStream(), StandardCharsets.UTF_8.name());
-		Assert.assertTrue(writer instanceof FastOutputStreamWriter);
-		writer.flush();
-		writer.close();
-		writer.close();
-
-		writer = Io.writer(new ByteArrayOutputStream(), "KOI8-R");
-		Assert.assertTrue(writer instanceof OutputStreamWriter);
-	}
-
-	@Test
 	public void deleteDirTest() throws IOException {
 		File dir = new File(FileFinder.getBuild(), "deldir");
 		if (dir.mkdirs()) {
@@ -338,7 +308,7 @@ public class IoTest {
 		lines = Io.readLines(new URL(txt.toURI().toURL() + "2"), String.class, x -> x.toUpperCase());
 		Assert.assertEquals(0, lines.length);
 
-		lines = Io.readLines((InputStream) null, String.class, x -> x.toUpperCase(), "utf8");
+		lines = Io.readLines((InputStream) null, String.class, x -> x.toUpperCase(), StandardCharsets.UTF_8);
 		Assert.assertEquals(0, lines.length);
 
 		lines = Io.readLines(new InputStream() {
@@ -347,7 +317,7 @@ public class IoTest {
 			public int read() throws IOException {
 				throw new IOException();
 			}
-		}, String.class, x -> x.toUpperCase(), "utf8");
+		}, String.class, x -> x.toUpperCase(), StandardCharsets.UTF_8);
 		Assert.assertEquals(0, lines.length);
 	}
 

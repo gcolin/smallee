@@ -33,6 +33,7 @@ import javax.ws.rs.core.UriInfo;
 import net.gcolin.common.lang.Strings;
 import net.gcolin.rest.Logs;
 import net.gcolin.rest.server.ServerInvocationContext;
+import net.gcolin.rest.util.UrlEncoder;
 
 /**
  * UriInfo from an HttpServletRequest.
@@ -191,7 +192,7 @@ public class ServletUriInfo implements UriInfo {
         queryParameters = new MultivaluedHashMap<String, String>();
         for (Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
           for(String value : entry.getValue()) {
-            queryParameters.add(entry.getKey(), Strings.encodeUrl(value));
+            queryParameters.add(entry.getKey(), UrlEncoder.DEFAULT.encode(value));
           }
         }
       }

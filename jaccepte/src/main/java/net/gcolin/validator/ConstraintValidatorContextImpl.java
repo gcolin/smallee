@@ -39,275 +39,269 @@ import javax.validation.metadata.ConstraintDescriptor;
  */
 public class ConstraintValidatorContextImpl<T> implements ConstraintValidatorContext {
 
-  private ValidatorFactory validatorFactory;
-  private ConstraintDescriptor<Annotation> descriptor;
-  private PathImpl path = new PathImpl();
-  private Set<ConstraintViolation<T>> violations = new HashSet<>();
-  private T obj;
-  private Class<T> beanClass;
-  private Object[] executableParameters;
-  private Object executableReturnValue;
-  private Object value;
-  private Object leafBean;
-  private boolean disableDefaultConstraintViolation;
+	private ValidatorFactory validatorFactory;
+	private ConstraintDescriptor<Annotation> descriptor;
+	private PathImpl path = new PathImpl();
+	private Set<ConstraintViolation<T>> violations = new HashSet<>();
+	private T obj;
+	private Class<T> beanClass;
+	private Object[] executableParameters;
+	private Object executableReturnValue;
+	private Object value;
+	private Object leafBean;
+	private boolean disableDefaultConstraintViolation;
 
-  public Object[] getExecutableParameters() {
-    return executableParameters;
-  }
+	public Object[] getExecutableParameters() {
+		return executableParameters;
+	}
 
-  public Object getExecutableReturnValue() {
-    return executableReturnValue;
-  }
+	public Object getExecutableReturnValue() {
+		return executableReturnValue;
+	}
 
-  public Object getLeafBean() {
-    return leafBean;
-  }
+	public Object getLeafBean() {
+		return leafBean;
+	}
 
-  public void setBeanClass(Class<T> beanClass) {
-    this.beanClass = beanClass;
-  }
+	public void setBeanClass(Class<T> beanClass) {
+		this.beanClass = beanClass;
+	}
 
-  public Class<T> getBeanClass() {
-    return beanClass;
-  }
+	public Class<T> getBeanClass() {
+		return beanClass;
+	}
 
-  public PathImpl getPath() {
-    return path;
-  }
+	public PathImpl getPath() {
+		return path;
+	}
 
-  public Object getValue() {
-    return value;
-  }
+	public Object getValue() {
+		return value;
+	}
 
-  public Set<ConstraintViolation<T>> getViolations() {
-    return violations;
-  }
+	public Set<ConstraintViolation<T>> getViolations() {
+		return violations;
+	}
 
-  public void setValidatorFactory(ValidatorFactory validatorFactory) {
-    this.validatorFactory = validatorFactory;
-  }
+	public void setValidatorFactory(ValidatorFactory validatorFactory) {
+		this.validatorFactory = validatorFactory;
+	}
 
-  public void setDescriptor(ConstraintDescriptor<Annotation> descriptor) {
-    this.descriptor = descriptor;
-  }
+	public void setDescriptor(ConstraintDescriptor<Annotation> descriptor) {
+		this.descriptor = descriptor;
+	}
 
-  public void setPath(PathImpl path) {
-    this.path = path;
-  }
+	public void setPath(PathImpl path) {
+		this.path = path;
+	}
 
-  public void setO(T obj) {
-    this.obj = obj;
-  }
+	public void setO(T obj) {
+		this.obj = obj;
+	}
 
-  public T getO() {
-    return obj;
-  }
+	public T getO() {
+		return obj;
+	}
 
-  public void setExecutableParameters(Object[] executableParameters) {
-    this.executableParameters = executableParameters;
-  }
+	public void setExecutableParameters(Object[] executableParameters) {
+		this.executableParameters = executableParameters;
+	}
 
-  public void setExecutableReturnValue(Object executableReturnValue) {
-    this.executableReturnValue = executableReturnValue;
-  }
+	public void setExecutableReturnValue(Object executableReturnValue) {
+		this.executableReturnValue = executableReturnValue;
+	}
 
-  public void setValue(Object value) {
-    this.value = value;
-  }
+	public void setValue(Object value) {
+		this.value = value;
+	}
 
-  public void setLeafBean(Object leafBean) {
-    this.leafBean = leafBean;
-  }
+	public void setLeafBean(Object leafBean) {
+		this.leafBean = leafBean;
+	}
 
-  @Override
-  public void disableDefaultConstraintViolation() {
-    disableDefaultConstraintViolation = true;
-  }
+	@Override
+	public void disableDefaultConstraintViolation() {
+		disableDefaultConstraintViolation = true;
+	}
 
-  public boolean isDisableDefaultConstraintViolation() {
-    return disableDefaultConstraintViolation;
-  }
+	public boolean isDisableDefaultConstraintViolation() {
+		return disableDefaultConstraintViolation;
+	}
 
-  @Override
-  public String getDefaultConstraintMessageTemplate() {
-    return descriptor.getMessageTemplate();
-  }
+	@Override
+	public String getDefaultConstraintMessageTemplate() {
+		return descriptor.getMessageTemplate();
+	}
 
-  @Override
-  public ConstraintViolationBuilder buildConstraintViolationWithTemplate(String messageTemplate) {
-    return new ConstraintViolationBuilderImpl((PathImpl) path.clone(), messageTemplate);
-  }
+	@Override
+	public ConstraintViolationBuilder buildConstraintViolationWithTemplate(String messageTemplate) {
+		return new ConstraintViolationBuilderImpl((PathImpl) path.clone(), messageTemplate);
+	}
 
-  @Override
-  public <X> X unwrap(Class<X> type) {
-    if (type.isAssignableFrom(this.getClass())) {
-      return type.cast(this);
-    }
-    throw new IllegalArgumentException("cannot wrap to " + type);
-  }
+	@Override
+	public <X> X unwrap(Class<X> type) {
+		if (type.isAssignableFrom(this.getClass())) {
+			return type.cast(this);
+		}
+		throw new IllegalArgumentException("cannot wrap to " + type);
+	}
 
-  private ConstraintValidatorContext addConstraintViolation0(PathImpl path, String message) {
-    ConstraintViolationImpl<T> cv = new ConstraintViolationImpl<>();
-    cv.setConstraintDescriptor(descriptor);
-    cv.setExecutableParameters(executableParameters);
-    cv.setExecutableReturnValue(executableReturnValue);
-    cv.setInvalidValue(value);
-    cv.setMessageInterpolator(validatorFactory.getMessageInterpolator());
-    cv.setPath(path);
-    cv.setRootBean(obj);
-    cv.setRootBeanClass(beanClass);
-    cv.setLeafBean(leafBean);
-    cv.setMessageTemplate(message);
-    violations.add(cv);
-    return this;
-  }
+	private ConstraintValidatorContext addConstraintViolation0(PathImpl path, String message) {
+		ConstraintViolationImpl<T> cv = new ConstraintViolationImpl<>();
+		cv.setConstraintDescriptor(descriptor);
+		cv.setExecutableParameters(executableParameters);
+		cv.setExecutableReturnValue(executableReturnValue);
+		cv.setInvalidValue(value);
+		cv.setMessageInterpolator(validatorFactory.getMessageInterpolator());
+		cv.setPath(path);
+		cv.setRootBean(obj);
+		cv.setRootBeanClass(beanClass);
+		cv.setLeafBean(leafBean);
+		cv.setMessageTemplate(message);
+		violations.add(cv);
+		return this;
+	}
 
-  private class ConstraintViolationBuilderImpl implements ConstraintViolationBuilder {
+	private class ConstraintViolationBuilderImpl implements ConstraintViolationBuilder {
 
-    private String messageTemplate;
-    private PathImpl currentPath;
+		private String messageTemplate;
+		private PathImpl currentPath;
 
-    public ConstraintViolationBuilderImpl(PathImpl currentPath, String messageTemplate) {
-      this.messageTemplate = messageTemplate;
-      this.currentPath = currentPath;
-    }
+		public ConstraintViolationBuilderImpl(PathImpl currentPath, String messageTemplate) {
+			this.messageTemplate = messageTemplate;
+			this.currentPath = currentPath;
+		}
 
-    @Override
-    public NodeBuilderDefinedContext addNode(String name) {
-      NodeImpl node = new NodeImpl(name, ElementKind.PROPERTY);
-      currentPath.add(node);
-      return new NodeBuilder(currentPath, messageTemplate, node);
-    }
+		private NodeBuilder addNode0(String name) {
+			NodeImpl node = new NodeImpl(name, ElementKind.PROPERTY);
+			currentPath.add(node);
+			return new NodeBuilder(currentPath, messageTemplate, node);
+		}
 
-    @Override
-    public NodeBuilderCustomizableContext addPropertyNode(String name) {
-      NodeImpl node = new NodeImpl(name, ElementKind.PROPERTY);
-      currentPath.add(node);
-      return new NodeBuilder(currentPath, messageTemplate, node);
-    }
+		@Override
+		public NodeBuilderDefinedContext addNode(String name) {
+			return addNode0(name);
+		}
 
-    @Override
-    public LeafNodeBuilderCustomizableContext addBeanNode() {
-      NodeImpl node = new NodeImpl(null, ElementKind.BEAN);
-      currentPath.add(node);
-      return new LeafNodeBuilder(currentPath, messageTemplate, node);
-    }
+		@Override
+		public NodeBuilderCustomizableContext addPropertyNode(String name) {
+			return addNode0(name);
+		}
 
-    @Override
-    public NodeBuilderDefinedContext addParameterNode(int index) {
-      NodeImpl node = new NodeImpl(index, ElementKind.PARAMETER);
-      currentPath.add(node);
-      return new NodeBuilder(currentPath, messageTemplate, node);
-    }
+		@Override
+		public LeafNodeBuilderCustomizableContext addBeanNode() {
+			NodeImpl node = new NodeImpl(null, ElementKind.BEAN);
+			currentPath.add(node);
+			return new LeafNodeBuilder(currentPath, messageTemplate, node);
+		}
 
-    @Override
-    public ConstraintValidatorContext addConstraintViolation() {
-      return addConstraintViolation0(currentPath, messageTemplate);
-    }
+		@Override
+		public NodeBuilderDefinedContext addParameterNode(int index) {
+			NodeImpl node = new NodeImpl(index, ElementKind.PARAMETER);
+			currentPath.add(node);
+			return new NodeBuilder(currentPath, messageTemplate, node);
+		}
 
-  }
+		@Override
+		public ConstraintValidatorContext addConstraintViolation() {
+			return addConstraintViolation0(currentPath, messageTemplate);
+		}
 
-  private class LeafNodeBuilder
-      implements
-        LeafNodeContextBuilder,
-        LeafNodeBuilderCustomizableContext,
-        LeafNodeBuilderDefinedContext {
+	}
 
-    private PathImpl currentPath;
-    private String message;
-    private NodeImpl node;
+	private class LeafNodeBuilder
+			implements LeafNodeContextBuilder, LeafNodeBuilderCustomizableContext, LeafNodeBuilderDefinedContext {
 
-    public LeafNodeBuilder(PathImpl currentPath, String message, NodeImpl node) {
-      super();
-      this.currentPath = currentPath;
-      this.message = message;
-      this.node = node;
-    }
+		private PathImpl currentPath;
+		private String message;
+		private NodeImpl node;
 
-    @Override
-    public ConstraintValidatorContext addConstraintViolation() {
-      return addConstraintViolation0(currentPath, message);
-    }
+		public LeafNodeBuilder(PathImpl currentPath, String message, NodeImpl node) {
+			super();
+			this.currentPath = currentPath;
+			this.message = message;
+			this.node = node;
+		}
 
-    @Override
-    public LeafNodeContextBuilder inIterable() {
-      node.setInIterable(true);
-      return this;
-    }
+		@Override
+		public ConstraintValidatorContext addConstraintViolation() {
+			return addConstraintViolation0(currentPath, message);
+		}
 
-    @Override
-    public LeafNodeBuilderDefinedContext atIndex(Integer index) {
-      node.setIndex(index);
-      return this;
-    }
+		@Override
+		public LeafNodeContextBuilder inIterable() {
+			node.setInIterable(true);
+			return this;
+		}
 
-    @Override
-    public LeafNodeBuilderDefinedContext atKey(Object key) {
-      node.setKey(key);
-      return this;
-    }
+		@Override
+		public LeafNodeBuilderDefinedContext atIndex(Integer index) {
+			node.setIndex(index);
+			return this;
+		}
 
-  }
+		@Override
+		public LeafNodeBuilderDefinedContext atKey(Object key) {
+			node.setKey(key);
+			return this;
+		}
 
-  private class NodeBuilder
-      implements
-        NodeContextBuilder,
-        NodeBuilderDefinedContext,
-        NodeBuilderCustomizableContext {
+	}
 
-    private PathImpl currentPath;
-    private String message;
-    private NodeImpl node;
+	private class NodeBuilder implements NodeContextBuilder, NodeBuilderDefinedContext, NodeBuilderCustomizableContext {
 
-    public NodeBuilder(PathImpl currentPath, String message, NodeImpl node) {
-      super();
-      this.currentPath = currentPath;
-      this.message = message;
-      this.node = node;
-    }
+		private PathImpl currentPath;
+		private String message;
+		private NodeImpl node;
 
-    @Override
-    public NodeContextBuilder inIterable() {
-      node.setInIterable(true);
-      return this;
-    }
+		public NodeBuilder(PathImpl currentPath, String message, NodeImpl node) {
+			super();
+			this.currentPath = currentPath;
+			this.message = message;
+			this.node = node;
+		}
 
-    @Override
-    public LeafNodeBuilderCustomizableContext addBeanNode() {
-      NodeImpl node = new NodeImpl(null, ElementKind.BEAN);
-      currentPath.add(node);
-      return new LeafNodeBuilder(currentPath, message, node);
-    }
+		@Override
+		public NodeContextBuilder inIterable() {
+			node.setInIterable(true);
+			return this;
+		}
 
-    @Override
-    public ConstraintValidatorContext addConstraintViolation() {
-      return addConstraintViolation0(currentPath, message);
-    }
+		@Override
+		public LeafNodeBuilderCustomizableContext addBeanNode() {
+			NodeImpl beanNode = new NodeImpl(null, ElementKind.BEAN);
+			currentPath.add(beanNode);
+			return new LeafNodeBuilder(currentPath, message, beanNode);
+		}
 
-    @Override
-    public NodeBuilderCustomizableContext addNode(String name) {
-      currentPath.add(new NodeImpl(name, ElementKind.PROPERTY));
-      return this;
-    }
+		@Override
+		public ConstraintValidatorContext addConstraintViolation() {
+			return addConstraintViolation0(currentPath, message);
+		}
 
-    @Override
-    public NodeBuilderCustomizableContext addPropertyNode(String name) {
-      currentPath.add(new NodeImpl(name, ElementKind.PROPERTY));
-      return this;
-    }
+		@Override
+		public NodeBuilderCustomizableContext addNode(String name) {
+			return addPropertyNode(name);
+		}
 
-    @Override
-    public NodeBuilderDefinedContext atKey(Object key) {
-      node.setKey(key);
-      return this;
-    }
+		@Override
+		public NodeBuilderCustomizableContext addPropertyNode(String name) {
+			currentPath.add(new NodeImpl(name, ElementKind.PROPERTY));
+			return this;
+		}
 
-    @Override
-    public NodeBuilderDefinedContext atIndex(Integer index) {
-      node.setIndex(index);
-      return this;
-    }
+		@Override
+		public NodeBuilderDefinedContext atKey(Object key) {
+			node.setKey(key);
+			return this;
+		}
 
-  }
+		@Override
+		public NodeBuilderDefinedContext atIndex(Integer index) {
+			node.setIndex(index);
+			return this;
+		}
+
+	}
 
 }

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
@@ -356,33 +355,11 @@ public class Io {
 	 * 
 	 * @param in input stream
 	 * @return a reader
+	 * @throws IOException 
 	 */
-	public static Reader reader(InputStream in) {
-		return new FastInputStreamReader(in);
-	}
-
-	/**
-	 * Create a reader from an input stream.
-	 * 
-	 * @param in      an input stream
-	 * @param charset an encoding
-	 * @return a reader
-	 */
-	public static Reader reader(InputStream in, String charset) {
-		return charset == null || Decoder.has(charset) ? new FastInputStreamReader(in, charset)
-				: new InputStreamReader(in, Charset.forName(charset));
-	}
-
-	/**
-	 * Create a writer from an output stream.
-	 * 
-	 * @param out     an output stream
-	 * @param charset an encoding
-	 * @return a writer
-	 */
-	public static Writer writer(OutputStream out, String charset) {
-		return FastOutputStreamWriter.isCompatible(charset) ? new FastOutputStreamWriter(out, charset)
-				: new OutputStreamWriter(out, Charset.forName(charset));
+	public static Reader reader(InputStream in) throws IOException {
+		UnicodeDetectingInputStream detectInputstream = new UnicodeDetectingInputStream(in);
+		return new InputStreamReader(detectInputstream, detectInputstream.getCharset());
 	}
 
 	/**
@@ -412,8 +389,6 @@ public class Io {
 		} finally {
 			if (close) {
 				close(reader);
-			} else if (reader instanceof FastInputStreamReader) {
-				((FastInputStreamReader) reader).release();
 			}
 			close(bout);
 		}
@@ -602,7 +577,7 @@ public class Io {
 	 * @return an array of object types
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] readLines(URL url, Class<T> type, Function<String, T> transform, String charset) {
+	public static <T> T[] readLines(URL url, Class<T> type, Function<String, T> transform, Charset charset) {
 		try {
 			return readLines(url == null ? null : url.openStream(), type, transform, charset);
 		} catch (IOException ex) {
@@ -622,14 +597,14 @@ public class Io {
 	 * @return an array of object types
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] readLines(InputStream input, Class<T> type, Function<String, T> transform, String charset) {
+	public static <T> T[] readLines(InputStream input, Class<T> type, Function<String, T> transform, Charset charset) {
 		if (input == null) {
 			return (T[]) Array.newInstance(type, 0);
 		}
 		List<T> list = new ArrayList<>();
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(reader(input, charset));
+			in = new BufferedReader(charset == null ? reader(input): new InputStreamReader(input, charset));
 			String line;
 			while ((line = in.readLine()) != null) {
 				line = line.trim();
@@ -646,7 +621,7 @@ public class Io {
 		return list.toArray((T[]) Array.newInstance(type, list.size()));
 	}
 
-	public static String[] readLines(InputStream in, String charset) {
+	public static String[] readLines(InputStream in, Charset charset) {
 		return readLines(in, String.class, Function.identity(), charset);
 	}
 }

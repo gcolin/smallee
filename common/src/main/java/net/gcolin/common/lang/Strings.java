@@ -44,7 +44,6 @@ public final class Strings {
 	private static final String[] JAVA_ENCODING = new String[93];
 	private static final String[] XML_ENCODING = new String[63];
 	private static final String[] XML_ATTR_ENCODING = new String[63];
-	private static final UrlEncoder URL_ENCODER = new UrlEncoder();
 	private static final Map<String, String> XML_TABLE = new HashMap<>();
 	private static final char[] ILLEGAL_CHARACTERS = { '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>',
 			'|', '\"', ':' };
@@ -181,16 +180,6 @@ public final class Strings {
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Fast URL encoding.
-	 * 
-	 * @param input A string to encode
-	 * @return An URL encoded string
-	 */
-	public static String encodeUrl(String input) {
-		return URL_ENCODER.encode(input);
 	}
 
 	/**

@@ -38,7 +38,6 @@ import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParsingException;
 
 import net.gcolin.common.collection.ArrayQueue;
-import net.gcolin.common.io.FastInputStreamReader;
 import net.gcolin.common.io.Io;
 import net.gcolin.common.lang.Strings;
 
@@ -118,17 +117,17 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 			if (parser.end) {
 				return false;
 			}
-			State state = null;
+			State nextState = null;
 			if (read < 126) {
-				state = BASIC_STATE[read];
+				nextState = BASIC_STATE[read];
 			}
-			if (state == null) {
+			if (nextState == null) {
 				throw new JsonParsingException("bad json " + (char) read, parser);
 			}
-			if (state == NUMBER_SCOPE) {
+			if (nextState == NUMBER_SCOPE) {
 				parser.current = (char) read;
 			}
-			return state.active(parser);
+			return nextState.active(parser);
 		}
 
 	};
@@ -142,11 +141,11 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 		@Override
 		public boolean next(JsonParserImpl parser) {
 			int read = parser.read0NoBlank(true);
-			State state = null;
+			State nextState = null;
 			if (read < 126) {
-				state = COMA_STATE[read];
+				nextState = COMA_STATE[read];
 			}
-			if (state == null) {
+			if (nextState == null) {
 				if (read == ',') {
 					if (parser.queue.peek() == Event.END_OBJECT) {
 						return OBJECT_SCOPE.next(parser);
@@ -156,7 +155,7 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 				}
 				throw new JsonParsingException("bad json " + (char) read, parser);
 			}
-			return state.active(parser);
+			return nextState.active(parser);
 		}
 
 	};
@@ -195,14 +194,14 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 		public boolean next(JsonParserImpl parser) {
 			parser.current = parser.read0NoBlank(true);
 
-			State state = null;
+			State nextState = null;
 			if (parser.current < 126) {
-				state = BASIC_STATE[parser.current];
+				nextState = BASIC_STATE[parser.current];
 			}
 
-			if (state == END_OBJECT_SCOPE) {
+			if (nextState == END_OBJECT_SCOPE) {
 				return END_OBJECT_SCOPE.active(parser);
-			} else if (state != STRING_SCOPE) {
+			} else if (nextState != STRING_SCOPE) {
 				throw new JsonParsingException("exprected }", parser);
 			} else {
 				parser.readToken();
@@ -346,7 +345,7 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 			throw new JsonParsingException("bad json comment", this);
 		}
 		char prec = '\0';
-		char ch = '\0';
+		char ch;
 		while (true) {
 			ch = read0(true);
 			if (ch == '/' && prec == '*') {
@@ -358,7 +357,11 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 	}
 
 	public static JsonParserImpl take(InputStream in) {
-		return take(new FastInputStreamReader(in));
+		try {
+			return take(Io.reader(in));
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	/**
@@ -453,43 +456,38 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 	private boolean isDigit(int ch) {
 		return ch >= '0' && ch <= '9';
 	}
+	
+	private char getsDigits() {
+		char ch = '\0';
+		while (!end) {
+			ch = read0(false);
+			if (!isDigit(ch)) {
+				return ch;
+			}
+			buffer.append(ch);
+		}
+		return ch;
+	}
 
 	private void readNumber() {
 		buffer.setLength(0);
 		buffer.append(current);
 		event = Event.VALUE_NUMBER;
-		char ch = '\0';
 		final long precColumn = columnNumber;
 		final long precLineNumber = lineNumber;
-		boolean usefull = true;
-		while (!end) {
-			if (!(usefull = isDigit(ch = read0(false)))) {
-				break;
-			}
-			buffer.append(ch);
-		}
+		char ch = getsDigits();
 		if (!end && ch == '.') {
 			buffer.append(ch);
-			while (!end) {
-				if (!(usefull = isDigit(ch = read0(false)))) {
-					break;
-				}
-				buffer.append(ch);
-			}
+			ch = getsDigits();
 		}
 		if (!end && (ch == 'e' || ch == 'E')) {
 			buffer.append('E');
 			ch = read0(true);
 			checkPlusOrMinus(ch);
 			buffer.append(ch);
-			while (!end) {
-				if (!(usefull = isDigit(ch = read0(false)))) {
-					break;
-				}
-				buffer.append(ch);
-			}
+			ch = getsDigits();
 		}
-		if (!end && !usefull && columnNumber != precColumn && streamOffset != precLineNumber) {
+		if (!end && !isDigit(ch) && columnNumber != precColumn && streamOffset != precLineNumber) {
 			rewind();
 		}
 	}
@@ -641,18 +639,6 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 		BigDecimal bigDecimal = new BigDecimal(buffer.toString());
 		return bigDecimal.scale() == 0;
 	}
-
-	// private int read() throws IOException {
-	// int ch = source.read();
-	// streamOffset++;
-	// if (ch == '\n') {
-	// columnNumber = 0;
-	// lineNumber++;
-	// } else {
-	// columnNumber++;
-	// }
-	// return ch;
-	// }
 
 	private char read0(boolean throwE) {
 		if (!input.hasRemaining()) {

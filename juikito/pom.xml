@@ -25,7 +25,6 @@
 		<module>atinject-jndi</module>
 		<module>atinject-interceptor</module>
 		<module>atinject-jpa</module>
-		<module>atinject-web-example</module>
 		<module>atinject-cdi-like</module>
 	</modules>
 	

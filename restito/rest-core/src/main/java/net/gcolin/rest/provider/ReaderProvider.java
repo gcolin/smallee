@@ -15,13 +15,11 @@
 
 package net.gcolin.rest.provider;
 
-import net.gcolin.common.io.FastOutputStreamWriter;
-import net.gcolin.common.io.Io;
-import net.gcolin.common.lang.Strings;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
@@ -33,6 +31,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+
+import net.gcolin.common.io.Io;
+import net.gcolin.common.lang.Strings;
 
 /**
  * Read/Write Reader entity.
@@ -53,15 +54,8 @@ public class ReaderProvider extends Provider<Reader> {
       MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
           throws IOException {
     String charset = getCharset(httpHeaders);
-    Writer writer = null;
-    try {
-      writer = Io.writer(entityStream, charset);
+    try (Writer writer = new OutputStreamWriter(entityStream, charset)) {
       Io.copy(entity, writer);
-      writer.flush();
-    } finally {
-      if (writer instanceof FastOutputStreamWriter) {
-        ((FastOutputStreamWriter) writer).release();
-      }
     }
   }
 
@@ -86,7 +80,7 @@ public class ReaderProvider extends Provider<Reader> {
   public Reader readFrom(Class<Reader> type, Type genericType, Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
           throws IOException {
-    return Io.reader(entityStream, getCharset(httpHeaders));
+    return new InputStreamReader(entityStream, getCharset(httpHeaders));
   }
 
 }

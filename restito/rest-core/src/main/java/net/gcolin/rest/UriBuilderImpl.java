@@ -15,9 +15,6 @@
 
 package net.gcolin.rest;
 
-import net.gcolin.common.lang.Strings;
-import net.gcolin.common.lang.UrlEncoder;
-
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,6 +25,9 @@ import java.util.Map.Entry;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriBuilderException;
+
+import net.gcolin.common.lang.Strings;
+import net.gcolin.rest.util.UrlEncoder;
 
 /**
  * The UriBuilder implementation.

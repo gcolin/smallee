@@ -15,12 +15,11 @@
 
 package net.gcolin.rest.provider;
 
-import net.gcolin.common.io.FastOutputStreamWriter;
-import net.gcolin.common.lang.Strings;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -33,71 +32,68 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
+import net.gcolin.common.lang.Strings;
+
 /**
  * Read/Write MultivaluedMap entity from Http payload.
  * 
  * @author Gaël COLIN
  * @since 1.0
  */
-@Produces({MediaType.APPLICATION_FORM_URLENCODED})
-@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+@Produces({ MediaType.APPLICATION_FORM_URLENCODED })
+@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 public class FormProvider extends Provider<MultivaluedMap<String, String>> {
 
-  public FormProvider() {
-    super(MultivaluedMap.class);
-  }
+	public FormProvider() {
+		super(MultivaluedMap.class);
+	}
 
-  @Override
-  public void writeTo(MultivaluedMap<String, String> map, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
-      OutputStream entityStream) throws IOException {
-    FastOutputStreamWriter writer =
-        new FastOutputStreamWriter(entityStream, StandardCharsets.UTF_8.name());
-    try {
-      fillFormMap(map, writer);
-    } finally {
-      writer.release();
-    }
-  }
+	@Override
+	public void writeTo(MultivaluedMap<String, String> map, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+			throws IOException {
+		try (Writer writer = new OutputStreamWriter(entityStream, StandardCharsets.UTF_8)) {
+			fillFormMap(map, writer);
+		}
+	}
 
-  private void fillFormMap(MultivaluedMap<String, String> map, FastOutputStreamWriter writer)
-      throws IOException {
-    boolean fst = true;
-    for (Entry<String, List<String>> e : map.entrySet()) {
-      for (String s : e.getValue()) {
-        if (fst) {
-          fst = false;
-        } else {
-          writer.append('&');
-        }
-        writer.write(e.getKey());
-        writer.append('=');
-        writer.write(s);
-      }
-    }
-  }
+	private void fillFormMap(MultivaluedMap<String, String> map, Writer writer) throws IOException {
+		boolean fst = true;
+		for (Entry<String, List<String>> e : map.entrySet()) {
+			for (String s : e.getValue()) {
+				if (fst) {
+					fst = false;
+				} else {
+					writer.append('&');
+				}
+				writer.write(e.getKey());
+				writer.append('=');
+				writer.write(s);
+			}
+		}
+	}
 
-  @Override
-  public MultivaluedMap<String, String> readFrom(Class<MultivaluedMap<String, String>> type,
-      Type genericType, Annotation[] annotations, MediaType mediaType,
-      MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException {
-    MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
-    int ch;
-    String key = null;
-    StringBuilder str = new StringBuilder();
-    while ((ch = entityStream.read()) != -1) {
-      if (ch == '=') {
-        key = str.toString();
-        str.setLength(0);
-      } else if (ch == '&') {
-        map.add(Strings.decodeUrl(key), Strings.decodeUrl(str.toString()));
-        str.setLength(0);
-      } else {
-        str.append((char) ch);
-      }
-    }
-    map.add(Strings.decodeUrl(key), Strings.decodeUrl(str.toString()));
-    return map;
-  }
+	@Override
+	public MultivaluedMap<String, String> readFrom(Class<MultivaluedMap<String, String>> type, Type genericType,
+			Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+			InputStream entityStream) throws IOException {
+		MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
+		int ch;
+		String key = null;
+		StringBuilder str = new StringBuilder();
+		while ((ch = entityStream.read()) != -1) {
+			if (ch == '=') {
+				key = str.toString();
+				str.setLength(0);
+			} else if (ch == '&') {
+				map.add(Strings.decodeUrl(key), Strings.decodeUrl(str.toString()));
+				str.setLength(0);
+			} else {
+				str.append((char) ch);
+			}
+		}
+		map.add(Strings.decodeUrl(key), Strings.decodeUrl(str.toString()));
+		return map;
+	}
 
 }

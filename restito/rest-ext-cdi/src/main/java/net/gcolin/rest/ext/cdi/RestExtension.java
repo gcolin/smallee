@@ -95,7 +95,7 @@ public class RestExtension implements Extension {
 				} else {
 					servlet.app(app, false);
 				}
-				log.log(Level.INFO, "start rest app {0} in the context {0}/*",
+				log.log(Level.INFO, "start rest app {0} in the context {1}/*",
 						new Object[] { appType.getJavaClass().getName(), path });
 			} catch (Exception ex) {
 				log.log(Level.SEVERE, "cannot add rest application " + appType.getJavaClass().getName(), ex);

@@ -33,154 +33,156 @@ import java.util.Set;
  */
 public class ArraySet<E> implements Set<E> {
 
-  private E[] array;
+	private E[] array;
 
-  public ArraySet(E[] delegate) {
-    array = delegate;
-  }
+	public ArraySet(E[] delegate) {
+		array = delegate;
+	}
 
-  @Override
-  public int size() {
-    return array.length;
-  }
+	@Override
+	public int size() {
+		return array.length;
+	}
 
-  @Override
-  public boolean isEmpty() {
-    return array.length == 0;
-  }
+	@Override
+	public boolean isEmpty() {
+		return array.length == 0;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public boolean contains(Object obj) {
-    for (int i = 0; i < array.length; i++) {
-      if (equals((E) obj, array[i])) {
-        return true;
-      }
-    }
-    return false;
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean contains(Object obj) {
+		for (int i = 0; i < array.length; i++) {
+			if (equals((E) obj, array[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-  protected boolean equals(E obj, E other) {
-    return Objects.equals(obj, other);
-  }
+	protected boolean equals(E obj, E other) {
+		return Objects.equals(obj, other);
+	}
 
-  @Override
-  public Iterator<E> iterator() {
-    return new Iterator<E>() {
+	@Override
+	public Iterator<E> iterator() {
+		return new Iterator<E>() {
 
-      private int index = 0;
+			private int index = 0;
 
-      @Override
-      public boolean hasNext() {
-        return index < array.length;
-      }
+			@Override
+			public boolean hasNext() {
+				return index < array.length;
+			}
 
-      @Override
-      public E next() {
-        if (!hasNext()) {
-          throw new NoSuchElementException();
-        }
-        return array[index++];
-      }
-    };
-  }
+			@Override
+			public E next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException();
+				}
+				return array[index++];
+			}
+		};
+	}
 
-  @Override
-  public Object[] toArray() {
-    return array;
-  }
+	@Override
+	public Object[] toArray() {
+		return array;
+	}
 
-  @Override
-  public <T> T[] toArray(T[] data) {
-    System.arraycopy(array, 0, data, 0, Math.min(data.length, array.length));
-    return data;
-  }
+	@Override
+	public <T> T[] toArray(T[] data) {
+		System.arraycopy(array, 0, data, 0, Math.min(data.length, array.length));
+		return data;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public boolean add(E element) {
-    if (contains(element)) {
-      return false;
-    }
-    E[] tmp = (E[]) Array.newInstance(array.getClass().getComponentType(), array.length + 1);
-    System.arraycopy(array, 0, tmp, 0, array.length);
-    tmp[array.length] = element;
-    array = tmp;
-    return true;
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean add(E element) {
+		if (contains(element)) {
+			return false;
+		}
+		E[] tmp = (E[]) Array.newInstance(array.getClass().getComponentType(), array.length + 1);
+		System.arraycopy(array, 0, tmp, 0, array.length);
+		tmp[array.length] = element;
+		array = tmp;
+		return true;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public boolean remove(Object obj) {
-    if (!contains(obj)) {
-      return false;
-    }
-    array = (E[]) Collections2.removeToArray(array, obj);
-    return true;
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean remove(Object obj) {
+		if (!contains(obj)) {
+			return false;
+		}
+		array = (E[]) Collections2.removeToArray(array, obj);
+		return true;
+	}
 
-  @Override
-  public boolean containsAll(Collection<?> collection) {
-    for (Object obj : collection) {
-      if (!contains(obj)) {
-        return false;
-      }
-    }
-    return true;
-  }
+	@Override
+	public boolean containsAll(Collection<?> collection) {
+		for (Object obj : collection) {
+			if (!contains(obj)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-  @Override
-  public boolean addAll(Collection<? extends E> collection) {
-    boolean changed = false;
-    for (E obj : collection) {
-      changed |= add(obj);
-    }
-    return changed;
-  }
+	@Override
+	public boolean addAll(Collection<? extends E> collection) {
+		boolean changed = false;
+		for (E obj : collection) {
+			changed |= add(obj);
+		}
+		return changed;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public boolean retainAll(Collection<?> collection) {
-    List<Object> newValues = new ArrayList<>();
-    for (Object obj : collection) {
-      if (contains(obj)) {
-        newValues.add(obj);
-      }
-    }
-    boolean changed = size() != newValues.size();
-    E[] tmp = (E[]) Array.newInstance(array.getClass().getComponentType(), newValues.size());
-    newValues.toArray(tmp);
-    array = tmp;
-    return changed;
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean retainAll(Collection<?> collection) {
+		List<Object> newValues = new ArrayList<>();
+		for (Object obj : collection) {
+			if (contains(obj)) {
+				newValues.add(obj);
+			}
+		}
+		boolean changed = size() != newValues.size();
+		if (changed) {
+			E[] tmp = (E[]) Array.newInstance(array.getClass().getComponentType(), newValues.size());
+			newValues.toArray(tmp);
+			array = tmp;
+		}
+		return changed;
+	}
 
-  @Override
-  public boolean removeAll(Collection<?> collection) {
-    boolean changed = false;
-    for (Object obj : collection) {
-      changed |= remove(obj);
-    }
-    return changed;
-  }
+	@Override
+	public boolean removeAll(Collection<?> collection) {
+		boolean changed = false;
+		for (Object obj : collection) {
+			changed |= remove(obj);
+		}
+		return changed;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public void clear() {
-    array = (E[]) Array.newInstance(array.getClass().getComponentType(), 0);
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public void clear() {
+		array = (E[]) Array.newInstance(array.getClass().getComponentType(), 0);
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder str = new StringBuilder();
-    str.append('[');
-    for (int i = 0; i < array.length; i++) {
-      if (i > 0) {
-        str.append(", ");
-      }
-      str.append(array[i]);
-    }
-    str.append(']');
-    return str.toString();
-  }
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append('[');
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
+				str.append(", ");
+			}
+			str.append(array[i]);
+		}
+		str.append(']');
+		return str.toString();
+	}
 
 }

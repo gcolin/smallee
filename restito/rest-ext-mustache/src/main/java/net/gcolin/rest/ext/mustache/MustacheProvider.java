@@ -17,6 +17,7 @@ package net.gcolin.rest.ext.mustache;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -29,7 +30,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 
 import net.gcolin.common.Priority;
-import net.gcolin.common.io.Io;
 import net.gcolin.mustache.MustacheContext;
 
 /**
@@ -70,7 +70,7 @@ public class MustacheProvider implements MessageBodyWriter<MustacheView> {
 	public void writeTo(MustacheView entity, Class<?> type, Type genericType, Annotation[] annotations,
 			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream)
 			throws IOException {
-		try (Writer writer = Io.writer(entityStream, charset)) {
+		try (Writer writer = new OutputStreamWriter(entityStream, charset)) {
 			context.getTemplate(entity.getPath()).render(entity.getModel(), writer);
 		}
 	}

@@ -60,7 +60,7 @@ public class ClientImpl extends ConfigurableImpl<Client> implements Client {
 
   private HostnameVerifier hostnameVerifier;
   private Supplier<SSLContext> sslContext;
-  private volatile boolean closed = false;
+  private boolean closed = false;
   private Set<AutoCloseable> closeable =
       Collections.newSetFromMap(new ConcurrentHashMap<AutoCloseable, Boolean>());
   private Environment environment = new Environment();

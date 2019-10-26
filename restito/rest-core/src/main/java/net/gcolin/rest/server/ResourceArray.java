@@ -15,8 +15,6 @@
 
 package net.gcolin.rest.server;
 
-import net.gcolin.common.route.HasPath;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.ws.rs.HttpMethod;
+
+import net.gcolin.rest.util.HasPath;
 
 /**
  * Contains the resources for each HTTP method type.

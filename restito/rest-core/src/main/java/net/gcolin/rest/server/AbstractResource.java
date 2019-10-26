@@ -29,9 +29,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
 
-import net.gcolin.common.route.HasPath;
 import net.gcolin.rest.Logs;
 import net.gcolin.rest.MessageBodyWriterDecorator;
+import net.gcolin.rest.util.HasPath;
 
 /**
  * A partial server REST service.

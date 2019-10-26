@@ -15,12 +15,13 @@
 
 package net.gcolin.json;
 
-import net.gcolin.common.io.FastInputStreamReader;
-import net.gcolin.common.io.FastOutputStreamWriter;
 import net.gcolin.common.io.Io;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -72,7 +73,7 @@ public class JsonFactoryImpl
 
 	@Override
 	public JsonGenerator createGenerator(OutputStream out, Charset charset) {
-		return createGenerator(Io.writer(out, charset.name()));
+		return createGenerator(new OutputStreamWriter(out, charset));
 	}
 
 	@Override
@@ -82,12 +83,12 @@ public class JsonFactoryImpl
 
 	@Override
 	public JsonWriter createWriter(OutputStream out) {
-		return createWriter(new FastOutputStreamWriter(out, StandardCharsets.UTF_8.name()));
+		return createWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
 	}
 
 	@Override
 	public JsonWriter createWriter(OutputStream out, Charset charset) {
-		return createWriter(Io.writer(out, charset.name()));
+		return createWriter(new OutputStreamWriter(out, charset));
 	}
 
 	@Override
@@ -122,7 +123,7 @@ public class JsonFactoryImpl
 
 	@Override
 	public JsonParser createParser(InputStream in, Charset charset) {
-		return JsonParserImpl.take(Io.reader(in, charset.name()));
+		return JsonParserImpl.take(new InputStreamReader(in, charset));
 	}
 
 	@Override
@@ -132,12 +133,16 @@ public class JsonFactoryImpl
 
 	@Override
 	public JsonReader createReader(InputStream in) {
-		return new JsonReaderImpl(new FastInputStreamReader(in));
+		try {
+			return new JsonReaderImpl(Io.reader(in));
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	@Override
 	public JsonReader createReader(InputStream in, Charset charset) {
-		return new JsonReaderImpl(Io.reader(in, charset.name()));
+		return new JsonReaderImpl(new InputStreamReader(in, charset));
 	}
 
 	@Override

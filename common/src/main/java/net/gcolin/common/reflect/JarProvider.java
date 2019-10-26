@@ -57,10 +57,12 @@ public class JarProvider implements ScanProvider {
                 protected URLConnection openConnection(URL url) throws IOException {
                   return new URLConnection(url) {
 
-                    byte data[];
+                    byte[] data;
                     
                     @Override
-                    public void connect() throws IOException {}
+                    public void connect() throws IOException {
+                    	// nothing.
+                    }
 
                     @Override
                     public InputStream getInputStream() throws IOException {

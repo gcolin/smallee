@@ -51,8 +51,6 @@ import javax.ws.rs.ext.RuntimeDelegate;
 
 import net.gcolin.common.io.ByteArrayOutputStream;
 import net.gcolin.common.reflect.Reflect;
-import net.gcolin.common.route.Router;
-import net.gcolin.common.route.RouterResponse;
 import net.gcolin.rest.Environment;
 import net.gcolin.rest.FeatureBuilder;
 import net.gcolin.rest.Logs;
@@ -72,6 +70,8 @@ import net.gcolin.rest.server.ServerFeatureBuilder;
 import net.gcolin.rest.server.ServerInvocationContext;
 import net.gcolin.rest.server.ServerProviders;
 import net.gcolin.rest.server.ServerResponse;
+import net.gcolin.rest.util.Router;
+import net.gcolin.rest.util.RouterResponse;
 
 /**
  * Servlet for dispatching requests to Rest.
@@ -79,452 +79,446 @@ import net.gcolin.rest.server.ServerResponse;
  * @author Gaël COLIN
  * @since 1.0
  */
-@MultipartConfig(fileSizeThreshold = 100 * 1024, maxFileSize = 5 * 1024 * 1024,
-    maxRequestSize = 20 * 1024 * 1024)
+@MultipartConfig(fileSizeThreshold = 100 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
 public class RestServlet implements RestContainer, Servlet {
 
-  private static final String JUIKITO_ENV = "di.env";
-  private Router<ResourceArray> router;
-  private ServerProviders providers = new ServerProviders();
-  private Environment env = new Environment();
-  private ServiceStrategy strategy = new SimpleServiceStrategy();
-  private List<Application> apps = new ArrayList<>();
-  private String alias;
-  private ServletConfig config;
-  private boolean dirty;
-  private long start;
+	private static final String JUIKITO_ENV = "di.env";
+	private Router<ResourceArray> router;
+	private ServerProviders providers = new ServerProviders();
+	private Environment env = new Environment();
+	private ServiceStrategy strategy = new SimpleServiceStrategy();
+	private List<Application> apps = new ArrayList<>();
+	private String alias;
+	private ServletConfig config;
+	private boolean dirty;
+	private long start;
 
-  public Builder newResource() {
-    return new Builder();
-  }
+	public Builder newResource() {
+		return new Builder();
+	}
 
-  @Override
-  public void init(ServletConfig config) throws ServletException {
-    this.config = config;
-    String envName = config.getInitParameter(JUIKITO_ENV);
-    env(envName);
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		this.config = config;
+		String envName = config.getInitParameter(JUIKITO_ENV);
+		env(envName);
 
-    String application = config.getInitParameter("javax.ws.rs.Application");
+		String application = config.getInitParameter("javax.ws.rs.Application");
 
-    if (application != null) {
-      try {
-        app((Application) env
-            .getProvider(env.getClassLoader().loadClass(application), Application.class, false)
-            .get());
-      } catch (ClassNotFoundException ex) {
-        throw new ServletException("cannot find " + application, ex);
-      }
-    } else if (apps.isEmpty()) {
-      Logs.LOG.warning("cannot find jax rs application");
-    }
-  }
+		if (application != null) {
+			try {
+				app((Application) env.getProvider(env.getClassLoader().loadClass(application), Application.class, false)
+						.get());
+			} catch (ClassNotFoundException ex) {
+				throw new ServletException("cannot find " + application, ex);
+			}
+		} else if (apps.isEmpty()) {
+			Logs.LOG.warning("cannot find jax rs application");
+		}
+	}
 
-  public Router<ResourceArray> getRouter() {
-    return router;
-  }
+	public Router<ResourceArray> getRouter() {
+		return router;
+	}
 
-  public void clear() {
-    apps.clear();
-    initialize();
-  }
+	public void clear() {
+		apps.clear();
+		initialize();
+	}
 
-  public RestServlet app(Application app) throws ServletException {
-    return app(app, true);
-  }
+	public RestServlet app(Application app) throws ServletException {
+		return app(app, true);
+	}
 
-  /**
-   * Add an Application.
-   * 
-   * @param app the Application to add
-   * @param init force initialize
-   * @return the current servlet
-   * @throws ServletException if an error occurs.
-   */
-  public RestServlet app(Application app, boolean init) throws ServletException {
-    if (app.getProperties().containsKey(JUIKITO_ENV)) {
-      Object envConfig = app.getProperties().get(JUIKITO_ENV);
-      if (envConfig instanceof Environment) {
-        env = (Environment) envConfig;
-      } else {
-        env((String) envConfig);
-      }
-    }
-    this.apps.add(app);
-    dirty = true;
-    if (init) {
-      initialize();
-    }
-    return this;
-  }
+	/**
+	 * Add an Application.
+	 * 
+	 * @param app  the Application to add
+	 * @param init force initialize
+	 * @return the current servlet
+	 * @throws ServletException if an error occurs.
+	 */
+	public RestServlet app(Application app, boolean init) throws ServletException {
+		if (app.getProperties().containsKey(JUIKITO_ENV)) {
+			Object envConfig = app.getProperties().get(JUIKITO_ENV);
+			if (envConfig instanceof Environment) {
+				env = (Environment) envConfig;
+			} else {
+				env((String) envConfig);
+			}
+		}
+		this.apps.add(app);
+		dirty = true;
+		if (init) {
+			initialize();
+		}
+		return this;
+	}
 
-  /**
-   * Remove an Application.
-   * 
-   * @param app an Application
-   * @return true is there are other apps.
-   */
-  public boolean removeApp(Application app) {
-    apps.remove(app);
-    dirty = true;
-    return !apps.isEmpty();
-  }
+	/**
+	 * Remove an Application.
+	 * 
+	 * @param app an Application
+	 * @return true is there are other apps.
+	 */
+	public boolean removeApp(Application app) {
+		apps.remove(app);
+		dirty = true;
+		return !apps.isEmpty();
+	}
 
-  /**
-   * Deploy applications.
-   */
-  public synchronized void initialize() {
-    if (dirty) {
-      start = System.currentTimeMillis();
-      RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
-      router = new Router<>();
-      env.setProviders(providers);
-      providers.load(env);
-      providers.getContextProviders().bind(Application.class,
-          new SingletonSupplier<>(new SingletonParam(new CompositeApplication(apps))));
-      FeatureBuilder featureBuilder = new ServerFeatureBuilder(this, providers, router,
-          new RestConfiguration(RuntimeType.SERVER), env);
-      for (int i = 0; i < apps.size(); i++) {
-        Application app = apps.get(i);
-        for (Object singleton : app.getSingletons()) {
-          featureBuilder.register(env.decorate(singleton));
-        }
-      }
-      for (int i = 0; i < apps.size(); i++) {
-        Application app = apps.get(i);
-        for (Class<?> c : app.getClasses()) {
-          featureBuilder.register(c);
-        }
-      }
+	/**
+	 * Deploy applications.
+	 */
+	public synchronized void initialize() {
+		if (dirty) {
+			start = System.currentTimeMillis();
+			RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
+			router = new Router<>();
+			env.setProviders(providers);
+			providers.load(env);
+			providers.getContextProviders().bind(Application.class,
+					new SingletonSupplier<>(new SingletonParam(new CompositeApplication(apps))));
+			FeatureBuilder featureBuilder = new ServerFeatureBuilder(this, providers, router,
+					new RestConfiguration(RuntimeType.SERVER), env);
+			for (int i = 0; i < apps.size(); i++) {
+				Application app = apps.get(i);
+				for (Object singleton : app.getSingletons()) {
+					featureBuilder.register(env.decorate(singleton));
+				}
+			}
+			for (int i = 0; i < apps.size(); i++) {
+				Application app = apps.get(i);
+				for (Class<?> c : app.getClasses()) {
+					featureBuilder.register(c);
+				}
+			}
 
-      for (Configurator c : ServiceLoader.load(Configurator.class)) {
-        c.configureFeature(featureBuilder);
-      }
+			for (Configurator c : ServiceLoader.load(Configurator.class)) {
+				c.configureFeature(featureBuilder);
+			}
 
-      featureBuilder.build();
-      providers.flush(env);
+			featureBuilder.build();
+			providers.flush(env);
 
-      Logs.LOG.log(Level.INFO, "start jax rs application : {0} in {0}ms",
-          new Object[] {apps, System.currentTimeMillis() - start});
-      
-      Logs.LOG.info(router.toString());
+			Logs.LOG.log(Level.INFO, "start jax rs application : {0} in {1}ms",
+					new Object[] { apps, System.currentTimeMillis() - start });
 
-      dirty = false;
-    }
-  }
+			if (Logs.LOG.isLoggable(Level.FINE)) {
+				Logs.LOG.fine(router.toString());
+			}
 
-  /**
-   * Set the Environment by class name.
-   * 
-   * @param envName class name of the environment
-   * @return the current servlet
-   * @throws ServletException if an error occurs.
-   */
-  public RestServlet env(String envName) throws ServletException {
-    if (envName == null && this.env == null) {
-      return env(new Environment());
-    } else if (envName != null) {
-      try {
-        return env(
-            (Environment) Reflect.newInstance(this.getClass().getClassLoader().loadClass(envName)));
-      } catch (ClassNotFoundException ex) {
-        throw new ServletException("cannot find " + envName, ex);
-      }
-    }
-    return this;
-  }
+			dirty = false;
+		}
+	}
 
-  /**
-   * Set the Environment.
-   * 
-   * @param env the Environment.
-   * @return the current servlet
-   */
-  public RestServlet env(Environment env) {
-    if (env != this.env) {
-      this.env = env;
-      this.dirty = true;
-    }
-    return this;
-  }
+	/**
+	 * Set the Environment by class name.
+	 * 
+	 * @param envName class name of the environment
+	 * @return the current servlet
+	 * @throws ServletException if an error occurs.
+	 */
+	public RestServlet env(String envName) throws ServletException {
+		if (envName == null && this.env == null) {
+			return env(new Environment());
+		} else if (envName != null) {
+			try {
+				return env((Environment) Reflect.newInstance(this.getClass().getClassLoader().loadClass(envName)));
+			} catch (ClassNotFoundException ex) {
+				throw new ServletException("cannot find " + envName, ex);
+			}
+		}
+		return this;
+	}
 
-  @Override
-  public void service(ServletRequest req, ServletResponse res)
-      throws ServletException, IOException {
-    if (dirty) {
-      initialize();
-    }
+	/**
+	 * Set the Environment.
+	 * 
+	 * @param env the Environment.
+	 * @return the current servlet
+	 */
+	public RestServlet env(Environment env) {
+		if (env != this.env) {
+			this.env = env;
+			this.dirty = true;
+		}
+		return this;
+	}
 
-    HttpServletResponse response = (HttpServletResponse) res;
-    HttpServletRequest request = (HttpServletRequest) req;
+	@Override
+	public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+		if (dirty) {
+			initialize();
+		}
 
-    ServerInvocationContext ctx =
-        new ServerInvocationContext(new ServletExchange(request, response, this));
+		HttpServletResponse response = (HttpServletResponse) res;
+		HttpServletRequest request = (HttpServletRequest) req;
 
-    ThreadLocal<ServerInvocationContext> tlocal = Contexts.instance();
-    tlocal.set(ctx);
-    try {
-      strategy.service(request, response, ctx);
-    } finally {
-      tlocal.remove();
-    }
-  }
+		ServerInvocationContext ctx = new ServerInvocationContext(new ServletExchange(request, response, this));
 
-  private void handleResource(ServerInvocationContext context) throws IOException {
-    ServletExchange sex = (ServletExchange) context.getExchange();
-    ByteArrayOutputStream bout = null;
-    try {
-      ServerResponse response = (ServerResponse) context.getResource().handle(context);
-      if (sex.hasWritten()) {
-        return;
-      }
+		ThreadLocal<ServerInvocationContext> tlocal = Contexts.instance();
+		tlocal.set(ctx);
+		try {
+			strategy.service(request, response, ctx);
+		} finally {
+			tlocal.remove();
+		}
+	}
 
-      int status = response.getStatus();
-      if (status >= HttpURLConnection.HTTP_BAD_REQUEST && !response.hasEntity()) {
-        sex.getResponse().sendError(response.getStatus());
-      } else if (shouldUpdateStatus(sex, status)) {
-        sex.getResponse().setStatus(status);
-      }
+	private void handleResource(ServerInvocationContext context) throws IOException {
+		ServletExchange sex = (ServletExchange) context.getExchange();
+		ByteArrayOutputStream bout = null;
+		try {
+			ServerResponse response = (ServerResponse) context.getResource().handle(context);
+			if (sex.hasWritten()) {
+				return;
+			}
 
-      if (response.getEntity() != null) {
+			int status = response.getStatus();
+			if (status >= HttpURLConnection.HTTP_BAD_REQUEST && !response.hasEntity()) {
+				sex.getResponse().sendError(response.getStatus());
+			} else if (shouldUpdateStatus(sex, status)) {
+				sex.getResponse().setStatus(status);
+			}
 
-        AbstractResource resource = context.getResource();
-        bout = new ByteArrayOutputStream();
+			if (response.getEntity() != null) {
 
-        if (resource.getWriterDecorator() == null) {
-          context.getWriter().writeTo(response.getEntity(), context.getEntityClass(),
-              context.getEntityGenericType(), response.getAllAnnotations(), context.getProduce(),
-              response.newContext().getHeaders(), bout);
-        } else {
-          resource.getWriterDecorator().writeTo(context, response.getEntity(),
-              context.getEntityClass(), context.getEntityGenericType(),
-              response.getAllAnnotations(), response.newContext().getHeaders(), bout);
-        }
+				AbstractResource resource = context.getResource();
+				bout = new ByteArrayOutputStream();
 
-      }
-      writeHeaders(context.getProduce(), sex.getResponse(), response.getStringHeaders(), bout);
-    } catch (NoContentException ex) {
-      if (!tryExceptionMapper(sex.getResponse(), new BadRequestException(ex))) {
-        sex.getResponse().sendError(HttpServletResponse.SC_BAD_REQUEST);
-      }
-    } catch (RuntimeException ex) {
-      Throwable cause = ex.getCause();
-      if (ex.getClass() != WebApplicationException.class) {
-        cause = ex;
-      }
-      boolean done = false;
-      if (cause != null) {
-        done = tryExceptionMapper(sex.getResponse(), cause);
-      }
-      if (!done) {
-        done = tryExceptionMapper(sex.getResponse(), ex);
-      }
+				if (resource.getWriterDecorator() == null) {
+					context.getWriter().writeTo(response.getEntity(), context.getEntityClass(),
+							context.getEntityGenericType(), response.getAllAnnotations(), context.getProduce(),
+							response.newContext().getHeaders(), bout);
+				} else {
+					resource.getWriterDecorator().writeTo(context, response.getEntity(), context.getEntityClass(),
+							context.getEntityGenericType(), response.getAllAnnotations(),
+							response.newContext().getHeaders(), bout);
+				}
 
-      if (!done) {
-        Logs.LOG.log(Level.SEVERE, "cannot execute " + context.getResource().getResourceMethod(), ex);
+			}
+			writeHeaders(context.getProduce(), sex.getResponse(), response.getStringHeaders(), bout);
+		} catch (NoContentException ex) {
+			if (!tryExceptionMapper(sex.getResponse(), new BadRequestException(ex))) {
+				sex.getResponse().sendError(HttpServletResponse.SC_BAD_REQUEST);
+			}
+		} catch (RuntimeException ex) {
+			Throwable cause = ex.getCause();
+			if (ex.getClass() != WebApplicationException.class) {
+				cause = ex;
+			}
+			boolean done = false;
+			if (cause != null) {
+				done = tryExceptionMapper(sex.getResponse(), cause);
+			}
+			if (!done) {
+				done = tryExceptionMapper(sex.getResponse(), ex);
+			}
 
-        if (ex instanceof WebApplicationException
-            && ((WebApplicationException) ex).getResponse() != null) {
-          sendResponse(sex.getResponse(), ((WebApplicationException) ex).getResponse(), providers);
-          return;
-        }
-        if (ex.getMessage() != null) {
-          sex.getResponse().getOutputStream().println(ex.getMessage());
-        }
-        sex.getResponse().sendError(HttpURLConnection.HTTP_INTERNAL_ERROR);
-      }
-    } finally {
-      if (bout != null) {
-        bout.release();
-      }
-    }
-  }
+			if (!done) {
+				Logs.LOG.log(Level.SEVERE, "cannot execute " + context.getResource().getResourceMethod(), ex);
 
-  private boolean shouldUpdateStatus(ServletExchange sex, int status) {
-    return status != HttpURLConnection.HTTP_OK && status > 0 && (sex.getResponse().getStatus() == 0
-        || sex.getResponse().getStatus() == HttpURLConnection.HTTP_OK);
-  }
+				if (ex instanceof WebApplicationException && ((WebApplicationException) ex).getResponse() != null) {
+					sendResponse(sex.getResponse(), ((WebApplicationException) ex).getResponse(), providers);
+					return;
+				}
+				if (ex.getMessage() != null) {
+					sex.getResponse().getOutputStream().println(ex.getMessage());
+				}
+				sex.getResponse().sendError(HttpURLConnection.HTTP_INTERNAL_ERROR);
+			}
+		} finally {
+			if (bout != null) {
+				bout.release();
+			}
+		}
+	}
 
-  /**
-   * Write headers to an HttpServletResponse.
-   * 
-   * @param responseMediaType output media type
-   * @param response servlet response
-   * @param headers map of headers
-   * @param bout transient buffer of output
-   * @throws IOException if an I/O error occurs.
-   */
-  public static void writeHeaders(MediaType responseMediaType, HttpServletResponse response,
-      MultivaluedMap<String, String> headers, ByteArrayOutputStream bout) throws IOException {
-    if (headers != null && !headers.isEmpty()) {
-      for (Entry<String, List<String>> entry : headers.entrySet()) {
-        for (String e : entry.getValue()) {
-          response.addHeader(entry.getKey(), e);
-        }
-      }
-    }
-    if (responseMediaType != null) {
-      response.setHeader(HttpHeaders.CONTENT_TYPE, responseMediaType.toString());
-    }
+	private boolean shouldUpdateStatus(ServletExchange sex, int status) {
+		return status != HttpURLConnection.HTTP_OK && status > 0
+				&& (sex.getResponse().getStatus() == 0 || sex.getResponse().getStatus() == HttpURLConnection.HTTP_OK);
+	}
 
-    if (bout != null) {
-      if (!bout.isEmpty()) {
-        response.setHeader(HttpHeaders.CONTENT_LENGTH, bout.getSize() + "");
-        bout.writeTo(response.getOutputStream());
-      }
-    } else {
-      response.setHeader(HttpHeaders.CONTENT_LENGTH, "0");
-    }
-  }
+	/**
+	 * Write headers to an HttpServletResponse.
+	 * 
+	 * @param responseMediaType output media type
+	 * @param response          servlet response
+	 * @param headers           map of headers
+	 * @param bout              transient buffer of output
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public static void writeHeaders(MediaType responseMediaType, HttpServletResponse response,
+			MultivaluedMap<String, String> headers, ByteArrayOutputStream bout) throws IOException {
+		if (headers != null && !headers.isEmpty()) {
+			for (Entry<String, List<String>> entry : headers.entrySet()) {
+				for (String e : entry.getValue()) {
+					response.addHeader(entry.getKey(), e);
+				}
+			}
+		}
+		if (responseMediaType != null) {
+			response.setHeader(HttpHeaders.CONTENT_TYPE, responseMediaType.toString());
+		}
 
-  @SuppressWarnings("unchecked")
-  protected boolean tryExceptionMapper(HttpServletResponse response, Throwable cause)
-      throws IOException {
-    ExceptionMapper<Throwable> mapper =
-        (ExceptionMapper<Throwable>) providers.getExceptionMapper(cause.getClass());
-    if (mapper != null) {
-      Response resp = mapper.toResponse(cause);
-      sendResponse(response, resp, providers);
-      return true;
-    }
-    return false;
-  }
+		if (bout != null) {
+			if (!bout.isEmpty()) {
+				response.setHeader(HttpHeaders.CONTENT_LENGTH, bout.getSize() + "");
+				bout.writeTo(response.getOutputStream());
+			}
+		} else {
+			response.setHeader(HttpHeaders.CONTENT_LENGTH, "0");
+		}
+	}
 
-  interface ServiceStrategy {
-    void service(HttpServletRequest req, HttpServletResponse res, ServerInvocationContext ctx)
-        throws IOException;
-  }
+	@SuppressWarnings("unchecked")
+	protected boolean tryExceptionMapper(HttpServletResponse response, Throwable cause) throws IOException {
+		ExceptionMapper<Throwable> mapper = (ExceptionMapper<Throwable>) providers.getExceptionMapper(cause.getClass());
+		if (mapper != null) {
+			Response resp = mapper.toResponse(cause);
+			sendResponse(response, resp, providers);
+			return true;
+		}
+		return false;
+	}
 
-  class PreMatchingServiceStrategy implements ServiceStrategy {
+	interface ServiceStrategy {
+		void service(HttpServletRequest req, HttpServletResponse res, ServerInvocationContext ctx) throws IOException;
+	}
 
-    List<ContainerRequestFilter> filters = new ArrayList<>();
-    ServiceStrategy delegate;
+	class PreMatchingServiceStrategy implements ServiceStrategy {
 
-    @Override
-    public void service(HttpServletRequest req, HttpServletResponse response,
-        ServerInvocationContext ctx) throws IOException {
+		List<ContainerRequestFilter> filters = new ArrayList<>();
+		ServiceStrategy delegate;
 
-      for (ContainerRequestFilter filter : filters) {
-        filter.filter(ctx);
-        if (ctx.getAbortResponse() != null) {
-          Response resp = ctx.getAbortResponse();
-          sendResponse(response, resp, providers);
-          return;
-        }
-      }
+		@Override
+		public void service(HttpServletRequest req, HttpServletResponse response, ServerInvocationContext ctx)
+				throws IOException {
 
-      delegate.service(req, response, ctx);
+			for (ContainerRequestFilter filter : filters) {
+				filter.filter(ctx);
+				if (ctx.getAbortResponse() != null) {
+					Response resp = ctx.getAbortResponse();
+					sendResponse(response, resp, providers);
+					return;
+				}
+			}
 
-    }
+			delegate.service(req, response, ctx);
 
-  }
+		}
 
-  class SimpleServiceStrategy implements ServiceStrategy {
+	}
 
-    @Override
-    public void service(HttpServletRequest request, HttpServletResponse response,
-        ServerInvocationContext ctx) throws IOException {
-      String pathInfo = request.getPathInfo();
-      if (pathInfo == null) {
-        pathInfo = "";
-      }
-      RouterResponse<ResourceArray> resp =
-          router.get(pathInfo, pathInfo.isEmpty() ? 0 : 1, new RouterResponse<ResourceArray>());
+	class SimpleServiceStrategy implements ServiceStrategy {
 
-      if (resp != null) {
-        ResourceSelector selector = resp.getResult().get(request.getMethod());
-        if (selector == null) {
-          if (!tryExceptionMapper(response,
-              new NotAllowedException((Throwable) null, resp.getResult().getAlloweds()))) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-          }
-        } else {
-          AbstractResource resource = selector.select(ctx);
-          if (resource == null) {
-            response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-          } else {
-            ctx.setResource(resource);
-            ctx.setParams(resp.getParams());
-            handleResource(ctx);
-          }
-        }
-      } else if (!tryExceptionMapper(response, new NotFoundException())) {
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      }
-    }
+		@Override
+		public void service(HttpServletRequest request, HttpServletResponse response, ServerInvocationContext ctx)
+				throws IOException {
+			String pathInfo = request.getPathInfo();
+			if (pathInfo == null) {
+				pathInfo = "";
+			}
+			RouterResponse<ResourceArray> resp = router.get(pathInfo, pathInfo.isEmpty() ? 0 : 1,
+					new RouterResponse<ResourceArray>());
 
-  }
+			if (resp != null) {
+				ResourceSelector selector = resp.getResult().get(request.getMethod());
+				if (selector == null) {
+					if (!tryExceptionMapper(response,
+							new NotAllowedException((Throwable) null, resp.getResult().getAlloweds()))) {
+						response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+					}
+				} else {
+					AbstractResource resource = selector.select(ctx);
+					if (resource == null) {
+						response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+					} else {
+						ctx.setResource(resource);
+						ctx.setParams(resp.getParams());
+						handleResource(ctx);
+					}
+				}
+			} else if (!tryExceptionMapper(response, new NotFoundException())) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			}
+		}
 
-  /**
-   * Send the response to the client.
-   * 
-   * @param response servlet response
-   * @param resp rest response
-   * @param providers rest providers
-   * @throws IOException if an I/O error occurs.
-   */
-  @SuppressWarnings("unchecked")
-  public static void sendResponse(HttpServletResponse response, Response resp,
-      SimpleProviders providers) throws IOException {
-    if (!resp.hasEntity() && resp.getStatus() >= 400) {
-      response.sendError(resp.getStatus());
-      return;
-    }
+	}
 
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    try {
-      response.setStatus(resp.getStatus());
-      if (resp.hasEntity()) {
-        Type genericType;
-        Class<Object> type;
-        if (resp.getEntity() instanceof GenericEntity) {
-          GenericEntity<?> genericEntity = (GenericEntity<?>) resp.getEntity();
-          genericType = genericEntity.getType();
-          type = (Class<Object>) genericEntity.getRawType();
-        } else {
-          type = (Class<Object>) resp.getEntity().getClass();
-          genericType = type;
-        }
-        MessageBodyWriter<Object> mw = providers.getMessageBodyWriter(type, genericType,
-            ((ServerResponse) resp).getAllAnnotations(), resp.getMediaType());
+	/**
+	 * Send the response to the client.
+	 * 
+	 * @param response  servlet response
+	 * @param resp      rest response
+	 * @param providers rest providers
+	 * @throws IOException if an I/O error occurs.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void sendResponse(HttpServletResponse response, Response resp, SimpleProviders providers)
+			throws IOException {
+		if (!resp.hasEntity() && resp.getStatus() >= 400) {
+			response.sendError(resp.getStatus());
+			return;
+		}
 
-        mw.writeTo(resp.getEntity(), type, genericType, ((ServerResponse) resp).getAllAnnotations(),
-            resp.getMediaType(), ((ServerResponse) resp).getHeaders(), bout);
-      }
-      writeHeaders(resp.getMediaType(), response, resp.getStringHeaders(), bout);
-    } finally {
-      bout.release();
-    }
-  }
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		try {
+			response.setStatus(resp.getStatus());
+			if (resp.hasEntity()) {
+				Type genericType;
+				Class<Object> type;
+				if (resp.getEntity() instanceof GenericEntity) {
+					GenericEntity<?> genericEntity = (GenericEntity<?>) resp.getEntity();
+					genericType = genericEntity.getType();
+					type = (Class<Object>) genericEntity.getRawType();
+				} else {
+					type = (Class<Object>) resp.getEntity().getClass();
+					genericType = type;
+				}
+				MessageBodyWriter<Object> mw = providers.getMessageBodyWriter(type, genericType,
+						((ServerResponse) resp).getAllAnnotations(), resp.getMediaType());
 
-  @Override
-  public void addPreMatchingFilter(ContainerRequestFilter filter) {
-    if (!(strategy instanceof PreMatchingServiceStrategy)) {
-      PreMatchingServiceStrategy prematchingStrategy = new PreMatchingServiceStrategy();
-      prematchingStrategy.delegate = strategy;
-      strategy = prematchingStrategy;
-    }
-    PreMatchingServiceStrategy prematchingStrategy = (PreMatchingServiceStrategy) strategy;
-    prematchingStrategy.filters.add(filter);
-  }
+				mw.writeTo(resp.getEntity(), type, genericType, ((ServerResponse) resp).getAllAnnotations(),
+						resp.getMediaType(), ((ServerResponse) resp).getHeaders(), bout);
+			}
+			writeHeaders(resp.getMediaType(), response, resp.getStringHeaders(), bout);
+		} finally {
+			bout.release();
+		}
+	}
 
-  public String getAlias() {
-    return alias;
-  }
+	@Override
+	public void addPreMatchingFilter(ContainerRequestFilter filter) {
+		if (!(strategy instanceof PreMatchingServiceStrategy)) {
+			PreMatchingServiceStrategy prematchingStrategy = new PreMatchingServiceStrategy();
+			prematchingStrategy.delegate = strategy;
+			strategy = prematchingStrategy;
+		}
+		PreMatchingServiceStrategy prematchingStrategy = (PreMatchingServiceStrategy) strategy;
+		prematchingStrategy.filters.add(filter);
+	}
 
-  public void setAlias(String alias) {
-    this.alias = alias;
-  }
+	public String getAlias() {
+		return alias;
+	}
 
-  @Override
-  public ServletConfig getServletConfig() {
-    return config;
-  }
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 
-  @Override
-  public String getServletInfo() {
-    return "juikito rest servlet with " + apps;
-  }
+	@Override
+	public ServletConfig getServletConfig() {
+		return config;
+	}
 
-  @Override
-  public void destroy() {}
+	@Override
+	public String getServletInfo() {
+		return "juikito rest servlet with " + apps;
+	}
+
+	@Override
+	public void destroy() {
+	}
 }

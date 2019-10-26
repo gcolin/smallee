@@ -28,7 +28,6 @@ import java.util.Optional;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbConfig;
-import javax.json.bind.JsonbException;
 import javax.json.bind.serializer.DeserializationContext;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.spi.JsonProvider;
@@ -83,44 +82,46 @@ public class JsonbImpl implements Jsonb, SerializationContext, DeserializationCo
   }
 
   @Override
-  public void close() throws Exception {}
+  public void close() throws Exception {
+	  // nothing.
+  }
 
   @Override
-  public <T> T fromJson(String str, Class<T> type) throws JsonbException {
+  public <T> T fromJson(String str, Class<T> type) {
     return fromJson(new StringReader(str), type);
   }
 
   @Override
-  public <T> T fromJson(String str, Type runtimeType) throws JsonbException {
+  public <T> T fromJson(String str, Type runtimeType) {
     return fromJson(new StringReader(str), runtimeType);
   }
 
   @Override
-  public <T> T fromJson(Reader reader, Class<T> type) throws JsonbException {
+  public <T> T fromJson(Reader reader, Class<T> type) {
     JsonParser parser = jsonProvider.createParser(reader);
     return deserialize(type, parser);
   }
 
   @Override
-  public <T> T fromJson(Reader reader, Type runtimeType) throws JsonbException {
+  public <T> T fromJson(Reader reader, Type runtimeType) {
     JsonParser parser = jsonProvider.createParser(reader);
     return deserialize(runtimeType, parser);
   }
 
   @Override
-  public <T> T fromJson(InputStream stream, Class<T> type) throws JsonbException {
+  public <T> T fromJson(InputStream stream, Class<T> type) {
     JsonParser parser = jsonProvider.createParser(stream);
     return deserialize(type, parser);
   }
 
   @Override
-  public <T> T fromJson(InputStream stream, Type runtimeType) throws JsonbException {
+  public <T> T fromJson(InputStream stream, Type runtimeType) {
     JsonParser parser = jsonProvider.createParser(stream);
     return deserialize(runtimeType, parser);
   }
 
   @Override
-  public String toJson(Object object) throws JsonbException {
+  public String toJson(Object object) {
     StringWriter sw = new StringWriter();
     JsonGenerator jg = generatorFactory.createGenerator(sw);
     try {
@@ -133,31 +134,31 @@ public class JsonbImpl implements Jsonb, SerializationContext, DeserializationCo
   }
 
   @Override
-  public String toJson(Object object, Type runtimeType) throws JsonbException {
+  public String toJson(Object object, Type runtimeType) {
     return toJson(object);
   }
 
   @Override
-  public void toJson(Object object, Writer writer) throws JsonbException {
+  public void toJson(Object object, Writer writer) {
     JsonGenerator jg = generatorFactory.createGenerator(writer);
     serialize(object, jg);
     jg.flush();
   }
 
   @Override
-  public void toJson(Object object, Type runtimeType, Writer writer) throws JsonbException {
+  public void toJson(Object object, Type runtimeType, Writer writer) {
     toJson(object, writer);
   }
 
   @Override
-  public void toJson(Object object, OutputStream stream) throws JsonbException {
+  public void toJson(Object object, OutputStream stream) {
     JsonGenerator jg = generatorFactory.createGenerator(stream, charset);
     serialize(object, jg);
     jg.flush();
   }
 
   @Override
-  public void toJson(Object object, Type runtimeType, OutputStream stream) throws JsonbException {
+  public void toJson(Object object, Type runtimeType, OutputStream stream) {
     toJson(object, stream);
   }
 

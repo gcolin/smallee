@@ -17,6 +17,7 @@ package net.gcolin.json;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -171,7 +172,7 @@ public class JsonGeneratorImpl implements JsonGenerator {
 	}
 
 	public static JsonGeneratorImpl take(OutputStream source) {
-		return take(Io.writer(source, StandardCharsets.UTF_8.name()));
+		return take(new OutputStreamWriter(source, StandardCharsets.UTF_8));
 	}
 
 	/**

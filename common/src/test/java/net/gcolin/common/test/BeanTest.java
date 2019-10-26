@@ -28,7 +28,6 @@ import java.util.List;
 
 public class BeanTest {
 
-  @SuppressWarnings("serial")
   public static class IPair extends Pair<Integer, String> {
 
   }

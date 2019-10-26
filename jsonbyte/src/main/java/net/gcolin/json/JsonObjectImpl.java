@@ -95,7 +95,7 @@ public class JsonObjectImpl extends AbstractMap<String, JsonValue> implements Js
 	@Override
 	public String getString(String key, String defaultValue) {
 		JsonValue val = get(key);
-		if (val != null && val instanceof JsonString) {
+		if (val instanceof JsonString) {
 			return ((JsonString) val).getString();
 		}
 		return defaultValue;
@@ -109,7 +109,7 @@ public class JsonObjectImpl extends AbstractMap<String, JsonValue> implements Js
 	@Override
 	public int getInt(String key, int defaultValue) {
 		JsonValue val = get(key);
-		if (val != null && val instanceof JsonNumber) {
+		if (val instanceof JsonNumber) {
 			return ((JsonNumber) val).intValue();
 		}
 		return defaultValue;

@@ -15,14 +15,14 @@
 
 package net.gcolin.rest.server;
 
-import net.gcolin.common.route.Router;
-import net.gcolin.rest.Environment;
-import net.gcolin.rest.FastMediaType;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import net.gcolin.rest.Environment;
+import net.gcolin.rest.FastMediaType;
+import net.gcolin.rest.util.Router;
 
 /**
  * Internal data for building a REST Service.

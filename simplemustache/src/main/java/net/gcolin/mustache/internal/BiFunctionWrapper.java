@@ -14,8 +14,8 @@
  */
 package net.gcolin.mustache.internal;
 
-import net.gcolin.mustache.WrapperFunction;
 import net.gcolin.mustache.StringFunction;
+import net.gcolin.mustache.WrapperFunction;
 import net.gcolin.mustache.internal.Compiler.CompileContext;
 
 /**
@@ -25,8 +25,8 @@ import net.gcolin.mustache.internal.Compiler.CompileContext;
 public class BiFunctionWrapper {
 
 	private WrapperFunction cache;
-	private volatile String previous;
-	private volatile Node pnode;
+	private String previous;
+	private Node pnode;
 	private CompileContext context;
 	private String inner;
 
@@ -58,12 +58,11 @@ public class BiFunctionWrapper {
 		StringFunction fun = new StringFunction() {
 			@Override
 			public String apply(String name) {
-				String previous = BiFunctionWrapper.this.previous;
-				Node pnode = BiFunctionWrapper.this.pnode;
-				if (previous == null || !previous.equals(name)) {
-					pnode = Compiler.compile(name, ctx.getMustacheContext(), context);
-					BiFunctionWrapper.this.previous = name;
-					BiFunctionWrapper.this.pnode = pnode;
+				synchronized (this) {
+					if (previous == null || !previous.equals(name)) {
+						pnode = Compiler.compile(name, ctx.getMustacheContext(), context);
+						previous = name;
+					}
 				}
 				TransientStringContext cc = new TransientStringContext(ctx);
 				pnode.write(cc);

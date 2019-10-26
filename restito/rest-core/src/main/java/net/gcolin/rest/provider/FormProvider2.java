@@ -18,6 +18,8 @@ package net.gcolin.rest.provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +32,6 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import net.gcolin.common.io.FastOutputStreamWriter;
 import net.gcolin.common.lang.Strings;
 
 /**
@@ -51,16 +52,12 @@ public class FormProvider2 extends Provider<Form> {
   public void writeTo(Form map, Class<?> type, Type genericType,
       Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException {
-    FastOutputStreamWriter writer =
-        new FastOutputStreamWriter(entityStream, StandardCharsets.UTF_8.name());
-    try {
+    try (Writer writer = new OutputStreamWriter(entityStream, StandardCharsets.UTF_8)) {
       fillFormMap(map, writer);
-    } finally {
-      writer.release();
     }
   }
 
-  private void fillFormMap(Form map, FastOutputStreamWriter writer)
+  private void fillFormMap(Form map, Writer writer)
       throws IOException {
     boolean fst = true;
     for (Entry<String, List<String>> e : map.asMap().entrySet()) {

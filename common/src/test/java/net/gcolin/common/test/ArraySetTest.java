@@ -21,74 +21,88 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class ArraySetTest {
 
-  @Test
-  public void emptyTest() {
-    ArraySet<String> set = new ArraySet<>(new String[] {});
-    Assert.assertTrue(set.isEmpty());
-    Assert.assertEquals(0, set.size());
-    Assert.assertFalse(set.iterator().hasNext());
-  }
+	@Test
+	public void emptyTest() {
+		ArraySet<String> set = new ArraySet<>(new String[] {});
+		Assert.assertTrue(set.isEmpty());
+		Assert.assertEquals(0, set.size());
+		Assert.assertFalse(set.iterator().hasNext());
+	}
 
-  @Test
-  public void simpleTest() {
-    ArraySet<String> set = new ArraySet<>(new String[] {"hello", "world"});
-    Assert.assertFalse(set.isEmpty());
-    Assert.assertEquals(2, set.size());
-    Assert.assertTrue(set.contains("hello"));
-    Assert.assertFalse(set.contains("w"));
-    Assert.assertTrue(set.containsAll(Arrays.asList("hello", "world")));
-    Assert.assertFalse(set.containsAll(Arrays.asList("hello2", "world")));
-    Assert.assertTrue(set.iterator().hasNext());
-    Assert.assertArrayEquals(new String[] {"hello", "world"}, set.toArray());
-    Assert.assertArrayEquals(new String[] {"hello", "world"}, set.toArray(new String[2]));
-  }
-  
-  @Test
-  public void retainsAllTest() {
-    ArraySet<String> set = new ArraySet<>(new String[] {"hello", "world"});
-    set.retainAll(Arrays.asList("hello"));
-    Assert.assertEquals(1, set.size());
-    Assert.assertEquals("[hello]", set.toString());
-  }
-  
-  @Test
-  public void addTest() {
-    ArraySet<String> set = new ArraySet<>(new String[] {});
-    set.add("hello");
-    Assert.assertEquals(1, set.size());
-    Assert.assertEquals("[hello]", set.toString());
-    set.add("world");
-    Assert.assertEquals(2, set.size());
-    Assert.assertEquals("[hello, world]", set.toString());
-  }
-  
-  @Test
-  public void addAllTest() {
-    ArraySet<String> set = new ArraySet<>(new String[] {});
-    set.addAll(Arrays.asList("hello","world"));
-    set.addAll(Arrays.asList("hello","world"));
-    Assert.assertEquals(2, set.size());
-    Assert.assertEquals("[hello, world]", set.toString());
-  }
-  
-  @Test
-  public void removeAllTest() {
-    ArraySet<String> set = new ArraySet<>(new String[] {"hello","world"});
-    set.removeAll(Arrays.asList("hello","world"));
-    set.removeAll(Arrays.asList("hello","world"));
-    Assert.assertEquals(0, set.size());
-    Assert.assertEquals("[]", set.toString());
-  }
-  
-  @Test
-  public void clearTest() {
-    ArraySet<String> set = new ArraySet<>(new String[] {"hello","world"});
-    set.clear();
-    Assert.assertEquals(0, set.size());
-    Assert.assertEquals("[]", set.toString());
-  }
+	@Test
+	public void simpleTest() {
+		ArraySet<String> set = new ArraySet<>(new String[] { "hello", "world" });
+		Assert.assertFalse(set.isEmpty());
+		Assert.assertEquals(2, set.size());
+		Assert.assertTrue(set.contains("hello"));
+		Assert.assertFalse(set.contains("w"));
+		Assert.assertTrue(set.containsAll(Arrays.asList("hello", "world")));
+		Assert.assertFalse(set.containsAll(Arrays.asList("hello2", "world")));
+		try {
+			Iterator<String> it = set.iterator();
+			Assert.assertTrue(it.hasNext());
+			Assert.assertEquals("hello", it.next());
+			Assert.assertEquals("world", it.next());
+			Assert.assertFalse(it.hasNext());
+			set.iterator().next();
+			Assert.fail();
+		} catch (Exception e) {
+			// must fail
+		}
+		Assert.assertArrayEquals(new String[] { "hello", "world" }, set.toArray());
+		Assert.assertArrayEquals(new String[] { "hello", "world" }, set.toArray(new String[2]));
+	}
+
+	@Test
+	public void retainsAllTest() {
+		ArraySet<String> set = new ArraySet<>(new String[] { "hello", "world" });
+		set.retainAll(Arrays.asList("hello"));
+		Assert.assertEquals(1, set.size());
+		Assert.assertEquals("[hello]", set.toString());
+		set.retainAll(Arrays.asList("hello2"));
+		Assert.assertEquals(1, set.size());
+		Assert.assertEquals("[hello]", set.toString());
+	}
+
+	@Test
+	public void addTest() {
+		ArraySet<String> set = new ArraySet<>(new String[] {});
+		set.add("hello");
+		Assert.assertEquals(1, set.size());
+		Assert.assertEquals("[hello]", set.toString());
+		set.add("world");
+		Assert.assertEquals(2, set.size());
+		Assert.assertEquals("[hello, world]", set.toString());
+	}
+
+	@Test
+	public void addAllTest() {
+		ArraySet<String> set = new ArraySet<>(new String[] {});
+		set.addAll(Arrays.asList("hello", "world"));
+		set.addAll(Arrays.asList("hello", "world"));
+		Assert.assertEquals(2, set.size());
+		Assert.assertEquals("[hello, world]", set.toString());
+	}
+
+	@Test
+	public void removeAllTest() {
+		ArraySet<String> set = new ArraySet<>(new String[] { "hello", "world" });
+		set.removeAll(Arrays.asList("hello", "world"));
+		set.removeAll(Arrays.asList("hello", "world"));
+		Assert.assertEquals(0, set.size());
+		Assert.assertEquals("[]", set.toString());
+	}
+
+	@Test
+	public void clearTest() {
+		ArraySet<String> set = new ArraySet<>(new String[] { "hello", "world" });
+		set.clear();
+		Assert.assertEquals(0, set.size());
+		Assert.assertEquals("[]", set.toString());
+	}
 
 }
