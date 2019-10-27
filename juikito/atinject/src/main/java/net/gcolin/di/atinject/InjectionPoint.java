@@ -23,6 +23,6 @@ package net.gcolin.di.atinject;
  */
 public interface InjectionPoint {
 
-  void inject(Object o);
-  
+	void inject(Object o);
+
 }

@@ -25,15 +25,15 @@ import java.util.Comparator;
  */
 public class PriorityComparator implements Comparator<Class<?>> {
 
-  @Override
-  public int compare(Class<?> o1, Class<?> o2) {
-    int n = PriorityFinder.getPriority(o1) - PriorityFinder.getPriority(o2);
-    if (n > 0) {
-      return 1;
-    } else if (n < 0) {
-      return -1;
-    }
-    return 0;
-  }
+	@Override
+	public int compare(Class<?> o1, Class<?> o2) {
+		int n = PriorityFinder.getPriority(o1) - PriorityFinder.getPriority(o2);
+		if (n > 0) {
+			return 1;
+		} else if (n < 0) {
+			return -1;
+		}
+		return 0;
+	}
 
 }

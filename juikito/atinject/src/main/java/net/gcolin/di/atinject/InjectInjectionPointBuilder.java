@@ -27,23 +27,24 @@ import java.lang.reflect.Modifier;
  */
 public class InjectInjectionPointBuilder implements InjectionPointBuilder {
 
-  @Override
-  public InjectionPoint create(Field field, Environment env) {
-    if (!Reflects.hasAnnotation(field.getAnnotations(), env.getInjectAnnotations()) || Modifier.isStatic(field.getModifiers())) {
-      return null;
-    }
-    return new FieldInjectionPoint(field, env.getProvider(field.getType(), field.getGenericType(),
-        env.findQualifiers(field.getAnnotations())));
-  }
+	@Override
+	public InjectionPoint create(Field field, Environment env) {
+		if (!Reflects.hasAnnotation(field.getAnnotations(), env.getInjectAnnotations())
+				|| Modifier.isStatic(field.getModifiers())) {
+			return null;
+		}
+		return new FieldInjectionPoint(field,
+				env.getProvider(field.getType(), field.getGenericType(), env.findQualifiers(field.getAnnotations())));
+	}
 
-  @Override
-  public InjectionPoint create(Method method, Environment env) {
-    if (!Reflects.hasAnnotation(method.getAnnotations(), env.getInjectAnnotations()) || Modifier.isStatic(method.getModifiers())) {
-      return null;
-    }
-    return new MethodInjectionPoint(method,
-        InstanceBuilder.findProviders(method.getParameterTypes(),
-            method.getGenericParameterTypes(), method.getParameterAnnotations(), env));
-  }
+	@Override
+	public InjectionPoint create(Method method, Environment env) {
+		if (!Reflects.hasAnnotation(method.getAnnotations(), env.getInjectAnnotations())
+				|| Modifier.isStatic(method.getModifiers())) {
+			return null;
+		}
+		return new MethodInjectionPoint(method, InstanceBuilder.findProviders(method.getParameterTypes(),
+				method.getGenericParameterTypes(), method.getParameterAnnotations(), env));
+	}
 
 }

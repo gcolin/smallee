@@ -31,59 +31,59 @@ import net.gcolin.di.core.Key;
  */
 public abstract class AbstractProvider<T> implements Provider<T>, Supplier<T> {
 
-  private InstanceCreator builder;
+	private InstanceCreator builder;
 
-  private Key key;
+	private Key key;
 
-  public InstanceCreator getBuilder() {
-    if (builder == null) {
-      builder = createBuilder();
-    }
-    return builder;
-  }
+	public InstanceCreator getBuilder() {
+		if (builder == null) {
+			builder = createBuilder();
+		}
+		return builder;
+	}
 
-  public void setBuilder(InstanceCreator builder) {
-    this.builder = builder;
-  }
-  
-  public abstract Environment getEnvironment();
-  
-  public abstract Class<? extends T> getResolvedType();
+	public void setBuilder(InstanceCreator builder) {
+		this.builder = builder;
+	}
 
-  public abstract Type getResolvedGenericType();
+	public abstract Environment getEnvironment();
 
-  public abstract Class<T> getType();
+	public abstract Class<? extends T> getResolvedType();
 
-  public abstract Type getGenericType();
+	public abstract Type getResolvedGenericType();
 
-  public abstract T create();
+	public abstract Class<T> getType();
 
-  public T getNoCreate() {
-    return null;
-  }
+	public abstract Type getGenericType();
 
-  public abstract Class<? extends Annotation> getScope();
-  
-  public abstract void stop();
+	public abstract T create();
 
-  public void stop(Object instance) {
-    InstanceCreator creator = getBuilder();
-    if (creator != null) {
-      try {
-        creator.destroyInstance(instance);
-      } catch (Exception e) {
-        throw new InjectException("cannot close provider", e);
-      }
-    }
-  }
+	public T getNoCreate() {
+		return null;
+	}
 
-  public abstract InstanceCreator createBuilder();
+	public abstract Class<? extends Annotation> getScope();
 
-  public Key getKey() {
-    return key;
-  }
+	public abstract void stop();
 
-  public void setKey(Key key) {
-    this.key = key;
-  }
+	public void stop(Object instance) {
+		InstanceCreator creator = getBuilder();
+		if (creator != null) {
+			try {
+				creator.destroyInstance(instance);
+			} catch (Exception e) {
+				throw new InjectException("cannot close provider", e);
+			}
+		}
+	}
+
+	public abstract InstanceCreator createBuilder();
+
+	public Key getKey() {
+		return key;
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
+	}
 }

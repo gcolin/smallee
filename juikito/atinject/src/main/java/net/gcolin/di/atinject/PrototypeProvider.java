@@ -28,68 +28,69 @@ import javax.inject.Provider;
  */
 public class PrototypeProvider<T> extends AbstractProvider<T> implements Provider<T> {
 
-  private Class<T> clazz;
-  private Type genericType;
-  private Class<? extends T> resolvedClazz;
-  private Type resolvedGenericType;
-  protected Environment env;
+	private Class<T> clazz;
+	private Type genericType;
+	private Class<? extends T> resolvedClazz;
+	private Type resolvedGenericType;
+	protected Environment env;
 
-  public PrototypeProvider(Class<T> clazz, Type genericType, Class<? extends T> resolvedClazz,
-      Type resolvedGenericType, Environment env) {
-    this.clazz = clazz;
-    this.resolvedClazz = resolvedClazz;
-    this.resolvedGenericType = resolvedGenericType;
-    this.env = env;
-    this.genericType = genericType;
-  }
-  
-  @Override
-  public Environment getEnvironment() {
-    return env;
-  }
+	public PrototypeProvider(Class<T> clazz, Type genericType, Class<? extends T> resolvedClazz,
+			Type resolvedGenericType, Environment env) {
+		this.clazz = clazz;
+		this.resolvedClazz = resolvedClazz;
+		this.resolvedGenericType = resolvedGenericType;
+		this.env = env;
+		this.genericType = genericType;
+	}
 
-  @Override
-  public T get() {
-    return create();
-  }
+	@Override
+	public Environment getEnvironment() {
+		return env;
+	}
 
-  @SuppressWarnings("unchecked")
-  public InstanceCreator createBuilder() {
-    return new InstanceBuilder(env, true, (AbstractProvider<Object>) this);
-  }
+	@Override
+	public T get() {
+		return create();
+	}
 
-  @Override
-  public Class<T> getType() {
-    return clazz;
-  }
+	@SuppressWarnings("unchecked")
+	public InstanceCreator createBuilder() {
+		return new InstanceBuilder(env, true, (AbstractProvider<Object>) this);
+	}
 
-  @Override
-  public Class<? extends Annotation> getScope() {
-    return null;
-  }
+	@Override
+	public Class<T> getType() {
+		return clazz;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public T create() {
-    return (T) getBuilder().newInstance().get();
-  }
+	@Override
+	public Class<? extends Annotation> getScope() {
+		return null;
+	}
 
-  @Override
-  public Type getGenericType() {
-    return genericType;
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public T create() {
+		return (T) getBuilder().newInstance().get();
+	}
 
-  @Override
-  public Class<? extends T> getResolvedType() {
-    return resolvedClazz;
-  }
+	@Override
+	public Type getGenericType() {
+		return genericType;
+	}
 
-  @Override
-  public Type getResolvedGenericType() {
-    return resolvedGenericType;
-  }
+	@Override
+	public Class<? extends T> getResolvedType() {
+		return resolvedClazz;
+	}
 
-  @Override
-  public void stop() {}
+	@Override
+	public Type getResolvedGenericType() {
+		return resolvedGenericType;
+	}
+
+	@Override
+	public void stop() {
+	}
 
 }

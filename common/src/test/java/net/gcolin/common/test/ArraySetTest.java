@@ -48,7 +48,7 @@ public class ArraySetTest {
 			Assert.assertEquals("hello", it.next());
 			Assert.assertEquals("world", it.next());
 			Assert.assertFalse(it.hasNext());
-			set.iterator().next();
+			it.next();
 			Assert.fail();
 		} catch (Exception e) {
 			// must fail
@@ -63,7 +63,7 @@ public class ArraySetTest {
 		set.retainAll(Arrays.asList("hello"));
 		Assert.assertEquals(1, set.size());
 		Assert.assertEquals("[hello]", set.toString());
-		set.retainAll(Arrays.asList("hello2"));
+		set.retainAll(Arrays.asList("hello", "hello2"));
 		Assert.assertEquals(1, set.size());
 		Assert.assertEquals("[hello]", set.toString());
 	}

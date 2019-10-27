@@ -22,33 +22,37 @@ package net.gcolin.di.atinject;
  * @since 1.0
  */
 public interface Extension extends HasPriority {
-  
-  /**
-   * Load classes, add custom providers and builders
-   * 
-   * @param environment environment
-   */
-  default void doStart(Environment environment) {};
 
-  /**
-   * Called after the environment is configured. You can create instances here.
-   * 
-   * @param environment environment
-   */
-  default void doStarted(Environment environment) {};
-  
-  /**
-   * Before the environment is stopped.
-   * 
-   * @param environment environment
-   */
-  default void doStop(Environment environment) {};
-  
-  /**
-   * After the environment is stopped.
-   * 
-   * @param environment environment
-   */
-  default void doStopped(Environment environment) {};
-  
+	/**
+	 * Load classes, add custom providers and builders
+	 * 
+	 * @param environment environment
+	 */
+	default void doStart(Environment environment) {
+	};
+
+	/**
+	 * Called after the environment is configured. You can create instances here.
+	 * 
+	 * @param environment environment
+	 */
+	default void doStarted(Environment environment) {
+	};
+
+	/**
+	 * Before the environment is stopped.
+	 * 
+	 * @param environment environment
+	 */
+	default void doStop(Environment environment) {
+	};
+
+	/**
+	 * After the environment is stopped.
+	 * 
+	 * @param environment environment
+	 */
+	default void doStopped(Environment environment) {
+	};
+
 }

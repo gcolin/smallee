@@ -29,21 +29,21 @@ import net.gcolin.di.core.InjectException;
  */
 public class FieldInjectionPoint implements InjectionPoint {
 
-  private Supplier<?> provider;
-  private Field field;
+	private Supplier<?> provider;
+	private Field field;
 
-  public FieldInjectionPoint(Field field, Supplier<?> provider) {
-    this.field = field;
-    this.provider = provider;
-    Reflect.enable(field);
-  }
+	public FieldInjectionPoint(Field field, Supplier<?> provider) {
+		this.field = field;
+		this.provider = provider;
+		Reflect.enable(field);
+	}
 
-  @Override
-  public void inject(Object o) {
-    try {
-      field.set(o, provider.get());
-    } catch (IllegalArgumentException | IllegalAccessException e) {
-      throw new InjectException(e);
-    }
-  }
+	@Override
+	public void inject(Object o) {
+		try {
+			field.set(o, provider.get());
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw new InjectException(e);
+		}
+	}
 }

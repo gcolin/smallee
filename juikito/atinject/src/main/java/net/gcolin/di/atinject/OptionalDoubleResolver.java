@@ -26,32 +26,32 @@ import java.util.OptionalDouble;
  */
 public class OptionalDoubleResolver extends OptionalResolver {
 
-  public OptionalDoubleResolver(Environment environment) {
-    super(environment);
-  }
+	public OptionalDoubleResolver(Environment environment) {
+		super(environment);
+	}
 
-  @Override
-  protected Class<?> optionalType() {
-    return OptionalDouble.class;
-  }
-  
-  @Override
-  protected Object of(Object val) {
-    return OptionalDouble.of((double) val);
-  }
-  
-  @Override
-  protected Object empty() {
-    return OptionalDouble.empty();
-  }
+	@Override
+	protected Class<?> optionalType() {
+		return OptionalDouble.class;
+	}
 
-  @Override
-  protected Type getType(Type genericType) {
-    return Double.class;
-  }
-  
-  @Override
-  protected Class<?> getPrimitiveType() {
-    return double.class;
-  }
+	@Override
+	protected Object of(Object val) {
+		return OptionalDouble.of((double) val);
+	}
+
+	@Override
+	protected Object empty() {
+		return OptionalDouble.empty();
+	}
+
+	@Override
+	protected Type getType(Type genericType) {
+		return Double.class;
+	}
+
+	@Override
+	protected Class<?> getPrimitiveType() {
+		return double.class;
+	}
 }

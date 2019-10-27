@@ -355,7 +355,7 @@ public class Io {
 	 * 
 	 * @param in input stream
 	 * @return a reader
-	 * @throws IOException 
+	 * @throws IOException if an I/O error occurs.
 	 */
 	public static Reader reader(InputStream in) throws IOException {
 		UnicodeDetectingInputStream detectInputstream = new UnicodeDetectingInputStream(in);

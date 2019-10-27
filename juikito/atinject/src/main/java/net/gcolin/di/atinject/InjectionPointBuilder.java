@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  */
 public interface InjectionPointBuilder {
 
-  InjectionPoint create(Field field, Environment env);
-  
-  InjectionPoint create(Method method, Environment env);
+	InjectionPoint create(Field field, Environment env);
+
+	InjectionPoint create(Method method, Environment env);
 }

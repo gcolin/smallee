@@ -26,6 +26,6 @@ import java.lang.reflect.Type;
  */
 public interface Resolver {
 
-  AbstractProvider<Object> find(Class<?> clazz, Type genericType, Annotation[] qualifiers);
-  
+	AbstractProvider<Object> find(Class<?> clazz, Type genericType, Annotation[] qualifiers);
+
 }

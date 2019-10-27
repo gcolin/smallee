@@ -30,79 +30,84 @@ import javax.inject.Named;
  */
 public class Binding {
 
-  private Class<?> clazz;
-  private Environment env;
-  private List<Annotation> qualifiers = new ArrayList<>();
+	private Class<?> clazz;
+	private Environment env;
+	private List<Annotation> qualifiers = new ArrayList<>();
 
-  public Binding(Class<?> clazz, Environment env) {
-    this.clazz = clazz;
-    this.env = env;
-  }
+	public Binding(Class<?> clazz, Environment env) {
+		this.clazz = clazz;
+		this.env = env;
+	}
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public Binding named(final String str) {
-    Class<?> c = null;
-    try {
-      c = this.getClass().getClassLoader().loadClass(str);
-    } catch (ClassNotFoundException e) {
-      env.getLog().log(Level.FINE, e.getMessage(), e);
-    }
-    if (c != null && c.isAnnotation()) {
-      qualifiers.add(new AnnotationWrapper((Class) c));
-      return this;
-    }
-    qualifiers.add(createNamed(str));
-    return this;
-  }
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Binding named(final String str) {
+		Class<?> c = null;
+		try {
+			c = this.getClass().getClassLoader().loadClass(str);
+		} catch (ClassNotFoundException e) {
+			env.getLog().log(Level.FINE, e.getMessage(), e);
+		}
+		if (c != null && c.isAnnotation()) {
+			qualifiers.add(new AnnotationWrapper((Class) c));
+			return this;
+		}
+		qualifiers.add(createNamed(str));
+		return this;
+	}
 
-  public void implementedBy(Class<?> implementation) {
-    Annotation[] qualifiersArray = null;
-    if (!this.qualifiers.isEmpty()) {
-      qualifiersArray = new Annotation[this.qualifiers.size()];
-      this.qualifiers.toArray(qualifiersArray);
-    } else {
-      qualifiersArray = new Annotation[0];
-    }
-    env.getBinding().put(env.createBindingKey(env.createKey(clazz, clazz, qualifiersArray)), implementation);
-  }
+	public void implementedBy(Class<?> implementation) {
+		Annotation[] qualifiersArray = null;
+		if (!this.qualifiers.isEmpty()) {
+			qualifiersArray = new Annotation[this.qualifiers.size()];
+			this.qualifiers.toArray(qualifiersArray);
+		} else {
+			qualifiersArray = new Annotation[0];
+		}
+		env.getBinding().put(env.createBindingKey(env.createKey(clazz, clazz, qualifiersArray)), implementation);
+	}
 
-  public static class AnnotationWrapper implements Annotation {
-    private Class<? extends Annotation> type;
+	public static class AnnotationWrapper implements Annotation {
+		private Class<? extends Annotation> type;
 
-    public AnnotationWrapper(Class<? extends Annotation> type) {
-      this.type = type;
-    }
+		public AnnotationWrapper(Class<? extends Annotation> type) {
+			this.type = type;
+		}
 
-    @Override
-    public String toString() {
-      return "@" + type.getName() + "()";
-    }
+		@Override
+		public String toString() {
+			return "@" + type.getName() + "()";
+		}
 
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return type;
-    }
-  }
+		@Override
+		public Class<? extends Annotation> annotationType() {
+			return type;
+		}
+	}
 
-  public static Annotation createNamed(final String name) {
-    return new Named() {
+	public static Annotation createNamed(final String name) {
+		return new Named() {
 
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return Named.class;
-      }
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return Named.class;
+			}
 
-      @Override
-      public String value() {
-        return name;
-      }
+			@Override
+			public String value() {
+				return name;
+			}
 
-      @Override
-      public String toString() {
-        return "@" + Named.class.getName() + "(value=" + name + ")";
-      }
+			@Override
+			public String toString() {
+				return "@" + Named.class.getName() + "(value=" + name + ")";
+			}
 
-    };
-  }
+		};
+	}
+
+	@Override
+	public String toString() {
+		return "Binding [clazz=" + clazz + ", qualifiers=" + qualifiers + "]";
+	}
 
 }

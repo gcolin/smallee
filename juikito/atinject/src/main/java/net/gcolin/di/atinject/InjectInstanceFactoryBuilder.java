@@ -25,17 +25,17 @@ import java.lang.reflect.Constructor;
  */
 public class InjectInstanceFactoryBuilder implements InstanceFactoryBuilder {
 
-  @Override
-  public InstanceFactory create(AbstractProvider<Object> provider, Environment env) {
-    Constructor<?>[] all = provider.getResolvedType().getDeclaredConstructors();
-    for (int i = 0, l = all.length; i < l; i++) {
-      if (Reflects.hasAnnotation(all[i].getAnnotations(), env.getInjectAnnotations())) {
-        Constructor<?> c = all[i];
-        return new InjectInstanceFactory(all[i], InstanceBuilder.findProviders(
-            c.getParameterTypes(), c.getGenericParameterTypes(), c.getParameterAnnotations(), env), provider);
-      }
-    }
-    return null;
-  }
+	@Override
+	public InstanceFactory create(AbstractProvider<Object> provider, Environment env) {
+		Constructor<?>[] all = provider.getResolvedType().getDeclaredConstructors();
+		for (int i = 0, l = all.length; i < l; i++) {
+			if (Reflects.hasAnnotation(all[i].getAnnotations(), env.getInjectAnnotations())) {
+				Constructor<?> c = all[i];
+				return new InjectInstanceFactory(all[i], InstanceBuilder.findProviders(c.getParameterTypes(),
+						c.getGenericParameterTypes(), c.getParameterAnnotations(), env), provider);
+			}
+		}
+		return null;
+	}
 
 }

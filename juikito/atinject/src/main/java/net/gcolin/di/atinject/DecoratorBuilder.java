@@ -23,6 +23,6 @@ package net.gcolin.di.atinject;
  */
 public interface DecoratorBuilder {
 
-  AbstractProvider<Object> decorate(AbstractProvider<Object> obj);
-  
+	AbstractProvider<Object> decorate(AbstractProvider<Object> obj);
+
 }

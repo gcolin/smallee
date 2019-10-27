@@ -26,11 +26,11 @@ import java.lang.reflect.Type;
  */
 public interface ProviderBuilder {
 
-  Class<? extends Annotation> getScope();
-  
-  <T> AbstractProvider<T> create(Class<?> type, Type genericType, 
-      Class<?> resolvedClazz, Type resolvedGenericType, Environment env);
-  
-  <T> AbstractProvider<T> decorate(AbstractProvider<T> provider);
-  
+	Class<? extends Annotation> getScope();
+
+	<T> AbstractProvider<T> create(Class<?> type, Type genericType, Class<?> resolvedClazz, Type resolvedGenericType,
+			Environment env);
+
+	<T> AbstractProvider<T> decorate(AbstractProvider<T> provider);
+
 }

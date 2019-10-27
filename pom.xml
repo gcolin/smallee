@@ -8,6 +8,7 @@
 	<artifactId>smallee</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
+	<!-- mvn release:clean release:prepare -->
 	<!-- mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install 
 		sonar:sonar site:site site:stage -->
 	<modules>

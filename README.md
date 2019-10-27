@@ -3,7 +3,7 @@
 * A dependency injection (JSR-330) with optional modules
 * A rest 2.0 implementation (JSR-339 not fully compliant) with modules
 * A validation implementation 1.0 (not fully compliant)
-
+* A mustache implementation
 
 Works with Java 11.
 
@@ -16,12 +16,18 @@ mvn clean install
 ```
 
 
-
 Create the maven site in target/staging
 
 ```
-mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install site:site site:stage
+mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install site site:stage
 ```
+
+Build with sonar
+
+```
+mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install sonar:sonar
+```
+
 
 ## Atinject modules
 

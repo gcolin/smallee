@@ -29,21 +29,21 @@ import net.gcolin.di.core.InjectException;
  */
 public class MethodInjectionPoint implements InjectionPoint {
 
-  private AbstractProvider<?>[] providers;
-  private Method method;
+	private AbstractProvider<?>[] providers;
+	private Method method;
 
-  public MethodInjectionPoint(Method method, AbstractProvider<?>[] providers) {
-    this.method = method;
-    this.providers = providers;
-    Reflect.enable(method);
-  }
+	public MethodInjectionPoint(Method method, AbstractProvider<?>[] providers) {
+		this.method = method;
+		this.providers = providers;
+		Reflect.enable(method);
+	}
 
-  @Override
-  public void inject(Object o) {
-    try {
-      method.invoke(o, InstanceBuilder.getArguments(providers));
-    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new InjectException(e);
-    }
-  }
+	@Override
+	public void inject(Object o) {
+		try {
+			method.invoke(o, InstanceBuilder.getArguments(providers));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new InjectException(e);
+		}
+	}
 }

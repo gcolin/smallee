@@ -22,9 +22,9 @@ package net.gcolin.di.atinject;
  * @since 1.0
  */
 public interface HasPriority {
-  
-  default int priority() {
-    return Integer.MAX_VALUE;
-  }
+
+	default int priority() {
+		return Integer.MAX_VALUE;
+	}
 
 }

@@ -25,18 +25,18 @@ import java.util.Comparator;
  */
 public class HasPriorityComparator implements Comparator<HasPriority> {
 
-  @Override
-  public int compare(HasPriority o1, HasPriority o2) {
-    int p1 = o1.priority() == Integer.MAX_VALUE ? PriorityFinder.getPriority(o1.getClass()) : o1.priority();
-    int p2 = o2.priority() == Integer.MAX_VALUE ? PriorityFinder.getPriority(o2.getClass()) : o2.priority();
-    
-    int n = p1 - p2;
-    if (n > 0) {
-      return 1;
-    } else if (n < 0) {
-      return -1;
-    }
-    return 0;
-  }
+	@Override
+	public int compare(HasPriority o1, HasPriority o2) {
+		int p1 = o1.priority() == Integer.MAX_VALUE ? PriorityFinder.getPriority(o1.getClass()) : o1.priority();
+		int p2 = o2.priority() == Integer.MAX_VALUE ? PriorityFinder.getPriority(o2.getClass()) : o2.priority();
+
+		int n = p1 - p2;
+		if (n > 0) {
+			return 1;
+		} else if (n < 0) {
+			return -1;
+		}
+		return 0;
+	}
 
 }

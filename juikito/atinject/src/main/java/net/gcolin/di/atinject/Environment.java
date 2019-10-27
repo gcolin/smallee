@@ -92,18 +92,18 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 		addProviderBuilder(new SingletonProviderBuilder());
 		put(this, Environment.class);
 	}
-	
+
 	public Logger getLog() {
-      return log;
-    }
-	
+		return log;
+	}
+
 	public void setLog(Logger log) {
-      this.log = log;
-    }
-	
+		this.log = log;
+	}
+
 	protected List<Class<?>> getPossibleClass() {
-      return possibleClass;
-    }
+		return possibleClass;
+	}
 
 	public void setSealed(boolean sealed) {
 		this.sealed = sealed;
@@ -144,7 +144,7 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 	public void addProviderBuilder(ProviderBuilder builder) {
 		scopes.put(builder.getScope(), builder);
 	}
-	
+
 	protected List<Extension> loadExtensions() {
 		return Collections2.toList(ServiceLoader.load(Extension.class, cl).iterator());
 	}
@@ -160,10 +160,10 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 		for (Extension extension : extensions) {
 			extension.doStarted(this);
 		}
-		for(Class<?> possible: possibleClass) {
-		  if(possible.isAnnotationPresent(Startup.class)) {
-		    find(possible);
-		  }
+		for (Class<?> possible : possibleClass) {
+			if (possible.isAnnotationPresent(Startup.class)) {
+				find(possible);
+			}
 		}
 	}
 
@@ -487,7 +487,7 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 			throw new InjectException(e);
 		}
 	}
-	
+
 	@Override
 	public void bind(Object o) {
 		put(o, o.getClass());
@@ -572,10 +572,10 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 		Class<?> clazz = possible;
 		Type generic = possible;
 		while (clazz != Object.class && clazz != null) {
-			if(generic instanceof ParameterizedType) {
+			if (generic instanceof ParameterizedType) {
 				generic = Reflect.toType(possible, generic);
 			}
-			
+
 			if (genericType.equals(generic) || isAssignableGenericInterface(clazz, genericType, possible)) {
 				return true;
 			}
@@ -584,16 +584,17 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 		}
 		return false;
 	}
-	
+
 	private boolean isAssignableGenericInterface(Class<?> clazz, Type genericType, Class<?> possible) {
 		if (clazz == null || clazz == Object.class) {
 			return false;
 		}
 		for (Type intf : clazz.getGenericInterfaces()) {
-			if(intf instanceof ParameterizedType) {
+			if (intf instanceof ParameterizedType) {
 				intf = Reflect.toType(possible, intf);
 			}
-			if (genericType.equals(intf) || isAssignableGenericInterface(Reflect.toClass(intf), genericType, possible)) {
+			if (genericType.equals(intf)
+					|| isAssignableGenericInterface(Reflect.toClass(intf), genericType, possible)) {
 				return true;
 			}
 

@@ -28,23 +28,22 @@ import javax.inject.Singleton;
  */
 public class SingletonProviderBuilder implements ProviderBuilder {
 
-  @Override
-  public Class<? extends Annotation> getScope() {
-    return Singleton.class;
-  }
+	@Override
+	public Class<? extends Annotation> getScope() {
+		return Singleton.class;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> AbstractProvider<T> create(Class<?> clazz, Type genericType, Class<?> resolvedClazz,
-      Type resolvedGenericType, Environment env) {
-    return new SingletonProvider<T>((Class<T>) clazz, genericType, (Class<T>) resolvedClazz,
-        resolvedGenericType, env);
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> AbstractProvider<T> create(Class<?> clazz, Type genericType, Class<?> resolvedClazz,
+			Type resolvedGenericType, Environment env) {
+		return new SingletonProvider<T>((Class<T>) clazz, genericType, (Class<T>) resolvedClazz, resolvedGenericType,
+				env);
+	}
 
-  @Override
-  public <T> AbstractProvider<T> decorate(AbstractProvider<T> provider) {
-    return new SingletonDecorateProvider<>(provider);
-  }
-
+	@Override
+	public <T> AbstractProvider<T> decorate(AbstractProvider<T> provider) {
+		return new SingletonDecorateProvider<>(provider);
+	}
 
 }

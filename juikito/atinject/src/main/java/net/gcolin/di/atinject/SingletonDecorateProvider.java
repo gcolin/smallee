@@ -23,20 +23,21 @@ package net.gcolin.di.atinject;
  */
 public class SingletonDecorateProvider<T> extends SingletonProvider<T> {
 
-  private AbstractProvider<T> provider;
-  
-  public SingletonDecorateProvider(AbstractProvider<T> provider) {
-    super(provider.getType(), provider.getGenericType(), provider.getResolvedType(), provider.getResolvedGenericType(), provider.getEnvironment());
-    this.provider = provider;
-  }
-  
-  @Override
-  public InstanceCreator getBuilder() {
-    return provider.getBuilder();
-  }
-  
-  @Override
-  public void setBuilder(InstanceCreator builder) {
-    provider.setBuilder(builder);
-  }
+	private AbstractProvider<T> provider;
+
+	public SingletonDecorateProvider(AbstractProvider<T> provider) {
+		super(provider.getType(), provider.getGenericType(), provider.getResolvedType(),
+				provider.getResolvedGenericType(), provider.getEnvironment());
+		this.provider = provider;
+	}
+
+	@Override
+	public InstanceCreator getBuilder() {
+		return provider.getBuilder();
+	}
+
+	@Override
+	public void setBuilder(InstanceCreator builder) {
+		provider.setBuilder(builder);
+	}
 }

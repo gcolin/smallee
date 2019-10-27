@@ -26,33 +26,33 @@ import java.util.OptionalLong;
  */
 public class OptionalLongResolver extends OptionalResolver {
 
-  public OptionalLongResolver(Environment environment) {
-    super(environment);
-  }
+	public OptionalLongResolver(Environment environment) {
+		super(environment);
+	}
 
-  @Override
-  protected Class<?> optionalType() {
-    return OptionalLong.class;
-  }
-  
-  @Override
-  protected Object of(Object val) {
-    return OptionalLong.of((long) val);
-  }
-  
-  @Override
-  protected Object empty() {
-    return OptionalLong.empty();
-  }
-  
-  @Override
-  protected Type getType(Type genericType) {
-    return Long.class;
-  }
-  
-  @Override
-  protected Class<?> getPrimitiveType() {
-    return long.class;
-  }
+	@Override
+	protected Class<?> optionalType() {
+		return OptionalLong.class;
+	}
+
+	@Override
+	protected Object of(Object val) {
+		return OptionalLong.of((long) val);
+	}
+
+	@Override
+	protected Object empty() {
+		return OptionalLong.empty();
+	}
+
+	@Override
+	protected Type getType(Type genericType) {
+		return Long.class;
+	}
+
+	@Override
+	protected Class<?> getPrimitiveType() {
+		return long.class;
+	}
 
 }

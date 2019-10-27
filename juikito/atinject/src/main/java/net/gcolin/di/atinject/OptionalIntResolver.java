@@ -26,33 +26,33 @@ import java.util.OptionalInt;
  */
 public class OptionalIntResolver extends OptionalResolver {
 
-  public OptionalIntResolver(Environment environment) {
-    super(environment);
-  }
+	public OptionalIntResolver(Environment environment) {
+		super(environment);
+	}
 
-  @Override
-  protected Class<?> optionalType() {
-    return OptionalInt.class;
-  }
-  
-  @Override
-  protected Object of(Object val) {
-    return OptionalInt.of((int) val);
-  }
-  
-  @Override
-  protected Object empty() {
-    return OptionalInt.empty();
-  }
-  
-  @Override
-  protected Type getType(Type genericType) {
-    return Integer.class;
-  }
-  
-  @Override
-  protected Class<?> getPrimitiveType() {
-    return int.class;
-  }
+	@Override
+	protected Class<?> optionalType() {
+		return OptionalInt.class;
+	}
+
+	@Override
+	protected Object of(Object val) {
+		return OptionalInt.of((int) val);
+	}
+
+	@Override
+	protected Object empty() {
+		return OptionalInt.empty();
+	}
+
+	@Override
+	protected Type getType(Type genericType) {
+		return Integer.class;
+	}
+
+	@Override
+	protected Class<?> getPrimitiveType() {
+		return int.class;
+	}
 
 }

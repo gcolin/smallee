@@ -23,6 +23,6 @@ package net.gcolin.di.atinject;
  */
 public interface InstanceFactoryBuilder {
 
-  InstanceFactory create(AbstractProvider<Object> provider, Environment env);
-  
+	InstanceFactory create(AbstractProvider<Object> provider, Environment env);
+
 }

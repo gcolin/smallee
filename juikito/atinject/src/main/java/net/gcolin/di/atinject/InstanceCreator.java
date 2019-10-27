@@ -23,24 +23,24 @@ package net.gcolin.di.atinject;
  */
 public interface InstanceCreator {
 
-  boolean hasDestroyMethods();
+	boolean hasDestroyMethods();
 
-  Runnable createDestroyHandler(Object o);
+	Runnable createDestroyHandler(Object o);
 
-  void destroyInstance(Object o);
+	void destroyInstance(Object o);
 
-  Instance newInstance();
-  
-  Instance completeInstance(Instance instance);
+	Instance newInstance();
 
-  Instance createInstance(InstanceBuilderMetaData medataData);
+	Instance completeInstance(Instance instance);
 
-  InstanceBuilderMetaData getMetaData();
+	Instance createInstance(InstanceBuilderMetaData medataData);
 
-  void bind(Object o);
+	InstanceBuilderMetaData getMetaData();
 
-  void bind(Object o, InstanceBuilderMetaData medata);
-  
-  AbstractProvider<Object> getProvider();
+	void bind(Object o);
+
+	void bind(Object o, InstanceBuilderMetaData medata);
+
+	AbstractProvider<Object> getProvider();
 
 }

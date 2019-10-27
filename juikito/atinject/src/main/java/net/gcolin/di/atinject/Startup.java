@@ -30,4 +30,5 @@ import static java.lang.annotation.ElementType.TYPE;
 @Target({ TYPE })
 @Retention(RUNTIME)
 @Documented
-public @interface Startup {}
+public @interface Startup {
+}

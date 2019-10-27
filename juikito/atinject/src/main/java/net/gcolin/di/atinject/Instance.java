@@ -32,62 +32,62 @@ import net.gcolin.di.core.Key;
  */
 public class Instance implements Serializable, Provider<Object> {
 
-  private static final long serialVersionUID = -7072830052236033667L;
-  private Object value;
-  private final Key key;
-  private transient AbstractProvider<Object> provider;
-  private Map<Class<?>, Instance> dependents = null;
+	private static final long serialVersionUID = -7072830052236033667L;
+	private Object value;
+	private final Key key;
+	private transient AbstractProvider<Object> provider;
+	private Map<Class<?>, Instance> dependents = null;
 
-  public Instance(Object value, AbstractProvider<Object> provider) {
-    this.value = value;
-    this.key = provider.getKey();
-    this.provider = provider;
-  }
-  
-  public Instance(AbstractProvider<Object> provider) {
-    this.key = provider.getKey();
-    this.provider = provider;
-  }
-  
-  public void setValue(Object value) {
-    this.value = value;
-  }
+	public Instance(Object value, AbstractProvider<Object> provider) {
+		this.value = value;
+		this.key = provider.getKey();
+		this.provider = provider;
+	}
 
-  public Object get() {
-    return value;
-  }
+	public Instance(AbstractProvider<Object> provider) {
+		this.key = provider.getKey();
+		this.provider = provider;
+	}
 
-  public Key getKey() {
-    return key;
-  }
+	public void setValue(Object value) {
+		this.value = value;
+	}
 
-  public void addDependent(Instance instance) {
-    if (dependents == null) {
-      dependents = new HashMap<>();
-    }
-    dependents.put(instance.getProvider().getType(), instance);
-  }
+	public Object get() {
+		return value;
+	}
 
-  public Map<Class<?>, Instance> getDependents() {
-    return dependents == null ? Collections.emptyMap() : dependents;
-  }
-  
-  public AbstractProvider<Object> getProvider() {
-    return provider;
-  }
-  
-  public void destroy(Environment env) {
-    if (dependents != null) {
-      for(Instance dependent : dependents.values()) {
-        dependent.destroy(env);
-      }
-    }
-    if(provider == null) {
-      provider = env.getProvider(key);
-    }
-    InstanceCreator creator = provider.getBuilder();
-    if(creator != null) {
-      creator.destroyInstance(value);
-    }
-  }
+	public Key getKey() {
+		return key;
+	}
+
+	public void addDependent(Instance instance) {
+		if (dependents == null) {
+			dependents = new HashMap<>();
+		}
+		dependents.put(instance.getProvider().getType(), instance);
+	}
+
+	public Map<Class<?>, Instance> getDependents() {
+		return dependents == null ? Collections.emptyMap() : dependents;
+	}
+
+	public AbstractProvider<Object> getProvider() {
+		return provider;
+	}
+
+	public void destroy(Environment env) {
+		if (dependents != null) {
+			for (Instance dependent : dependents.values()) {
+				dependent.destroy(env);
+			}
+		}
+		if (provider == null) {
+			provider = env.getProvider(key);
+		}
+		InstanceCreator creator = provider.getBuilder();
+		if (creator != null) {
+			creator.destroyInstance(value);
+		}
+	}
 }

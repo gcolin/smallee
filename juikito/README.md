@@ -1,4 +1,4 @@
-# Juikito
+ Juikito
 
 Juikito is a light dependency injection library. It is very modular. Currently Juikito is an atinject implementation (without static) with some CDI features.
 

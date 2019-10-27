@@ -25,12 +25,12 @@ import java.lang.reflect.Constructor;
  */
 public interface InstanceFactory {
 
-  Instance create();
-  
-  Instance create(Object[] arguments);
-  
-  Object[] getArguments();
-  
-  Constructor<?> getConstructor();
-  
+	Instance create();
+
+	Instance create(Object[] arguments);
+
+	Object[] getArguments();
+
+	Constructor<?> getConstructor();
+
 }

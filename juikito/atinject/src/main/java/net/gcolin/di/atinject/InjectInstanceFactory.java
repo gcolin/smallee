@@ -29,40 +29,41 @@ import net.gcolin.di.core.InjectException;
  */
 public class InjectInstanceFactory implements InstanceFactory {
 
-  private Constructor<?> constructor;
-  private AbstractProvider<?>[] providers;
-  private AbstractProvider<Object> provider;
+	private Constructor<?> constructor;
+	private AbstractProvider<?>[] providers;
+	private AbstractProvider<Object> provider;
 
-  public InjectInstanceFactory(Constructor<?> constructor, AbstractProvider<?>[] providers, AbstractProvider<Object> provider) {
-    this.constructor = constructor;
-    this.providers = providers;
-    this.provider = provider;
-    Reflect.enable(constructor);
-  }
+	public InjectInstanceFactory(Constructor<?> constructor, AbstractProvider<?>[] providers,
+			AbstractProvider<Object> provider) {
+		this.constructor = constructor;
+		this.providers = providers;
+		this.provider = provider;
+		Reflect.enable(constructor);
+	}
 
-  public Constructor<?> getConstructor() {
-    return constructor;
-  }
+	public Constructor<?> getConstructor() {
+		return constructor;
+	}
 
-  @Override
-  public Instance create() {
-    return create(getArguments());
-  }
+	@Override
+	public Instance create() {
+		return create(getArguments());
+	}
 
-  @Override
-  public Instance create(Object[] arguments) {
-    try {
-      Object obj = constructor.newInstance(arguments);
-      return new Instance(obj, provider);
-    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-        | InvocationTargetException ex) {
-      throw new InjectException("cannot create " + constructor.getDeclaringClass(), ex);
-    }
-  }
+	@Override
+	public Instance create(Object[] arguments) {
+		try {
+			Object obj = constructor.newInstance(arguments);
+			return new Instance(obj, provider);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException ex) {
+			throw new InjectException("cannot create " + constructor.getDeclaringClass(), ex);
+		}
+	}
 
-  @Override
-  public Object[] getArguments() {
-    return InstanceBuilder.getArguments(providers);
-  }
+	@Override
+	public Object[] getArguments() {
+		return InstanceBuilder.getArguments(providers);
+	}
 
 }

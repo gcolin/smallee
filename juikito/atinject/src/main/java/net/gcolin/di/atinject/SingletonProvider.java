@@ -28,100 +28,100 @@ import javax.inject.Singleton;
  */
 public class SingletonProvider<T> extends AbstractProvider<T> {
 
-  protected T singleton;
-  protected Instance instance;
-  private Class<T> clazz;
-  private Class<? extends T> resolvedClazz;
-  private Type resolvedGenericType;
-  private Type genericType;
-  protected Environment env;
+	protected T singleton;
+	protected Instance instance;
+	private Class<T> clazz;
+	private Class<? extends T> resolvedClazz;
+	private Type resolvedGenericType;
+	private Type genericType;
+	protected Environment env;
 
-  public SingletonProvider(Class<T> clazz, Type genericType, Class<? extends T> resolvedClazz,
-      Type resolvedGenericType, Environment env) {
-    this.resolvedClazz = resolvedClazz;
-    this.resolvedGenericType = resolvedGenericType;
-    this.clazz = clazz;
-    this.env = env;
-    this.genericType = genericType;
-  }
+	public SingletonProvider(Class<T> clazz, Type genericType, Class<? extends T> resolvedClazz,
+			Type resolvedGenericType, Environment env) {
+		this.resolvedClazz = resolvedClazz;
+		this.resolvedGenericType = resolvedGenericType;
+		this.clazz = clazz;
+		this.env = env;
+		this.genericType = genericType;
+	}
 
-  @SuppressWarnings("unchecked")
-  public SingletonProvider(T singleton, Type genericType) {
-    this.singleton = singleton;
-    this.genericType = genericType;
-    this.resolvedGenericType = genericType;
-    this.clazz = (Class<T>) singleton.getClass();
-    this.resolvedClazz = clazz;
-  }
+	@SuppressWarnings("unchecked")
+	public SingletonProvider(T singleton, Type genericType) {
+		this.singleton = singleton;
+		this.genericType = genericType;
+		this.resolvedGenericType = genericType;
+		this.clazz = (Class<T>) singleton.getClass();
+		this.resolvedClazz = clazz;
+	}
 
-  @Override
-  public synchronized T get() {
-    if (singleton == null) {
-      singleton = create();
-    }
-    return singleton;
-  }
+	@Override
+	public synchronized T get() {
+		if (singleton == null) {
+			singleton = create();
+		}
+		return singleton;
+	}
 
-  @Override
-  public T getNoCreate() {
-    return singleton;
-  }
+	@Override
+	public T getNoCreate() {
+		return singleton;
+	}
 
-  @Override
-  public Class<T> getType() {
-    return clazz;
-  }
+	@Override
+	public Class<T> getType() {
+		return clazz;
+	}
 
-  @Override
-  public Class<? extends Annotation> getScope() {
-    return Singleton.class;
-  }
+	@Override
+	public Class<? extends Annotation> getScope() {
+		return Singleton.class;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public T create() {
-    InstanceCreator buidler = getBuilder();
-    InstanceBuilderMetaData medataData = buidler.getMetaData();
-    instance = buidler.createInstance(medataData);
-    singleton = (T) instance.get();
-    buidler.bind(singleton, medataData);
-    instance = buidler.completeInstance(instance);
-    singleton = (T) instance.get();
-    return singleton;
-  }
-  
-  @Override
-  public Environment getEnvironment() {
-    return env;
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public T create() {
+		InstanceCreator buidler = getBuilder();
+		InstanceBuilderMetaData medataData = buidler.getMetaData();
+		instance = buidler.createInstance(medataData);
+		singleton = (T) instance.get();
+		buidler.bind(singleton, medataData);
+		instance = buidler.completeInstance(instance);
+		singleton = (T) instance.get();
+		return singleton;
+	}
 
-  @Override
-  public Type getGenericType() {
-    return genericType;
-  }
+	@Override
+	public Environment getEnvironment() {
+		return env;
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public InstanceCreator createBuilder() {
-    return new InstanceBuilder(env, false, (AbstractProvider<Object>) this);
-  }
+	@Override
+	public Type getGenericType() {
+		return genericType;
+	}
 
-  @Override
-  public Class<? extends T> getResolvedType() {
-    return resolvedClazz;
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public InstanceCreator createBuilder() {
+		return new InstanceBuilder(env, false, (AbstractProvider<Object>) this);
+	}
 
-  @Override
-  public Type getResolvedGenericType() {
-    return resolvedGenericType;
-  }
+	@Override
+	public Class<? extends T> getResolvedType() {
+		return resolvedClazz;
+	}
 
-  @Override
-  public void stop() {
-    if (instance != null) {
-      instance.destroy(env);
-      singleton = null;
-      instance = null;
-    }
-  }
+	@Override
+	public Type getResolvedGenericType() {
+		return resolvedGenericType;
+	}
+
+	@Override
+	public void stop() {
+		if (instance != null) {
+			instance.destroy(env);
+			singleton = null;
+			instance = null;
+		}
+	}
 }

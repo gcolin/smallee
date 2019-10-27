@@ -32,23 +32,23 @@ import net.gcolin.common.reflect.Reflect;
  */
 public class ProviderResolver implements Resolver {
 
-  private Environment environment;
-  
-  public ProviderResolver(Environment environment) {
-    this.environment = environment;
-  }
+	private Environment environment;
 
-  @Override
-  public AbstractProvider<Object> find(Class<?> clazz, Type genericType, Annotation[] qualifiers) {
-    if(clazz == Provider.class || clazz == Supplier.class) {
-      Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-      @SuppressWarnings("unchecked")
-      AbstractProvider<Object> delegate =
-          (AbstractProvider<Object>) environment.getProvider(Reflect.toClass(type), type, qualifiers);
-      AbstractProvider<Object> p = new SingletonProvider<Object>(delegate, genericType);
-      return p;
-    }
-    return null;
-  }
+	public ProviderResolver(Environment environment) {
+		this.environment = environment;
+	}
+
+	@Override
+	public AbstractProvider<Object> find(Class<?> clazz, Type genericType, Annotation[] qualifiers) {
+		if (clazz == Provider.class || clazz == Supplier.class) {
+			Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+			@SuppressWarnings("unchecked")
+			AbstractProvider<Object> delegate = (AbstractProvider<Object>) environment
+					.getProvider(Reflect.toClass(type), type, qualifiers);
+			AbstractProvider<Object> p = new SingletonProvider<Object>(delegate, genericType);
+			return p;
+		}
+		return null;
+	}
 
 }

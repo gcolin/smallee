@@ -25,40 +25,40 @@ import java.lang.reflect.Method;
  */
 public class InstanceBuilderMetaData {
 
-    private InstanceFactory instanceFactory;
-    private Method[][] postContructMethods;
-    private Method[][] preDestroyMethods;
-    private InjectionPoint[] injects;
+	private InstanceFactory instanceFactory;
+	private Method[][] postContructMethods;
+	private Method[][] preDestroyMethods;
+	private InjectionPoint[] injects;
 
-    public Method[][] getPostContructMethods() {
-        return postContructMethods;
-    }
+	public Method[][] getPostContructMethods() {
+		return postContructMethods;
+	}
 
-    public void setPostContructMethods(Method[][] postContructMethods) {
-        this.postContructMethods = postContructMethods;
-    }
+	public void setPostContructMethods(Method[][] postContructMethods) {
+		this.postContructMethods = postContructMethods;
+	}
 
-    public Method[][] getPreDestroyMethods() {
-        return preDestroyMethods;
-    }
+	public Method[][] getPreDestroyMethods() {
+		return preDestroyMethods;
+	}
 
-    public void setPreDestroyMethods(Method[][] preDestroyMethods) {
-        this.preDestroyMethods = preDestroyMethods;
-    }
+	public void setPreDestroyMethods(Method[][] preDestroyMethods) {
+		this.preDestroyMethods = preDestroyMethods;
+	}
 
-    public InjectionPoint[] getInjects() {
-      return injects;
-    }
+	public InjectionPoint[] getInjects() {
+		return injects;
+	}
 
-    public void setInjects(InjectionPoint[] injects) {
-      this.injects = injects;
-    }
+	public void setInjects(InjectionPoint[] injects) {
+		this.injects = injects;
+	}
 
-    public InstanceFactory getInstanceFactory() {
-      return instanceFactory;
-    }
+	public InstanceFactory getInstanceFactory() {
+		return instanceFactory;
+	}
 
-    public void setInstanceFactory(InstanceFactory instanceFactory) {
-      this.instanceFactory = instanceFactory;
-    }
+	public void setInstanceFactory(InstanceFactory instanceFactory) {
+		this.instanceFactory = instanceFactory;
+	}
 }
