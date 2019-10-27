@@ -36,6 +36,7 @@
 		<module>juikito</module>
 		<module>restito</module>
 		<module>micro</module>
+		<module>example</module>
 	</modules>
 
 	<distributionManagement>
