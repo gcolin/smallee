@@ -65,7 +65,7 @@ public class JsonSamplesParsingTest {
 
   @Test
   public void testSampleFiles() {
-    String[] fileNames = {"facebook.json", "facebook1.json", "facebook2.json", "twitter.json"};
+    String[] fileNames = {"tika.json","facebook.json", "facebook1.json", "facebook2.json", "twitter.json"};
     for (String fileName : fileNames) {
       testSampleFile(fileName);
     }
@@ -78,7 +78,7 @@ public class JsonSamplesParsingTest {
     try {
       parser = Json.createParser(reader);
       while (parser.hasNext()) {
-        parser.next();
+        System.out.println(parser.next());
       }
     } finally {
       if (parser != null) {

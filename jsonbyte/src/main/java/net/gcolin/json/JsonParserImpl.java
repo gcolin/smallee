@@ -42,8 +42,8 @@ import net.gcolin.common.io.Io;
 import net.gcolin.common.lang.Strings;
 
 /**
- * The {@code JsonParserImpl} class parses Json from a reader. The instances of JsonParserImpl are
- * pooled.
+ * The {@code JsonParserImpl} class parses Json from a reader. The instances of
+ * JsonParserImpl are pooled.
  * 
  * @author Gaël COLIN
  * @since 1.0
@@ -456,7 +456,7 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 	private boolean isDigit(int ch) {
 		return ch >= '0' && ch <= '9';
 	}
-	
+
 	private char getsDigits() {
 		char ch = '\0';
 		while (!end) {
@@ -528,12 +528,16 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 		event = Event.KEY_NAME;
 
 		char ch = read0(false);
-		if(buffer.charAt(0) != '"') {
+		if (buffer.charAt(0) != '"') {
 			while (Strings.isBlank(ch)) {
 				ch = read0(false);
 			}
 		}
-		while (ch != ':' && !end) {
+		char endChar = ':';
+		if (buffer.charAt(0) == '"') {
+			endChar = '"';
+		}
+		while (ch != endChar && !end) {
 			if (ch >= 0x20 && ch != 0x5c) {
 				buffer.append(ch);
 				ch = read0(false);
@@ -546,13 +550,20 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 				throw unexpectedChar(ch, null);
 			}
 		}
-
+		
+		if (buffer.charAt(0) == '"') {
+			buffer.delete(0, 1);
+			while(ch != ':' && !end) {
+				ch = read0(false);
+			}
+			int last = buffer.lastIndexOf("\"");
+			if (last != -1) {
+				buffer.setLength(last);
+			}
+		}
 		if (buffer.length() == 0) {
 			throw new JsonParsingException("empty key name", this);
-		} else if (buffer.charAt(0) == '"') {
-			buffer.delete(0, 1);
-			buffer.setLength(buffer.lastIndexOf("\""));
-		}
+		} 
 	}
 
 	private void unescape() {
@@ -732,8 +743,8 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 
 	private void mustbe(JsonParser.Event... event) {
 		boolean find = false;
-		for(Event evt : event) {
-			if(this.event == evt) {
+		for (Event evt : event) {
+			if (this.event == evt) {
 				find = true;
 			}
 		}
@@ -762,7 +773,8 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 	public void skipObject() {
 		if (event == Event.START_OBJECT) {
 			int size = queue.size();
-			while (next() != Event.END_OBJECT || queue.size() >= size);
+			while (next() != Event.END_OBJECT || queue.size() >= size)
+				;
 		}
 	}
 
@@ -770,7 +782,8 @@ public class JsonParserImpl implements JsonParser, JsonLocation {
 	public void skipArray() {
 		if (event == Event.START_ARRAY) {
 			int size = queue.size();
-			while (next() != Event.END_ARRAY || queue.size() >= size);
+			while (next() != Event.END_ARRAY || queue.size() >= size)
+				;
 		}
 	}
 
