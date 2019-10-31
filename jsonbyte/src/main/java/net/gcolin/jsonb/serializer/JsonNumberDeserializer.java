@@ -18,8 +18,6 @@ package net.gcolin.jsonb.serializer;
 import javax.json.JsonNumber;
 import javax.json.stream.JsonParser;
 
-import net.gcolin.json.BigDecimalJsonNumber;
-
 /**
  * A {@code JsonNumber} deserializer.
  * 
@@ -30,7 +28,7 @@ public class JsonNumberDeserializer extends AbstractNumberDeserializer<JsonNumbe
 
   @Override
   protected JsonNumber deserialize(JsonParser parser) {
-    return new BigDecimalJsonNumber(parser.getBigDecimal());
+    return (JsonNumber) parser.getValue();
   }
 
 }

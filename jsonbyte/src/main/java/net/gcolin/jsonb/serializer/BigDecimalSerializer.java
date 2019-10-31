@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -41,17 +40,5 @@ public class BigDecimalSerializer implements JsonbSerializerExtended<BigDecimal>
       SerializationContext ctx) {
     generator.write(key, obj);
   }
-
-  @Override
-  public void serialize(char[] key, BigDecimal obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0(key, obj.toString());
-  }
-
-  @Override
-  public void serialize(BigDecimal obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write0(obj.toString());
-  }
-
 
 }

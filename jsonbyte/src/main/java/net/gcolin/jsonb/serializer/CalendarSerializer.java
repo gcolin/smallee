@@ -24,7 +24,6 @@ import java.util.TimeZone;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -55,17 +54,6 @@ public class CalendarSerializer extends AbstractDateSerializer
     TimeZone tz = obj.getTimeZone();
     return formatter.format(
         ZonedDateTime.ofInstant(obj.toInstant(), tz == null ? ZoneOffset.UTC : tz.toZoneId()));
-  }
-
-  @Override
-  public void serialize(char[] key, Calendar obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0Quoted(key, serialize(obj));
-  }
-
-  @Override
-  public void serialize(Calendar obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write0Quoted(serialize(obj));
   }
 
 }

@@ -20,7 +20,6 @@ import java.math.BigInteger;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -41,18 +40,4 @@ public class BigIntegerSerializer implements JsonbSerializerExtended<BigInteger>
       SerializationContext ctx) {
     generator.write(key, obj);
   }
-
-  @Override
-  public void serialize(char[] key, BigInteger obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0(key, obj.toString());
-  }
-
-  @Override
-  public void serialize(BigInteger obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write0(obj.toString());
-  }
-
-
-
 }

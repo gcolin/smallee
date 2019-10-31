@@ -19,7 +19,6 @@ import javax.json.JsonValue;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -39,17 +38,6 @@ public class JsonValueSerializer implements JsonbSerializerExtended<JsonValue> {
   public void serialize(String key, JsonValue obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, obj);
-  }
-
-  @Override
-  public void serialize(char[] key, JsonValue obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0(key, obj);
-  }
-
-  @Override
-  public void serialize(JsonValue obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write(obj);
   }
 
 }

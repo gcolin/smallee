@@ -28,8 +28,6 @@ import net.gcolin.jsonb.JsonbSerializerExtended;
 public class SerializerPair
     extends Pair<JsonbSerializerExtended<Object>, JsonbDeserializerExtended<Object>> {
 
-  private static final long serialVersionUID = 8801575758458004950L;
-
   public SerializerPair(JsonbSerializerExtended<Object> key,
       JsonbDeserializerExtended<Object> value) {
     super(key, value);

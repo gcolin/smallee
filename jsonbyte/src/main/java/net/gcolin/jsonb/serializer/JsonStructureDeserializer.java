@@ -22,9 +22,6 @@ import javax.json.bind.serializer.DeserializationContext;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 
-import net.gcolin.common.io.Io;
-import net.gcolin.json.JsonParserImpl;
-import net.gcolin.json.JsonParserReaderImpl;
 import net.gcolin.jsonb.JsonbDeserializerExtended;
 
 /**
@@ -38,11 +35,6 @@ public class JsonStructureDeserializer extends JsonbDeserializerExtended<JsonStr
   @Override
   public JsonStructure deserialize(Event event, Object parent, JsonParser parser,
       DeserializationContext ctx, Type rtType) {
-    JsonParserReaderImpl reader = null;
-    try {
-      return (JsonStructure) JsonParserImpl.getValue0(parser, event);
-    } finally {
-      Io.close(reader);
-    }
+	  return (JsonStructure) parser.getValue();
   }
 }

@@ -21,7 +21,6 @@ import java.time.temporal.TemporalAccessor;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -47,18 +46,6 @@ public class TemporalAccessorSerializer implements JsonbSerializerExtended<Tempo
   public void serialize(String key, TemporalAccessor obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, formatter.format(obj));
-  }
-
-  @Override
-  public void serialize(char[] key, TemporalAccessor obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0Quoted(key, formatter.format(obj));
-  }
-
-  @Override
-  public void serialize(TemporalAccessor obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0Quoted(formatter.format(obj));
   }
 
 }

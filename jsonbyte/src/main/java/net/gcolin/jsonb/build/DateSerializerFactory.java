@@ -22,7 +22,6 @@ import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonParser;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbDeserializerExtended;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.serializer.AbstractNumberDeserializer;
@@ -53,17 +52,6 @@ public class DateSerializerFactory implements SerializerFactory {
       public void serialize(String key, Date obj, JsonGenerator generator,
           SerializationContext ctx) {
         generator.write(key, obj.getTime());
-      }
-
-      @Override
-      public void serialize(char[] key, Date obj, JsonGeneratorImpl generator,
-          SerializationContext ctx) {
-        generator.write0(key, obj.getTime());
-      }
-
-      @Override
-      public void serialize(Date obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-        generator.write0(obj.getTime());
       }
 
     }, (JsonbDeserializerExtended) new AbstractNumberDeserializer<Date>() {

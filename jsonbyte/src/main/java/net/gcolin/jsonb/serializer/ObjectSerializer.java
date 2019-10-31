@@ -18,7 +18,6 @@ package net.gcolin.jsonb.serializer;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.build.JContext;
 import net.gcolin.jsonb.build.JNode;
@@ -54,19 +53,6 @@ public class ObjectSerializer implements JsonbSerializerExtended<Object> {
   @Override
   public void serialize(String key, Object obj, JsonGenerator generator, SerializationContext ctx) {
     node(obj).getSerializer().serialize(key, obj, generator, ctx);
-  }
-
-
-  @Override
-  public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    node(obj).getSerializer().serialize(key, obj, generator, ctx);
-  }
-
-
-  @Override
-  public void serialize(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    node(obj).getSerializer().serialize(obj, generator, ctx);
   }
 
   @SuppressWarnings("unchecked")

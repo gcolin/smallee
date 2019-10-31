@@ -22,7 +22,6 @@ import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
 import net.gcolin.common.reflect.Reflect;
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.build.JContext;
 import net.gcolin.jsonb.build.JNode;
@@ -67,33 +66,12 @@ public class JNodeCollectionSerializer implements JsonbSerializerExtended<Object
     serialize0(obj, generator, ctx);
   }
 
-  @Override
-  public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.writeStartArray0(key);
-    serialize2(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.writeStartArray0();
-    serialize2(obj, generator, ctx);
-  }
-
   @SuppressWarnings("unchecked")
   private void serialize0(Object obj, JsonGenerator generator, SerializationContext ctx) {
     for (Object elt : (Collection<Object>) obj) {
       component.getSerializer().serialize(elt, generator, ctx);
     }
     generator.writeEnd();
-  }
-
-  @SuppressWarnings("unchecked")
-  private void serialize2(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    for (Object elt : (Collection<Object>) obj) {
-      component.getSerializer().serialize(elt, generator, ctx);
-    }
-    generator.writeEnd0();
   }
 
 }

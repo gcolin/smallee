@@ -18,7 +18,6 @@ package net.gcolin.jsonb.serializer;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.build.JNode;
 import net.gcolin.jsonb.build.JProperty;
@@ -49,19 +48,6 @@ public class JNodeObjectSerializer implements JsonbSerializerExtended<Object> {
     serialize0(obj, generator, ctx);
   }
 
-  @Override
-  public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.writeStartObject0(key);
-    serialize2(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.writeStartObject0();
-    serialize2(obj, generator, ctx);
-  }
-
   private void serialize0(Object obj, JsonGenerator generator, SerializationContext ctx) {
     JProperty[] props = node.getElementList();
     if (props != null) {
@@ -73,19 +59,6 @@ public class JNodeObjectSerializer implements JsonbSerializerExtended<Object> {
       }
     }
     generator.writeEnd();
-  }
-
-  private void serialize2(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    JProperty[] props = node.getElementList();
-    if (props != null) {
-      for (int i = 0; i < props.length; i++) {
-        Object val = props[i].getGetter().get(obj);
-        if (val != null) {
-          props[i].getNode().getSerializer().serialize(props[i].getChname(), val, generator, ctx);
-        }
-      }
-    }
-    generator.writeEnd0();
   }
 
 }

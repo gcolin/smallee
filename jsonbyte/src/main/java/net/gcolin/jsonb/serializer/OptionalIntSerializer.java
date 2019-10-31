@@ -20,7 +20,6 @@ import java.util.OptionalInt;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -43,21 +42,6 @@ public class OptionalIntSerializer implements JsonbSerializerExtended<OptionalIn
       SerializationContext ctx) {
     if (obj.isPresent()) {
       generator.write(key, obj.getAsInt());
-    }
-  }
-
-  @Override
-  public void serialize(char[] key, OptionalInt obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    if (obj.isPresent()) {
-      generator.write0(key, obj.getAsInt());
-    }
-  }
-
-  @Override
-  public void serialize(OptionalInt obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    if (obj.isPresent()) {
-      generator.write0(obj.getAsInt());
     }
   }
 

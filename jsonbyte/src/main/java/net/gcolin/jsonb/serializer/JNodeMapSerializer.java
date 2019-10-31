@@ -23,7 +23,6 @@ import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
 import net.gcolin.common.reflect.Reflect;
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.build.JContext;
 import net.gcolin.jsonb.build.JNode;
@@ -68,19 +67,6 @@ public class JNodeMapSerializer implements JsonbSerializerExtended<Object> {
     serialize0(obj, generator, ctx);
   }
 
-  @Override
-  public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.writeStartObject0(key);
-    serialize2(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.writeStartObject0();
-    serialize2(obj, generator, ctx);
-  }
-
   @SuppressWarnings("unchecked")
   private void serialize0(Object obj, JsonGenerator generator, SerializationContext ctx) {
     for (Entry<Object, Object> entry : ((Map<Object, Object>) obj).entrySet()) {
@@ -104,17 +90,6 @@ public class JNodeMapSerializer implements JsonbSerializerExtended<Object> {
     ch[ch.length - 2] = QUOTE;
     ch[ch.length - 1] = TWOPOINT;
     return ch;
-  }
-
-  @SuppressWarnings("unchecked")
-  private void serialize2(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    for (Entry<Object, Object> entry : ((Map<Object, Object>) obj).entrySet()) {
-      Object val = entry.getValue();
-      if (val != null) {
-        mapValueNode.getSerializer().serialize(serializeKeyCh(entry.getKey()), val, generator, ctx);
-      }
-    }
-    generator.writeEnd0();
   }
 
 }

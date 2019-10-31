@@ -20,7 +20,6 @@ import java.util.OptionalLong;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -45,20 +44,4 @@ public class OptionalLongSerializer implements JsonbSerializerExtended<OptionalL
       generator.write(key, obj.getAsLong());
     }
   }
-
-  @Override
-  public void serialize(char[] key, OptionalLong obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    if (obj.isPresent()) {
-      generator.write0(key, obj.getAsLong());
-    }
-  }
-
-  @Override
-  public void serialize(OptionalLong obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    if (obj.isPresent()) {
-      generator.write0(obj.getAsLong());
-    }
-  }
-
 }

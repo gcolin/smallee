@@ -18,8 +18,6 @@ package net.gcolin.jsonb.serializer;
 import javax.json.JsonString;
 import javax.json.stream.JsonParser;
 
-import net.gcolin.json.JsonStringImpl;
-
 /**
  * A {@code JsonString} deserializer.
  * 
@@ -30,7 +28,7 @@ public class JsonStringDeserializer extends AbstractStringDeserializer<JsonStrin
 
   @Override
   protected JsonString deserialize(JsonParser parser) {
-    return new JsonStringImpl(parser.getString());
+    return (JsonString) parser.getValue();
   }
 
 }

@@ -18,7 +18,6 @@ package net.gcolin.jsonb.serializer;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -38,17 +37,6 @@ public class ToStringSerializer implements JsonbSerializerExtended<Object> {
   public void serialize(String key, Object obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, obj.toString());
-  }
-
-  @Override
-  public void serialize(char[] key, Object obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0Quoted(key, obj.toString());
-  }
-
-  @Override
-  public void serialize(Object obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write0Quoted(obj.toString());
   }
 
 }

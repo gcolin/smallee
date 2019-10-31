@@ -20,7 +20,6 @@ import java.util.Optional;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -49,22 +48,6 @@ public class OptionalSerializer implements JsonbSerializerExtended<Optional<Obje
       SerializationContext ctx) {
     if (obj.isPresent()) {
       delegate.serialize(key, obj.get(), generator, ctx);
-    }
-  }
-
-  @Override
-  public void serialize(char[] key, Optional<Object> obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    if (obj.isPresent()) {
-      delegate.serialize(key, obj.get(), generator, ctx);
-    }
-  }
-
-  @Override
-  public void serialize(Optional<Object> obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    if (obj.isPresent()) {
-      delegate.serialize(obj.get(), generator, ctx);
     }
   }
 

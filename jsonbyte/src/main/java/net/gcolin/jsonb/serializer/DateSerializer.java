@@ -23,7 +23,6 @@ import java.util.Locale;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -52,16 +51,4 @@ public class DateSerializer extends AbstractDateSerializer
   public void serialize(String key, Date obj, JsonGenerator generator, SerializationContext ctx) {
     generator.write(key, format(obj));
   }
-
-  @Override
-  public void serialize(char[] key, Date obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0Quoted(key, format(obj));
-  }
-
-  @Override
-  public void serialize(Date obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write0Quoted(format(obj));
-  }
-
 }

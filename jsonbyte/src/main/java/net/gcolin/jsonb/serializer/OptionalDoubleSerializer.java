@@ -20,7 +20,6 @@ import java.util.OptionalDouble;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -43,21 +42,6 @@ public class OptionalDoubleSerializer implements JsonbSerializerExtended<Optiona
       SerializationContext ctx) {
     if (obj.isPresent()) {
       generator.write(key, obj.getAsDouble());
-    }
-  }
-
-  @Override
-  public void serialize(char[] key, OptionalDouble obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    if (obj.isPresent()) {
-      generator.write0(key, String.valueOf(obj.getAsDouble()));
-    }
-  }
-
-  @Override
-  public void serialize(OptionalDouble obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    if (obj.isPresent()) {
-      generator.write0(String.valueOf(obj.getAsDouble()));
     }
   }
 

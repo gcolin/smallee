@@ -39,7 +39,6 @@ import net.gcolin.common.io.Io;
 import net.gcolin.common.io.StringReader;
 import net.gcolin.common.io.StringWriter;
 import net.gcolin.common.reflect.Reflect;
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.build.JContext;
 import net.gcolin.jsonb.build.JNode;
 import net.gcolin.jsonb.build.JNodeBuilder;
@@ -184,11 +183,7 @@ public class JsonbImpl implements Jsonb, SerializationContext, DeserializationCo
   public <T> void serialize(T object, JsonGenerator generator) {
     Class<?> clazz = object.getClass();
     JNode node = builder.build(null, (Class<Object>) clazz, clazz, null, null, new JContext());
-    if (generator instanceof JsonGeneratorImpl) {
-      node.getSerializer().serialize(object, (JsonGeneratorImpl) generator, this);
-    } else {
-      node.getSerializer().serialize(object, generator, this);
-    }
+    node.getSerializer().serialize(object, generator, this);
   }
 
 }

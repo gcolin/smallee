@@ -20,7 +20,6 @@ import java.util.TimeZone;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -40,17 +39,6 @@ public class TimeZoneSerializer implements JsonbSerializerExtended<TimeZone> {
   public void serialize(String key, TimeZone obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, obj.getID());
-  }
-
-  @Override
-  public void serialize(char[] key, TimeZone obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0Quoted(key, obj.getID());
-  }
-
-  @Override
-  public void serialize(TimeZone obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write0Quoted(obj.getID());
   }
 
 }

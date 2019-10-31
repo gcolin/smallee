@@ -18,7 +18,6 @@ package net.gcolin.jsonb.serializer;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
 import net.gcolin.jsonb.JsonbSerializerExtended;
 
 /**
@@ -38,17 +37,6 @@ public class EnumSerializer implements JsonbSerializerExtended<Enum<?>> {
   public void serialize(String key, Enum<?> obj, JsonGenerator generator,
       SerializationContext ctx) {
     generator.write(key, obj.name());
-  }
-
-  @Override
-  public void serialize(char[] key, Enum<?> obj, JsonGeneratorImpl generator,
-      SerializationContext ctx) {
-    generator.write0Quoted(key, obj.name());
-  }
-
-  @Override
-  public void serialize(Enum<?> obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    generator.write0Quoted(obj.name());
   }
 
 }

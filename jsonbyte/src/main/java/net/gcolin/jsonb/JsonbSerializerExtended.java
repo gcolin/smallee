@@ -19,8 +19,6 @@ import javax.json.bind.serializer.JsonbSerializer;
 import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
-import net.gcolin.json.JsonGeneratorImpl;
-
 /**
  * The {@code JsonbSerializerExtended} adds some methods for a faster serialization.
  * 
@@ -30,13 +28,4 @@ import net.gcolin.json.JsonGeneratorImpl;
 public interface JsonbSerializerExtended<T> extends JsonbSerializer<T> {
 
   void serialize(String key, T obj, JsonGenerator generator, SerializationContext ctx);
-
-  default void serialize(char[] key, T obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    serialize(new String(key, 1, key.length - 3), obj, (JsonGenerator) generator, ctx);
-  }
-
-  default void serialize(T obj, JsonGeneratorImpl generator, SerializationContext ctx) {
-    serialize(obj, (JsonGenerator) generator, ctx);
-  }
-
 }

@@ -18,13 +18,10 @@ package net.gcolin.jsonb.serializer;
 import java.lang.reflect.Type;
 
 import javax.json.JsonValue;
-import javax.json.bind.JsonbException;
 import javax.json.bind.serializer.DeserializationContext;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 
-import net.gcolin.json.BigDecimalJsonNumber;
-import net.gcolin.json.JsonStringImpl;
 import net.gcolin.jsonb.JsonbDeserializerExtended;
 
 /**
@@ -38,24 +35,7 @@ public class JsonValueDeserializer extends JsonbDeserializerExtended<JsonValue> 
   @Override
   public JsonValue deserialize(Event event, Object parent, JsonParser parser,
       DeserializationContext ctx, Type rtType) {
-    switch (event) {
-      case START_ARRAY:
-        return new JsonArrayDeserializer().deserialize(event, parent, parser, ctx, rtType);
-      case START_OBJECT:
-        return new JsonObjectDeserializer().deserialize(event, parent, parser, ctx, rtType);
-      case VALUE_FALSE:
-        return JsonValue.FALSE;
-      case VALUE_TRUE:
-        return JsonValue.TRUE;
-      case VALUE_NULL:
-        return JsonValue.NULL;
-      case VALUE_NUMBER:
-        return new BigDecimalJsonNumber(parser.getBigDecimal());
-      case VALUE_STRING:
-        return new JsonStringImpl(parser.getString());
-      default:
-        throw new JsonbException("cannot find a valid JsonValue");
-    }
+    return parser.getValue();
   }
 
 }
