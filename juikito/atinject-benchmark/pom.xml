@@ -19,14 +19,17 @@
 	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 	OF SUCH DAMAGE. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.gcolin.juikito</groupId>
+	<parent>
+		<groupId>net.gcolin.smallee</groupId>
+		<artifactId>juikito</artifactId>
+		<version>1.1-SNAPSHOT</version>
+	</parent>
 	<artifactId>atinject-benchmark</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
 
 	<name>JMH benchmark sample: Java</name>
 
@@ -50,9 +53,8 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.gcolin.juikito</groupId>
+			<groupId>net.gcolin.smallee</groupId>
 			<artifactId>atinject</artifactId>
-			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
@@ -64,16 +66,21 @@
 			<artifactId>weld-se</artifactId>
 			<version>2.4.2.SP1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- JMH version to use with this project. -->
-		<jmh.version>1.18</jmh.version>
+		<jmh.version>1.23</jmh.version>
 
 		<!-- Java source/target to use for compilation. -->
-		<javac.target>1.8</javac.target>
+		<javac.target>11</javac.target>
 
 		<!-- Name of the benchmark Uber-JAR to generate. -->
 		<uberjar.name>benchmarks</uberjar.name>

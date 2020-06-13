@@ -20,10 +20,6 @@
 			<artifactId>activation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.gcolin.smallee</groupId>
 			<artifactId>rest-core</artifactId>
 			<scope>test</scope>

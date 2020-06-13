@@ -23,6 +23,7 @@
 		<module>atinject-interceptor</module>
 		<module>atinject-jpa</module>
 		<module>atinject-cdi-like</module>
+		<module>atinject-benchmark</module>
 	</modules>
 	
 </project>
