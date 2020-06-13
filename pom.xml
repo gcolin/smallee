@@ -1,12 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.gcolin.smallee</groupId>
 	<artifactId>smallee</artifactId>
 	<packaging>pom</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<!-- mvn release:clean release:prepare -->
 	<!-- mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install 
 		sonar:sonar site:site site:stage -->
@@ -15,7 +13,7 @@
 		<connection>scm:git:git@github.com:gcolin/smallee.git</connection>
 		<developerConnection>scm:git:git@github.com:gcolin/smallee.git</developerConnection>
 		<url>git@github.com:gcolin/smallee.git</url>
-		<tag>HEAD</tag>
+		<tag>smallee-1.1</tag>
 	</scm>
 
 	<licenses>
@@ -257,8 +255,7 @@
 								<configuration>
 									<target>
 
-										<copy file="${basedir}/README.md"
-											tofile="${basedir}/target/generated-site/markdown/index.md" />
+										<copy file="${basedir}/README.md" tofile="${basedir}/target/generated-site/markdown/index.md" />
 									</target>
 								</configuration>
 							</execution>
