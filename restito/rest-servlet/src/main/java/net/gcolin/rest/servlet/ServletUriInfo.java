@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -61,7 +60,7 @@ public class ServletUriInfo implements UriInfo {
     try {
       return new URI(request.getRequestURL().toString());
     } catch (URISyntaxException ex) {
-      Logs.LOG.log(Level.SEVERE, ex.getMessage(), ex);
+      Logs.LOG.error(ex.getMessage(), ex);
       return null;
     }
   }
@@ -205,7 +204,7 @@ public class ServletUriInfo implements UriInfo {
     try {
       return new URI(request.getRequestURI());
     } catch (URISyntaxException ex) {
-      Logs.LOG.log(Level.SEVERE, ex.getMessage(), ex);
+      Logs.LOG.error(ex.getMessage(), ex);
       return null;
     }
   }

@@ -29,7 +29,6 @@ import net.gcolin.jsonb.JsonbSerializerExtended;
  */
 public class JNode {
 
-  private boolean nocache;
   private Type boundType;
   private Map<String, JProperty> elements;
   private JsonbSerializerExtended<Object> serializer;
@@ -37,14 +36,6 @@ public class JNode {
   private JProperty[] elementList;
   private Object defaultValue;
   private JProperty[] optionalElements;
-
-  public boolean isNocache() {
-    return nocache;
-  }
-
-  public void setNocache(boolean nocache) {
-    this.nocache = nocache;
-  }
 
   public Type getBoundType() {
     return boundType;

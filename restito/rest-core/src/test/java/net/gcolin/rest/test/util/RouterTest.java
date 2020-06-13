@@ -271,6 +271,17 @@ public class RouterTest {
 		Assert.assertEquals(res2, router.getResource("/hello/admin/world"));
 		Assert.assertEquals(res3, router.getResource("/hello/person/world"));
 	}
+	
+	@Test
+	public void testWildcard3() {
+		Router<Resource> router = new Router<>();
+		Resource res = new Resource("/hello/{pathinfo:.+}");
+		router.add(res);
+
+		Assert.assertEquals(res, router.getResource("/hello/world"));
+		Assert.assertEquals(res, router.getResource("/hello/world/123"));
+		Assert.assertEquals(res, router.getResource("/hello/world/123/456"));
+	}
 
 	@Test
 	public void testparentFirst() {

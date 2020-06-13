@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -42,6 +40,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 
 import net.gcolin.common.reflect.Reflect;
+import net.gcolin.rest.Logs;
 import net.gcolin.rest.server.AbstractResource;
 
 /**
@@ -61,7 +60,7 @@ public class ValidationContainerRequestFilter
 					new ParameterNameProviderImpl(Validation.buildDefaultValidatorFactory().getParameterNameProvider()))
 					.getValidator();
 		} catch (ValidationException ex) {
-			Logger.getLogger("net.gcolin.rest.ext.validation").log(Level.WARNING, ex.getMessage(), ex);
+			Logs.LOG.warn(ex.getMessage(), ex);
 		}
 	}
 

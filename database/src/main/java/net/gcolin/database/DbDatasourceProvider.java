@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -81,7 +80,7 @@ public class DbDatasourceProvider {
 			File file = new File(dbPath);
 			if (!file.exists()) {
 				if (file.mkdirs()) {
-					Db.LOG.log(Level.FINE, "directory created {0}", file);
+					Db.LOG.debug("directory created {}", file);
 				}
 				File derbyProperties = new File(file, "derby.properties");
 				try (InputStream in = Db.class.getClassLoader().getResourceAsStream("derby.properties")) {
@@ -89,7 +88,7 @@ public class DbDatasourceProvider {
 						Io.copy(in, out);
 					}
 				} catch (IOException ex) {
-					Db.LOG.log(Level.SEVERE, "cannot create derby.properties", ex);
+					Db.LOG.error("cannot create derby.properties", ex);
 				}
 			}
 		}
@@ -105,8 +104,8 @@ public class DbDatasourceProvider {
 		try {
 			Db.query(s, testQuery, Db.GET_LONG);
 		} catch (SQLException e1) {
-			if(Db.LOG.isLoggable(Level.FINE)) {
-				Db.LOG.log(Level.FINE, "test query fail: " + testQuery, e1);
+			if(Db.LOG.isDebugEnabled()) {
+				Db.LOG.debug("test query fail: " + testQuery, e1);
 			}
 			Db.LOG.info("load database");
 			try {
@@ -130,7 +129,7 @@ public class DbDatasourceProvider {
 						Db.LOG.info("shutdown derby");
 						DriverManager.getConnection("jdbc:derby:;shutdown=true").close();
 					} catch (SQLException e) {
-						Db.LOG.log(Level.SEVERE, "cannot shutdown derby cleanly", e);
+						Db.LOG.error("cannot shutdown derby cleanly", e);
 					}
 				}
 			});
@@ -139,7 +138,7 @@ public class DbDatasourceProvider {
 			try {
 				((AutoCloseable) datasource.getSource()).close();
 			} catch (Exception e) {
-				Db.LOG.log(Level.SEVERE, e.getMessage(), e);
+				Db.LOG.error(e.getMessage(), e);
 			}
 		}
 		Db.VALIDATOR_FACTORY.close();

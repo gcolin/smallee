@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.logging.Level;
 
 import net.gcolin.common.io.Io;
 import net.gcolin.di.atinject.Environment;
@@ -43,7 +42,7 @@ public class LoaderExtension implements Extension {
 					try {
 						return env.getClassLoader().loadClass(name);
 					} catch (ClassNotFoundException ex) {
-						env.getLog().log(Level.WARNING, ex.getMessage(), ex);
+						env.getLog().warn(ex.getMessage(), ex);
 						return null;
 					}
 				})).filter(x -> x != null).toArray(n -> new Class[n]));

@@ -476,12 +476,8 @@ public class JNodeBuilder {
 		if (deserializer != null) {
 			node.setDeserializer(deserializer);
 		}
-
-		if (serializer != null || deserializer != null) {
-			node.setNocache(true);
-		}
-
-		if (!node.isNocache()) {
+		
+		if (serializer == null && deserializer == null) {
 			nodesByClass.put(genericType, node);
 		}
 

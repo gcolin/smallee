@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
-import java.util.logging.Level;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -79,7 +78,7 @@ import net.gcolin.rest.util.RouterResponse;
  * @author Gaël COLIN
  * @since 1.0
  */
-@MultipartConfig(fileSizeThreshold = 100 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
 public class RestServlet implements RestContainer, Servlet {
 
 	private static final String JUIKITO_ENV = "di.env";
@@ -113,7 +112,7 @@ public class RestServlet implements RestContainer, Servlet {
 				throw new ServletException("cannot find " + application, ex);
 			}
 		} else if (apps.isEmpty()) {
-			Logs.LOG.warning("cannot find jax rs application");
+			Logs.LOG.warn("cannot find jax rs application");
 		}
 	}
 
@@ -201,11 +200,10 @@ public class RestServlet implements RestContainer, Servlet {
 			featureBuilder.build();
 			providers.flush(env);
 
-			Logs.LOG.log(Level.INFO, "start jax rs application : {0} in {1}ms",
-					new Object[] { apps, System.currentTimeMillis() - start });
+			Logs.LOG.info("start jax rs application : {} in {}ms", apps, System.currentTimeMillis() - start);
 
-			if (Logs.LOG.isLoggable(Level.FINE)) {
-				Logs.LOG.fine(router.toString());
+			if (Logs.LOG.isDebugEnabled()) {
+				Logs.LOG.debug(router.toString());
 			}
 
 			dirty = false;
@@ -317,7 +315,7 @@ public class RestServlet implements RestContainer, Servlet {
 			}
 
 			if (!done) {
-				Logs.LOG.log(Level.SEVERE, "cannot execute " + context.getResource().getResourceMethod(), ex);
+				Logs.LOG.error("cannot execute " + context.getResource().getResourceMethod(), ex);
 
 				if (ex instanceof WebApplicationException && ((WebApplicationException) ex).getResponse() != null) {
 					sendResponse(sex.getResponse(), ((WebApplicationException) ex).getResponse(), providers);

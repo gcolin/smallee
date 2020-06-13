@@ -22,8 +22,9 @@ import java.net.URLClassLoader;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.gcolin.common.collection.Collections2;
 
@@ -45,6 +46,7 @@ public class Scan {
 	public static final String CLASS = ".class";
 	private static final String JAR_PROTOCOL = "jar:";
 	private static final String FILE_PROTOCOL = "file:";
+	private static final Logger LOG = LoggerFactory.getLogger(Scan.class);
 
 	private Scan() {
 	}
@@ -85,9 +87,8 @@ public class Scan {
 				try {
 					consumer.accept(classLoader.loadClass(name));
 				} catch (Exception ex) {
-					Logger logger = Logger.getLogger(Scan.class.getName());
-					if (logger.isLoggable(Level.FINE)) {
-						logger.log(Level.FINE, "cannot load class : " + name, ex);
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("cannot load class : " + name, ex);
 					}
 				}
 			}

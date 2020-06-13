@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -86,7 +85,7 @@ public class ClientImpl extends ConfigurableImpl<Client> implements Client {
         try {
           asyncInvocationExecutor = INJECTORS[i].get(ThreadPoolExecutor.class);
         } catch (Exception ex) {
-          Logs.LOG.log(Level.FINE, "cannot retrieve ThreadPoolExecutor from injector", ex);
+          Logs.LOG.debug("cannot retrieve ThreadPoolExecutor from injector", ex);
         }
       }
       if (asyncInvocationExecutor == null) {

@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import net.gcolin.common.io.Io;
 import net.gcolin.common.lang.NumberUtil;
@@ -32,12 +31,12 @@ public class ConfigInjectionPointBuilder implements InjectionPointBuilder {
 		if (configPath != null) {
 			File file = new File(configPath);
 			if (!file.exists()) {
-				env.getLog().log(Level.WARNING, "Cannot find configuration file: {0}", configPath);
+				env.getLog().warn("Cannot find configuration file: {}", configPath);
 			} else {
 				try {
 					read(new FileInputStream(file), env);
 				} catch (FileNotFoundException e) {
-					env.getLog().log(Level.SEVERE, "cannot load file " + configPath, e);
+					env.getLog().error("cannot load file " + configPath, e);
 				}
 			}
 		}
@@ -51,7 +50,7 @@ public class ConfigInjectionPointBuilder implements InjectionPointBuilder {
 				properties.put(name, props.getProperty(name));
 			}
 		} catch (IOException e) {
-			env.getLog().log(Level.SEVERE, "cannot load configuration file", e);
+			env.getLog().error("cannot load configuration file", e);
 		} finally {
 			Io.close(in);
 		}
@@ -78,7 +77,7 @@ public class ConfigInjectionPointBuilder implements InjectionPointBuilder {
 			} else if (field.getType() == long.class || field.getType() == Long.class) {
 				return new ConfigInjectionPoint(field, NumberUtil.parseLong(v, 0));
 			} else {
-				env.getLog().log(Level.WARNING, "cannot cast config properties to type {0} in {1}", new Object[] {field.getType(), field});
+				env.getLog().warn("cannot cast config properties to type {0} in {1}", new Object[] {field.getType(), field});
 			}
 		}
 		return null;

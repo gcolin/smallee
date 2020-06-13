@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import javax.validation.MessageInterpolator;
 
@@ -120,14 +119,14 @@ public class MessageInterpolatorImpl implements MessageInterpolator {
 					Object resp = method.invoke(context.getConstraintDescriptor().getAnnotation());
 					return resp == null ? "null" : resp.toString();
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-					if (ValidatorImpl.LOG.isLoggable(Level.FINE)) {
-						ValidatorImpl.LOG.log(Level.FINE, "message not found: " + messageTemplate,
+					if (ValidatorImpl.LOG.isDebugEnabled()) {
+						ValidatorImpl.LOG.debug("message not found: " + messageTemplate,
 								new CompositeException(Arrays.asList(ex, e1)));
 					}
 				}
 			} else {
-				if (ValidatorImpl.LOG.isLoggable(Level.FINE)) {
-					ValidatorImpl.LOG.log(Level.FINE, "message not found: " + messageTemplate, ex);
+				if (ValidatorImpl.LOG.isDebugEnabled()) {
+					ValidatorImpl.LOG.debug("message not found: " + messageTemplate, ex);
 				}
 				return "{" + msg + "}";
 			}

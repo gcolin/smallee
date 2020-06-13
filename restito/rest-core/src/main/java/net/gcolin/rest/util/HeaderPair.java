@@ -28,8 +28,6 @@ import javax.ws.rs.core.MultivaluedMap;
 public class HeaderPair
     extends Pair<MultivaluedMap<String, Object>, MultivaluedMap<String, String>> {
 
-  private static final long serialVersionUID = 7365281469281599400L;
-
   public HeaderPair(MultivaluedMap<String, Object> key, MultivaluedMap<String, String> value) {
     super(key, value);
   }

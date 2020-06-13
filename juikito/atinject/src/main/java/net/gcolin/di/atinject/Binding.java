@@ -18,7 +18,6 @@ package net.gcolin.di.atinject;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.inject.Named;
 
@@ -45,7 +44,7 @@ public class Binding {
 		try {
 			c = this.getClass().getClassLoader().loadClass(str);
 		} catch (ClassNotFoundException e) {
-			env.getLog().log(Level.FINE, e.getMessage(), e);
+			env.getLog().debug(e.getMessage(), e);
 		}
 		if (c != null && c.isAnnotation()) {
 			qualifiers.add(new AnnotationWrapper((Class) c));

@@ -15,8 +15,8 @@
 
 package net.gcolin.common.lang;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The {@code NumberUtil} help parsing numbers.
@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public final class NumberUtil {
 
 	private static final String ERROR = "parsing error";
-	private static final Logger LOG = Logger.getLogger(NumberUtil.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(NumberUtil.class);
 
 	private NumberUtil() {
 	}
@@ -42,7 +42,7 @@ public final class NumberUtil {
 		try {
 			return Long.parseLong(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return null;
 		}
 	}
@@ -58,7 +58,7 @@ public final class NumberUtil {
 		try {
 			return Long.parseLong(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return defaultValue;
 		}
 	}
@@ -73,7 +73,7 @@ public final class NumberUtil {
 		try {
 			return Short.parseShort(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return null;
 		}
 	}
@@ -89,7 +89,7 @@ public final class NumberUtil {
 		try {
 			return Short.parseShort(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return defaultValue;
 		}
 	}
@@ -104,7 +104,7 @@ public final class NumberUtil {
 		try {
 			return Float.parseFloat(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return null;
 		}
 	}
@@ -120,7 +120,7 @@ public final class NumberUtil {
 		try {
 			return Float.parseFloat(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return defaultValue;
 		}
 	}
@@ -135,7 +135,7 @@ public final class NumberUtil {
 		try {
 			return Integer.parseInt(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return null;
 		}
 	}
@@ -151,7 +151,7 @@ public final class NumberUtil {
 		try {
 			return Integer.parseInt(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return defaultValue;
 		}
 	}
@@ -167,7 +167,7 @@ public final class NumberUtil {
 		try {
 			return Double.parseDouble(nb.replaceAll("[^0-9^\\.]", ""));
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return null;
 		}
 	}
@@ -182,7 +182,7 @@ public final class NumberUtil {
 		try {
 			return Double.parseDouble(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return null;
 		}
 	}
@@ -198,7 +198,7 @@ public final class NumberUtil {
 		try {
 			return Double.parseDouble(nb);
 		} catch (Exception ex) {
-			LOG.log(Level.FINER, ERROR, ex);
+			LOG.trace(ERROR, ex);
 			return defaultValue;
 		}
 	}

@@ -36,14 +36,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.gcolin.common.io.Io;
 
@@ -55,7 +56,7 @@ import net.gcolin.common.io.Io;
  */
 public class Db {
 
-	public static final Logger LOG = Logger.getLogger("net.gcolin.database");
+	public static final Logger LOG = LoggerFactory.getLogger("net.gcolin.database");
 	public static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 
 	public static final ResultSetHandler<Long> GET_LONG = rs -> rs.next() ? rs.getLong(1) : 0;
@@ -151,7 +152,7 @@ public class Db {
 	}
 
 	public static void init(ClassLoader cl, String type, DataSource datasource) throws SQLException {
-		Db.LOG.log(Level.INFO, "init database for database {0}", type);
+		Db.LOG.info("init database for database {}", type);
 		Connection conn = datasource.getConnection();
 		conn.setAutoCommit(false);
 		String current = null;
@@ -160,7 +161,7 @@ public class Db {
 			List<String> all = new ArrayList<>();
 			while (en.hasMoreElements()) {
 				URL u = en.nextElement();
-				Db.LOG.log(Level.INFO, "find sql file : {0}", u);
+				Db.LOG.info("find sql file : {}", u);
 				try (InputStream in = u.openStream()) {
 					all.add(Io.toString(in));
 				}

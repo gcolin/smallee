@@ -20,13 +20,6 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import net.gcolin.common.lang.CharIterator;
-import net.gcolin.common.lang.Pair;
-import net.gcolin.common.reflect.Reflect;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.AccessibleObject;
@@ -40,6 +33,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import net.gcolin.common.lang.CharIterator;
+import net.gcolin.common.lang.Pair;
+import net.gcolin.common.reflect.Reflect;
 
 public class ReflectTest {
 

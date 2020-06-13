@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
@@ -39,6 +37,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
 
 import net.gcolin.common.reflect.Reflect;
+import net.gcolin.rest.Logs;
 import net.gcolin.rest.server.Contexts;
 import net.gcolin.rest.servlet.RestServlet;
 
@@ -72,7 +71,6 @@ public class RestExtension implements Extension {
 	public void startup(ServletContext sc) {
 		CDI<Object> cdi = CDI.current();
 		BeanManager bm = cdi.getBeanManager();
-		Logger log = Logger.getLogger(RestExtension.class.getName());
 		for (AnnotatedType<?> appType : apps) {
 			try {
 				String path = appType.getJavaClass().getAnnotation(ApplicationPath.class).value();
@@ -95,10 +93,9 @@ public class RestExtension implements Extension {
 				} else {
 					servlet.app(app, false);
 				}
-				log.log(Level.INFO, "start rest app {0} in the context {1}/*",
-						new Object[] { appType.getJavaClass().getName(), path });
+				Logs.LOG.info("start rest app {} in the context {}/*", appType.getJavaClass().getName(), path);
 			} catch (Exception ex) {
-				log.log(Level.SEVERE, "cannot add rest application " + appType.getJavaClass().getName(), ex);
+				Logs.LOG.error("cannot add rest application " + appType.getJavaClass().getName(), ex);
 			}
 
 		}

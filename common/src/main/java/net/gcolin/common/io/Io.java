@@ -43,11 +43,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.gcolin.common.collection.ConcurrentQueue;
 
@@ -60,12 +61,12 @@ import net.gcolin.common.collection.ConcurrentQueue;
  */
 public class Io {
 
-	private static final String CREATED = "{0} created";
+	private static final String CREATED = "{} created";
 	public static final int BUFFER_SIZE = 8 * 1024;
 	public static final int POOL_SIZE = 100;
 	private static final Queue<byte[]> BYTES_POOL = new ConcurrentQueue<>(POOL_SIZE);
 	private static final Queue<char[]> CHAR_POOL = new ConcurrentQueue<>(POOL_SIZE);
-	private static final Logger LOG = Logger.getLogger(Io.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(Io.class);
 
 	private Io() {
 	}
@@ -276,7 +277,7 @@ public class Io {
 	public static void copy(Path directory, Path dest) throws IOException {
 		if (Files.exists(directory)) {
 			if (dest.toFile().mkdirs()) {
-				LOG.log(Level.FINE, CREATED, dest);
+				LOG.debug(CREATED, dest);
 			}
 			Files.walkFileTree(directory, new CopyFileVisitor(directory, dest));
 		}
@@ -311,7 +312,7 @@ public class Io {
 			try {
 				close(cl.getInputStream());
 			} catch (IOException ex) {
-				LOG.log(Level.FINE, "cannot close url", ex);
+				LOG.debug("cannot close url", ex);
 			}
 		}
 	}
@@ -326,7 +327,7 @@ public class Io {
 			try {
 				cl.close();
 			} catch (IOException ex) {
-				LOG.log(Level.FINE, "cannot close", ex);
+				LOG.debug("cannot close", ex);
 			}
 		}
 	}
@@ -341,7 +342,7 @@ public class Io {
 			try {
 				cl.close();
 			} catch (Exception ex) {
-				LOG.log(Level.FINE, "cannot close", ex);
+				LOG.debug("cannot close", ex);
 			}
 		}
 	}
@@ -526,7 +527,7 @@ public class Io {
 				String currentEntry = entry.getName();
 				File destFile = new File(extractFolder, currentEntry);
 				if (destFile.getParentFile().mkdirs()) {
-					LOG.log(Level.FINE, CREATED, destFile.getParentFile());
+					LOG.debug(CREATED, destFile.getParentFile());
 				}
 				if (!entry.isDirectory()) {
 					unzipEntry(zip, entry, destFile);
@@ -542,7 +543,7 @@ public class Io {
 		InputStream in = null;
 		try {
 			if (destFile.getParentFile().mkdirs()) {
-				LOG.log(Level.FINE, CREATED, destFile.getParentFile());
+				LOG.debug(CREATED, destFile.getParentFile());
 			}
 			out = new FileOutputStream(destFile);
 			in = zip.getInputStream(entry);
@@ -581,7 +582,7 @@ public class Io {
 		try {
 			return readLines(url == null ? null : url.openStream(), type, transform, charset);
 		} catch (IOException ex) {
-			LOG.log(Level.SEVERE, "cannot load " + url, ex);
+			LOG.error("cannot load " + url, ex);
 			return (T[]) Array.newInstance(type, 0);
 		}
 	}
@@ -614,7 +615,7 @@ public class Io {
 				list.add(transform.apply(line));
 			}
 		} catch (IOException ex) {
-			LOG.log(Level.SEVERE, "cannot load " + in, ex);
+			LOG.error("cannot load " + in, ex);
 		} finally {
 			close(in);
 		}

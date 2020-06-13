@@ -36,12 +36,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.gcolin.common.collection.Collections2;
 import net.gcolin.common.lang.Strings;
@@ -64,7 +66,7 @@ public class Environment extends AbstractEnvironment<Class<?>> implements Inject
 	protected static final String CANNOT_INJECT_2 = "cannot inject {0} because there are two possibilities : {1}, {2}";
 	protected static final String CANNOT_INJECT_NO = "cannot inject {0} because there are no possibility";
 	public static final Key NULL_PROVIDER = new Key();
-	private Logger log = Logger.getLogger("net.gcolin.di");
+	private Logger log = LoggerFactory.getLogger("net.gcolin.di");
 
 	private Set<Class<? extends Annotation>> injectAnnotations = new HashSet<>();
 	private Map<Key, AbstractProvider<Object>> providersref = new ConcurrentHashMap<>();

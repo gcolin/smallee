@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
@@ -75,8 +74,8 @@ public abstract class AbstractResource extends ResourceSelector implements Resou
         ((Consumer<ResourceInfo>) wi).accept(this);
       }
     } catch (NoSuchMethodException | SecurityException ex) {
-      if (Logs.LOG.isLoggable(Level.FINER)) {
-        Logs.LOG.log(Level.FINER, "cannot inject ResourceInfo in " + wi, ex);
+      if (Logs.LOG.isTraceEnabled()) {
+        Logs.LOG.trace("cannot inject ResourceInfo in " + wi, ex);
       }
     }
   }

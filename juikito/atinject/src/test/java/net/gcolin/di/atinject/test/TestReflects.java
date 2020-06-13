@@ -36,5 +36,5 @@ public class TestReflects {
 		  System.out.println(m);
 		  Assert.assertEquals("hello", Reflects.findStaticMethods(WithStatic.class)[0][0].getName());
 	  }
-	
+	  
 }

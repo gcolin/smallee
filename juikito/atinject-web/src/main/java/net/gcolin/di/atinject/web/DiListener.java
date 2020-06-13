@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -88,7 +87,7 @@ public class DiListener implements ServletContextListener, HttpSessionListener, 
 			}
 		});
 		env.start();
-		env.getLog().log(Level.INFO, "start dependency injection in {0}ms", System.currentTimeMillis() - start);
+		env.getLog().info("start dependency injection in {}ms", System.currentTimeMillis() - start);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -117,7 +116,7 @@ public class DiListener implements ServletContextListener, HttpSessionListener, 
 					run.destroy(env);
 				}
 			} catch (Exception ex) {
-				env.getLog().log(Level.SEVERE, "cannot destroy", ex);
+				env.getLog().error("cannot destroy", ex);
 			}
 		}
 	}

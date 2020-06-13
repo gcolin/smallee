@@ -29,7 +29,6 @@ import javax.ws.rs.core.MultivaluedMap;
  */
 public class UnmodifiableMultivaluedMap<K, V> extends UnmodifiableMap<K, List<V>> implements MultivaluedMap<K, V> {
 
-	private static final long serialVersionUID = 6179840439849509758L;
 	private MultivaluedMap<K, V> map;
 
 	public UnmodifiableMultivaluedMap(MultivaluedMap<K, V> map) {
