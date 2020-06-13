@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>net.gcolin.smallee</groupId>
 		<artifactId>restito</artifactId>
-		<version>1.1</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>rest-ext-cdi</artifactId>
 	<dependencies>
