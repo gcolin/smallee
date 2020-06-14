@@ -46,172 +46,120 @@ import net.gcolin.di.core.Key;
  */
 public class ProducerExtension implements Extension {
 
-  private Set<Class<? extends Annotation>> producesAnnotations = new HashSet<>();
-  private Set<Class<? extends Annotation>> disposesAnnotations = new HashSet<>();
+	private Set<Class<? extends Annotation>> producesAnnotations = new HashSet<>();
+	private Set<Class<? extends Annotation>> disposesAnnotations = new HashSet<>();
 
-  public ProducerExtension() {
-    producesAnnotations.add(Produces.class);
-    disposesAnnotations.add(Disposes.class);
-  }
+	public ProducerExtension() {
+		producesAnnotations.add(Produces.class);
+		disposesAnnotations.add(Disposes.class);
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public void doStarted(Environment environment) {
-    Map<Key, Method> disposes = new HashMap<>();
+	@SuppressWarnings("unchecked")
+	@Override
+	public void doStarted(Environment environment) {
+		Map<Key, Method> disposes = new HashMap<>();
 
-    for (Class<?> cl : environment.getBeanClasses()) {
-      for (Method method : cl.getDeclaredMethods()) {
-        if (!Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 1
-            && Reflects.hasAnnotation(method.getParameterAnnotations()[0], disposesAnnotations)) {
-          Reflect.enable(method);
-          disposes.put(environment.createKey(method.getParameterTypes()[0],
-              method.getGenericParameterTypes()[0],
-              environment.findQualifiers(method.getParameterAnnotations()[0])), method);
-        }
-      }
-    }
+		for (Class<?> cl : environment.getBeanClasses()) {
+			for (Method method : cl.getDeclaredMethods()) {
+				if (!Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 1
+						&& Reflects.hasAnnotation(method.getParameterAnnotations()[0], disposesAnnotations)) {
+					Reflect.enable(method);
+					disposes.put(
+							environment.createKey(method.getParameterTypes()[0], method.getGenericParameterTypes()[0],
+									environment.findQualifiers(method.getParameterAnnotations()[0])),
+							method);
+				}
+			}
+		}
 
-    for (Class<?> cl : environment.getBeanClasses()) {
-      for (Field field : cl.getDeclaredFields()) {
-        if (!Modifier.isStatic(field.getModifiers())
-            && Reflects.hasAnnotation(field.getAnnotations(), producesAnnotations)) {
-          Reflect.enable(field);
-          Provider<Object> parent = (Provider<Object>) environment.getProvider(cl);
+		for (Class<?> cl : environment.getBeanClasses()) {
+			for (Field field : cl.getDeclaredFields()) {
+				if (!Modifier.isStatic(field.getModifiers())
+						&& Reflects.hasAnnotation(field.getAnnotations(), producesAnnotations)) {
+					Reflect.enable(field);
+					Provider<Object> parent = (Provider<Object>) environment.getProvider(cl);
 
-          Key key = environment.createKey(field.getType(), field.getGenericType(),
-              environment.findQualifiers(field.getAnnotations()));
-          Method dispose = disposes.get(key);
+					Key key = environment.createKey(field.getType(), field.getGenericType(),
+							environment.findQualifiers(field.getAnnotations()));
+					Method dispose = disposes.get(key);
 
-          AbstractProvider<Object> fieldProvider;
+					AbstractProvider<Object> fieldProvider;
+					Supplier<Object> baseSupplier = new Supplier<Object>() {
 
-          if (dispose == null) {
-            fieldProvider =
-                new SupplierProvider<>((Class<Object>) field.getType(), new Supplier<Object>() {
+						@Override
+						public Object get() {
+							try {
+								return field.get(parent.get());
+							} catch (IllegalArgumentException | IllegalAccessException ex) {
+								throw new InjectException(ex);
+							}
+						}
 
-                  @Override
-                  public Object get() {
-                    try {
-                      return field.get(parent.get());
-                    } catch (IllegalArgumentException | IllegalAccessException ex) {
-                      throw new InjectException(ex);
-                    }
-                  }
+					};
 
-                }, null, environment);
-          } else {
-            fieldProvider = new SupplierProvider<Object>((Class<Object>) field.getType(),
-                new Supplier<Object>() {
+					if (dispose == null) {
+						fieldProvider = new SupplierProvider<>((Class<Object>) field.getType(), baseSupplier, null,
+								environment);
+					} else {
+						fieldProvider = new DisposableSupplierProvider((Class<Object>) field.getType(), baseSupplier,
+								null, environment, dispose, parent);
+					}
 
-                  @Override
-                  public Object get() {
-                    try {
-                      return field.get(parent.get());
-                    } catch (IllegalArgumentException | IllegalAccessException ex) {
-                      throw new InjectException(ex);
-                    }
-                  }
+					ProviderBuilder scope = environment.getScope(field.getAnnotations());
+					environment.addProvider(key, field.getType(),
+							scope == null ? fieldProvider : scope.decorate(fieldProvider));
+				}
+			}
+		}
 
-                }, null, environment) {
-              @Override
-              public boolean hasDestroyMethods() {
-                return true;
-              }
+		for (Class<?> cl : environment.getBeanClasses()) {
+			for (Method method : cl.getDeclaredMethods()) {
+				if (!Modifier.isStatic(method.getModifiers())
+						&& Reflects.hasAnnotation(method.getAnnotations(), producesAnnotations)) {
+					Reflect.enable(method);
+					Provider<Object> parent = (Provider<Object>) environment.getProvider(cl);
 
-              @Override
-              public void destroyInstance(Object o) {
-                try {
-                  dispose.invoke(parent.get(), o);
-                } catch (IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException ex) {
-                  throw new InjectException(ex);
-                }
-              }
-            };
-          }
+					Key key = environment.createKey(method.getReturnType(), method.getGenericReturnType(),
+							environment.findQualifiers(method.getAnnotations()));
+					Method dispose = disposes.get(key);
+					AbstractProvider<?>[] args = InstanceBuilder.findProviders(method.getParameterTypes(),
+							method.getGenericParameterTypes(), method.getParameterAnnotations(), environment);
 
+					AbstractProvider<Object> methodProvider;
+					Supplier<Object> baseSupplier = new Supplier<Object>() {
 
-          ProviderBuilder scope = environment.getScope(field.getAnnotations());
-          environment.addProvider(key, field.getType(),
-              scope == null ? fieldProvider : scope.decorate(fieldProvider));
-        }
-      }
-    }
+						@Override
+						public Object get() {
+							try {
+								return method.invoke(parent.get(), InstanceBuilder.getArguments(args));
+							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+								throw new InjectException(ex);
+							}
+						}
 
-    for (Class<?> cl : environment.getBeanClasses()) {
-      for (Method method : cl.getDeclaredMethods()) {
-        if (!Modifier.isStatic(method.getModifiers())
-            && Reflects.hasAnnotation(method.getAnnotations(), producesAnnotations)) {
-          Reflect.enable(method);
-          Provider<Object> parent = (Provider<Object>) environment.getProvider(cl);
+					};
+					if (dispose == null) {
+						methodProvider = new SupplierProvider<>((Class<Object>) method.getReturnType(), baseSupplier,
+								null, environment);
+					} else {
+						methodProvider = new DisposableSupplierProvider((Class<Object>) method.getReturnType(),
+								baseSupplier, null, environment, dispose, parent);
+					}
 
-          Key key = environment.createKey(method.getReturnType(), method.getGenericReturnType(),
-              environment.findQualifiers(method.getAnnotations()));
-          Method dispose = disposes.get(key);
-          AbstractProvider<?>[] args = InstanceBuilder.findProviders(method.getParameterTypes(),
-              method.getGenericParameterTypes(), method.getParameterAnnotations(), environment);
+					ProviderBuilder scope = environment.getScope(method.getAnnotations());
+					environment.addProvider(key, method.getReturnType(),
+							scope == null ? methodProvider : scope.decorate(methodProvider));
+				}
+			}
+		}
+	}
 
-          AbstractProvider<Object> methodProvider;
-          if (dispose == null) {
-            methodProvider = new SupplierProvider<>((Class<Object>) method.getReturnType(),
-                new Supplier<Object>() {
+	public Set<Class<? extends Annotation>> getDisposesAnnotations() {
+		return disposesAnnotations;
+	}
 
-                  @Override
-                  public Object get() {
-                    try {
-                      return method.invoke(parent.get(), InstanceBuilder.getArguments(args));
-                    } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
-                      throw new InjectException(ex);
-                    }
-                  }
-
-                }, null, environment);
-          } else {
-            methodProvider = new SupplierProvider<Object>((Class<Object>) method.getReturnType(),
-                new Supplier<Object>() {
-
-                  @Override
-                  public Object get() {
-                    try {
-                      return method.invoke(parent.get(), InstanceBuilder.getArguments(args));
-                    } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
-                      throw new InjectException(ex);
-                    }
-                  }
-
-                }, null, environment) {
-              @Override
-              public boolean hasDestroyMethods() {
-                return true;
-              }
-
-              @Override
-              public void destroyInstance(Object o) {
-                try {
-                  dispose.invoke(parent.get(), o);
-                } catch (IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException ex) {
-                  throw new InjectException(ex);
-                }
-              }
-            };
-          }
-
-          ProviderBuilder scope = environment.getScope(method.getAnnotations());
-          environment.addProvider(key, method.getReturnType(),
-              scope == null ? methodProvider : scope.decorate(methodProvider));
-        }
-      }
-    }
-  }
-
-  public Set<Class<? extends Annotation>> getDisposesAnnotations() {
-    return disposesAnnotations;
-  }
-
-  public Set<Class<? extends Annotation>> getProducesAnnotations() {
-    return producesAnnotations;
-  }
+	public Set<Class<? extends Annotation>> getProducesAnnotations() {
+		return producesAnnotations;
+	}
 
 }

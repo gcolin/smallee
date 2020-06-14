@@ -38,55 +38,62 @@ import net.gcolin.jsonb.build.JNodeBuilder;
  */
 public class JNodeArrayDeserializer extends JsonbDeserializerExtended<Object> {
 
-  private Class<?> componentType;
-  private JNodeCollectionDeserializer collectionDeserializer;
+	private Class<?> componentType;
+	private JNodeCollectionDeserializer collectionDeserializer;
 
-  /**
-   * Create a JNodeArrayDeserializer.
-   * 
-   * @param parent declaring class
-   * @param genericType generic type
-   * @param builder node builder
-   * @param context builder context
-   */
-  public JNodeArrayDeserializer(Type parent, Type genericType, JNodeBuilder builder,
-      JContext context) {
-    componentType = Reflect.toClass(genericType).getComponentType();
-    Type[] arguments = new Type[1];
-    arguments[0] = componentType;
-    Type collectionType = new ParameterizedType() {
+	/**
+	 * Create a JNodeArrayDeserializer.
+	 * 
+	 * @param parent      declaring class
+	 * @param genericType generic type
+	 * @param builder     node builder
+	 * @param context     builder context
+	 */
+	public JNodeArrayDeserializer(Type parent, Type genericType, JNodeBuilder builder, JContext context) {
+		componentType = Reflect.toClass(genericType).getComponentType();
+		init(parent, builder, context, componentType);
+	}
+	
+	JNodeArrayDeserializer() {}
 
-      @Override
-      public Type getRawType() {
-        return ArrayList.class;
-      }
+	void init(Type parent, JNodeBuilder builder, JContext context, Type componentType) {
+		Type[] arguments = new Type[1];
+		arguments[0] = componentType;
+		Type collectionType = new ParameterizedType() {
 
-      @Override
-      public Type getOwnerType() {
-        return null;
-      }
+			@Override
+			public Type getRawType() {
+				return ArrayList.class;
+			}
 
-      @Override
-      public Type[] getActualTypeArguments() {
-        return arguments;
-      }
-    };
-    collectionDeserializer =
-        new JNodeCollectionDeserializer(parent, collectionType, builder, context);
-  }
+			@Override
+			public Type getOwnerType() {
+				return null;
+			}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public Object deserialize(Event event, Object parent, JsonParser parser,
-      DeserializationContext ctx, Type rtType) {
-    Collection<Object> collection =
-        (Collection<Object>) collectionDeserializer.deserialize(event, parent, parser, ctx, rtType);
-    Object array = Array.newInstance(componentType, collection.size());
-    int idx = 0;
-    for (Object obj : collection) {
-      Array.set(array, idx++, obj);
-    }
-    return array;
-  }
+			@Override
+			public Type[] getActualTypeArguments() {
+				return arguments;
+			}
+		};
+		collectionDeserializer = new JNodeCollectionDeserializer(parent, collectionType, builder, context);
+	}
+	
+	protected Object deserialize0(Collection<Object> collection) {
+		Object array = Array.newInstance(componentType, collection.size());
+		int idx = 0;
+		for (Object obj : collection) {
+			Array.set(array, idx++, obj);
+		}
+		return array;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object deserialize(Event event, Object parent, JsonParser parser, DeserializationContext ctx, Type rtType) {
+		Collection<Object> collection = (Collection<Object>) collectionDeserializer.deserialize(event, parent, parser,
+				ctx, rtType);
+		return deserialize0(collection);
+	}
 
 }

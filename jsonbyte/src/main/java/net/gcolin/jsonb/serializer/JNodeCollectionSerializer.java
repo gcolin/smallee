@@ -35,7 +35,7 @@ import net.gcolin.jsonb.build.JNodeBuilder;
  */
 public class JNodeCollectionSerializer implements JsonbSerializerExtended<Object> {
 
-  private JNode component;
+  protected JNode component;
 
   /**
    * Create a JNodeCollectionSerializer.
@@ -45,11 +45,14 @@ public class JNodeCollectionSerializer implements JsonbSerializerExtended<Object
    * @param builder node builder
    * @param context builder context
    */
-  @SuppressWarnings("unchecked")
   public JNodeCollectionSerializer(Type parent, Type genericType, JNodeBuilder builder,
       JContext context) {
-    Type componentType =
-        Reflect.getGenericTypeArguments(Collection.class, genericType, parent).get(0);
+	  this(parent, builder, context, Reflect.getGenericTypeArguments(Collection.class, genericType, parent).get(0));
+  }
+  
+  @SuppressWarnings("unchecked")
+  JNodeCollectionSerializer(Type parent, JNodeBuilder builder,
+      JContext context, Type componentType) {
     this.component = builder.build(parent, (Class<Object>) Reflect.toClass(componentType),
         componentType, null, null, context);
   }
@@ -67,7 +70,7 @@ public class JNodeCollectionSerializer implements JsonbSerializerExtended<Object
   }
 
   @SuppressWarnings("unchecked")
-  private void serialize0(Object obj, JsonGenerator generator, SerializationContext ctx) {
+  protected void serialize0(Object obj, JsonGenerator generator, SerializationContext ctx) {
     for (Object elt : (Collection<Object>) obj) {
       component.getSerializer().serialize(elt, generator, ctx);
     }

@@ -16,10 +16,6 @@ package net.gcolin.di.atinject.interceptor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.interceptor.InvocationContext;
 
 import net.gcolin.di.atinject.InstanceFactory;
 import net.gcolin.di.core.InjectException;
@@ -30,29 +26,16 @@ import net.gcolin.di.core.InjectException;
  * @author Gaël COLIN
  * @since 1.0
  */
-public class ConstructInvocationContext implements InvocationContext {
+public class ConstructInvocationContext extends AbstractInvocationContext {
 
-  private Object target; 
   private InstanceFactory factory;
-  private Object[] parameters;
-  private Map<String, Object> context = new HashMap<>();
   private Class<?> type;
   
   public ConstructInvocationContext(InstanceFactory factory,
       Class<?> type) {
     this.factory = factory;
     this.type = type;
-    parameters = factory == null ? new Object[0] : factory.getArguments();
-  }
-
-  @Override
-  public Object getTarget() {
-    return target;
-  }
-
-  @Override
-  public Object getTimer() {
-    return null;
+    setParameters(factory == null ? new Object[0] : factory.getArguments());
   }
 
   @Override
@@ -63,21 +46,6 @@ public class ConstructInvocationContext implements InvocationContext {
   @Override
   public Constructor<?> getConstructor() {
     return factory.getConstructor();
-  }
-
-  @Override
-  public Object[] getParameters() {
-    return parameters;
-  }
-
-  @Override
-  public void setParameters(Object[] params) {
-    this.parameters = params;
-  }
-
-  @Override
-  public Map<String, Object> getContextData() {
-    return context;
   }
 
   @Override

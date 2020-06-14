@@ -16,10 +16,6 @@ package net.gcolin.di.atinject.interceptor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.interceptor.InvocationContext;
 
 /**
  * InvocationContext for intercepting a method.
@@ -27,27 +23,14 @@ import javax.interceptor.InvocationContext;
  * @author Gaël COLIN
  * @since 1.0
  */
-public class MethodInvocationContext implements InvocationContext {
+public class MethodInvocationContext extends AbstractInvocationContext {
 
-	private Object target;
 	private Method method;
-	private Object[] parameters;
-	private Map<String, Object> context = new HashMap<>();
 
 	public MethodInvocationContext(Object target, Method method, Object[] arguments) {
 		this.target = target;
 		this.method = method;
-		parameters = arguments;
-	}
-
-	@Override
-	public Object getTarget() {
-		return target;
-	}
-
-	@Override
-	public Object getTimer() {
-		return null;
+		setParameters(arguments);
 	}
 
 	@Override
@@ -58,21 +41,6 @@ public class MethodInvocationContext implements InvocationContext {
 	@Override
 	public Constructor<?> getConstructor() {
 		return null;
-	}
-
-	@Override
-	public Object[] getParameters() {
-		return parameters;
-	}
-
-	@Override
-	public void setParameters(Object[] params) {
-		this.parameters = params;
-	}
-
-	@Override
-	public Map<String, Object> getContextData() {
-		return context;
 	}
 
 	@Override

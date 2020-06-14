@@ -22,9 +22,7 @@ import javax.json.bind.serializer.SerializationContext;
 import javax.json.stream.JsonGenerator;
 
 import net.gcolin.common.reflect.Reflect;
-import net.gcolin.jsonb.JsonbSerializerExtended;
 import net.gcolin.jsonb.build.JContext;
-import net.gcolin.jsonb.build.JNode;
 import net.gcolin.jsonb.build.JNodeBuilder;
 
 /**
@@ -33,9 +31,7 @@ import net.gcolin.jsonb.build.JNodeBuilder;
  * @author Gaël COLIN
  * @since 1.0
  */
-public class JNodeListSerializer implements JsonbSerializerExtended<Object> {
-
-  private JNode component;
+public class JNodeListSerializer extends JNodeCollectionSerializer {
 
   /**
    * Create a JNodeListSerializer.
@@ -45,28 +41,14 @@ public class JNodeListSerializer implements JsonbSerializerExtended<Object> {
    * @param builder node builder
    * @param context builder context
    */
-  @SuppressWarnings("unchecked")
   public JNodeListSerializer(Type parent, Type genericType, JNodeBuilder builder,
       JContext context) {
-    Type componentType = Reflect.getGenericTypeArguments(List.class, genericType, parent).get(0);
-    this.component = builder.build(parent, (Class<Object>) Reflect.toClass(componentType),
-        componentType, null, null, context);
+	  super(parent, builder, context, Reflect.getGenericTypeArguments(List.class, genericType, parent).get(0));
   }
 
   @Override
-  public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
-    generator.writeStartArray();
-    serialize0(obj, generator, ctx);
-  }
-
-  @Override
-  public void serialize(String key, Object obj, JsonGenerator generator, SerializationContext ctx) {
-    generator.writeStartArray(key);
-    serialize0(obj, generator, ctx);
-  }
-
   @SuppressWarnings("unchecked")
-  private void serialize0(Object obj, JsonGenerator generator, SerializationContext ctx) {
+  protected void serialize0(Object obj, JsonGenerator generator, SerializationContext ctx) {
     List<Object> list = (List<Object>) obj;
     for (int i = 0; i < list.size(); i++) {
       component.getSerializer().serialize(list.get(i), generator, ctx);

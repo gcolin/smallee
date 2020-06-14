@@ -15,18 +15,11 @@
 
 package net.gcolin.jsonb.serializer;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import javax.json.bind.serializer.DeserializationContext;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParser.Event;
-
 import net.gcolin.common.reflect.Reflect;
-import net.gcolin.jsonb.JsonbDeserializerExtended;
 import net.gcolin.jsonb.build.JContext;
 import net.gcolin.jsonb.build.JNodeBuilder;
 
@@ -36,9 +29,7 @@ import net.gcolin.jsonb.build.JNodeBuilder;
  * @author Gaël COLIN
  * @since 1.0
  */
-public class JNodeEnumSetDeserializer extends JsonbDeserializerExtended<Object> {
-
-  private JNodeCollectionDeserializer collectionDeserializer;
+public class JNodeEnumSetDeserializer extends JNodeArrayDeserializer {
 
   /**
    * Create a JNodeEnumSetDeserializer.
@@ -50,35 +41,12 @@ public class JNodeEnumSetDeserializer extends JsonbDeserializerExtended<Object> 
    */
   public JNodeEnumSetDeserializer(Type parent, Type genericType, JNodeBuilder builder,
       JContext context) {
-    Type[] arguments = new Type[1];
-    arguments[0] = Reflect.getGenericTypeArguments(EnumSet.class, genericType, parent).get(0);
-    Type collectionType = new ParameterizedType() {
-
-      @Override
-      public Type getRawType() {
-        return ArrayList.class;
-      }
-
-      @Override
-      public Type getOwnerType() {
-        return null;
-      }
-
-      @Override
-      public Type[] getActualTypeArguments() {
-        return arguments;
-      }
-    };
-    collectionDeserializer =
-        new JNodeCollectionDeserializer(parent, collectionType, builder, context);
+	  init(parent, builder, context, Reflect.getGenericTypeArguments(EnumSet.class, genericType, parent).get(0));
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
-  public Object deserialize(Event event, Object parent, JsonParser parser,
-      DeserializationContext ctx, Type rtType) {
-    Collection<Object> collection =
-        (Collection<Object>) collectionDeserializer.deserialize(event, parent, parser, ctx, rtType);
+  protected Object deserialize0(Collection<Object> collection) {
     return EnumSet.copyOf((Collection) collection);
   }
 
