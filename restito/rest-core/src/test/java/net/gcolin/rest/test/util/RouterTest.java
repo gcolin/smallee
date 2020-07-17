@@ -43,6 +43,16 @@ public class RouterTest {
 	}
 
 	@Test
+	public void testEmptySegment() {
+		Router<Resource> router = new Router<>();
+		Resource res = new Resource("/{word}/sync");
+		router.add(res);
+
+		Assert.assertEquals(res, router.get("/hello/sync").getResult());
+		Assert.assertNull(router.get("/sync"));
+	}
+
+	@Test
 	public void testComplex() {
 		Router<Resource> router = new Router<>();
 		Resource res1 = new Resource("/hello/{word}");

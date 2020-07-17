@@ -103,7 +103,7 @@ public abstract class Provider<T> implements MessageBodyWriter<T>, MessageBodyRe
   }
 
   protected boolean checkType(Class<?> type) {
-    return type == this.type;
+    return this.type.isAssignableFrom(type);
   }
 
   @Override

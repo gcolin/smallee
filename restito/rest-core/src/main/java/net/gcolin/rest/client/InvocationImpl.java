@@ -20,6 +20,7 @@ import net.gcolin.common.io.Io;
 import net.gcolin.common.reflect.Reflect;
 import net.gcolin.rest.FastMediaType;
 import net.gcolin.rest.InvocationContext;
+import net.gcolin.rest.Logs;
 import net.gcolin.rest.MessageBodyWriterDecorator;
 import net.gcolin.rest.util.HttpHeader;
 
@@ -163,6 +164,7 @@ public class InvocationImpl implements Invocation, AsyncInvoker {
         }
       }
 
+      Logs.LOG_CLIENT.debug("query {}", uri);
       conn = uri.toURL().openConnection();
       boolean hasContent = !out.isEmpty();
 

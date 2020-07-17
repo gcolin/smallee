@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 public class Logs {
 
   public static final Logger LOG = LoggerFactory.getLogger("net.gcolin.rest");
+  public static final Logger LOG_CLIENT = LoggerFactory.getLogger("net.gcolin.rest.client");
 
   private Logs() {}
 
