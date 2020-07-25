@@ -57,6 +57,7 @@ public class ReaderProvider extends Provider<Reader> {
     try (Writer writer = new OutputStreamWriter(entityStream, charset)) {
       Io.copy(entity, writer);
     }
+    Io.close(entity);
   }
 
   private String getCharset(MultivaluedMap<String, ?> httpHeaders) {

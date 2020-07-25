@@ -47,6 +47,7 @@ public class InputStreamProvider extends Provider<InputStream> {
       MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
           throws IOException {
     Io.copy(entity, entityStream);
+    Io.close(entity);
   }
 
   @Override

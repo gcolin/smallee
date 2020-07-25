@@ -147,10 +147,12 @@ public class ClientResponse extends AbstractResponse {
 
 	@SuppressWarnings("unchecked")
 	private <T> T read0(Class<T> entityType, Type genericType, Annotation[] annotations) {
+		if(entityType == InputStream.class) {
+			return (T) (buffer == null ? getInput() : buffer);
+		}
 		InputStream in = null;
 		try {
 			in = buffer == null ? getInput() : buffer;
-
 			T obj;
 			if (builder.getReaderInterceptors().isEmpty()) {
 				MediaType type = getMediaType();
@@ -174,6 +176,7 @@ public class ClientResponse extends AbstractResponse {
 			throw new ResponseProcessingException(this, "cannot read entity", ex);
 		} finally {
 			Io.close(in);
+			close();
 		}
 	}
 
@@ -195,6 +198,7 @@ public class ClientResponse extends AbstractResponse {
 				throw new ResponseProcessingException(this, "cannot buffer entity", ex);
 			} finally {
 				Io.close(in);
+				close();
 			}
 			
 			return true;

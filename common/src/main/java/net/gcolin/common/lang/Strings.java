@@ -15,6 +15,9 @@
 
 package net.gcolin.common.lang;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
@@ -213,6 +216,14 @@ public final class Strings {
 	public static String encodeJava(String input) {
 		return encode(input, JAVA_ENCODING);
 	}
+	
+	public static String encodeUrl(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
 
 	private static String encode(String input, String[] check) {
 		StringBuilder out = null;

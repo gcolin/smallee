@@ -9,3 +9,4 @@ net.gcolin.rest.provider.StreamingOutputMessageBodyWriter
 net.gcolin.rest.provider.NumberProvider
 net.gcolin.rest.provider.BooleanProvider
 net.gcolin.rest.provider.CharacterProvider
+net.gcolin.rest.multipart.MultiPartWriter
