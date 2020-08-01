@@ -16,6 +16,7 @@
 package net.gcolin.rest.servlet;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -91,6 +92,7 @@ public class RestServlet implements RestContainer, Servlet {
 	private ServletConfig config;
 	private boolean dirty;
 	private long start;
+	private static final Annotation[] NO_ANNOTATION = new Annotation[0];
 
 	public Builder newResource() {
 		return new Builder();
@@ -475,11 +477,16 @@ public class RestServlet implements RestContainer, Servlet {
 					type = (Class<Object>) resp.getEntity().getClass();
 					genericType = type;
 				}
-				MessageBodyWriter<Object> mw = providers.getMessageBodyWriter(type, genericType,
-						((ServerResponse) resp).getAllAnnotations(), resp.getMediaType());
+				Annotation[] annotations = NO_ANNOTATION;
+				if (resp instanceof ServerResponse) {
+					ServerResponse serverResponse = (ServerResponse) resp;
+					annotations = serverResponse.getAllAnnotations();
+				}
+				MessageBodyWriter<Object> mw = providers.getMessageBodyWriter(type, genericType, annotations,
+						resp.getMediaType());
 
-				mw.writeTo(resp.getEntity(), type, genericType, ((ServerResponse) resp).getAllAnnotations(),
-						resp.getMediaType(), ((ServerResponse) resp).getHeaders(), bout);
+				mw.writeTo(resp.getEntity(), type, genericType, annotations, resp.getMediaType(), resp.getMetadata(),
+						bout);
 			}
 			writeHeaders(resp.getMediaType(), response, resp.getStringHeaders(), bout);
 		} finally {
