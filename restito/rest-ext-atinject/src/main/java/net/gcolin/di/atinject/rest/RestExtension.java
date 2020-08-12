@@ -63,7 +63,7 @@ public class RestExtension implements Extension {
           if (servlet == null) {
             servlet = new RestServlet();
             servlet.env(new AtInjectEnvironment(environment));
-            servlet.app(app, false);
+            servlet.app(app, true);
             Dynamic restServlet = sc.addServlet("rest@" + path, servlet);
             restServlet.addMapping(path + "/*");
             restServlet.addMapping(path);

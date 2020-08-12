@@ -164,7 +164,7 @@ public class InvocationImpl implements Invocation, AsyncInvoker {
         }
       }
 
-      Logs.LOG_CLIENT.debug("query {}", uri);
+      Logs.LOG_CLIENT.debug("query {} {}", ctx.getMethod(), uri);
       conn = uri.toURL().openConnection();
       boolean hasContent = !out.isEmpty();
 

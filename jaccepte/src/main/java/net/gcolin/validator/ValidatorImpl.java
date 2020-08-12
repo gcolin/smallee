@@ -83,7 +83,7 @@ public class ValidatorImpl implements Validator, ExecutableValidator, Closeable,
 	 * Start JMX for this validator.
 	 */
 	public void startJmx() {
-		if (Reflect.exists("net.gcolin.jmx.Jmx", ValidatorImpl.class.getClassLoader())) {
+		if (Reflect.exists("net.gcolin.common.jmx.Jmx", ValidatorImpl.class.getClassLoader())) {
 			name = "net.gcolin.validator:type=Validator,name=instance" + VALIDATOR_NUMBER.incrementAndGet();
 			Jmx.publish(name, this, ValidatorBean.class);
 		}

@@ -79,7 +79,7 @@ import net.gcolin.rest.util.RouterResponse;
  * @author Gaël COLIN
  * @since 1.0
  */
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
+@MultipartConfig(fileSizeThreshold = 10 * 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
 public class RestServlet implements RestContainer, Servlet {
 
 	private static final String JUIKITO_ENV = "di.env";
@@ -248,10 +248,6 @@ public class RestServlet implements RestContainer, Servlet {
 
 	@Override
 	public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-		if (dirty) {
-			initialize();
-		}
-
 		HttpServletResponse response = (HttpServletResponse) res;
 		HttpServletRequest request = (HttpServletRequest) req;
 
