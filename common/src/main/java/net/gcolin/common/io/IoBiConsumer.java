@@ -24,7 +24,6 @@ import java.io.IOException;
  * @since 1.0
  *
  */
-@FunctionalInterface
 public interface IoBiConsumer<T, U> {
 
   /**

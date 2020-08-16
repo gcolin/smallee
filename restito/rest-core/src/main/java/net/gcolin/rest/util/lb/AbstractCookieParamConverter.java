@@ -32,14 +32,12 @@ import net.gcolin.rest.Logs;
  */
 public abstract class AbstractCookieParamConverter<T extends Cookie> {
 
-  @FunctionalInterface
   interface CookieSerializer<T extends Cookie> {
 
     void serialize(T value, StringBuilder str);
 
   }
 
-  @FunctionalInterface
   interface CookieDeserializer {
 
     void deserialize(MutableCookie cookie, String val);

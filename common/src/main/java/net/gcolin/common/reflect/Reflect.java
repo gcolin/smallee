@@ -692,7 +692,7 @@ public class Reflect {
 		try {
 			return clazz.getMethod(methodName, parameters).getReturnType() == returnType;
 		} catch (NoSuchMethodException | SecurityException ex) {
-			LOG.debug(ex.getMessage(), ex);
+			LOG.trace(ex.getMessage(), ex);
 			return false;
 		}
 	}
@@ -709,7 +709,7 @@ public class Reflect {
 			cl.loadClass(className);
 			return true;
 		} catch (ClassNotFoundException ex) {
-			LOG.debug(ex.getMessage(), ex);
+			LOG.trace(ex.getMessage(), ex);
 			return false;
 		}
 	}
@@ -727,7 +727,7 @@ public class Reflect {
 			clazz.getMethod(methodName, params);
 			return true;
 		} catch (NoSuchMethodException | SecurityException ex) {
-			LOG.debug(ex.getMessage(), ex);
+			LOG.trace(ex.getMessage(), ex);
 			return false;
 		}
 	}

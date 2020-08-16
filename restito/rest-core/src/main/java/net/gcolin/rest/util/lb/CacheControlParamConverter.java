@@ -35,12 +35,10 @@ import javax.ws.rs.core.CacheControl;
  */
 public class CacheControlParamConverter implements Converter<CacheControl> {
 
-  @FunctionalInterface
   interface Deserializer {
     void deserialize(CacheControl cc, String name, String value);
   }
 
-  @FunctionalInterface
   interface Serializer {
     void serialize(CacheControl cc, StringBuilder str);
   }

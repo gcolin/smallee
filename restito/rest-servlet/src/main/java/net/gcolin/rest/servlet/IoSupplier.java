@@ -23,7 +23,6 @@ import java.io.IOException;
  * @author Gaël COLIN
  * @since 1.0
  */
-@FunctionalInterface
 public interface IoSupplier<T> {
 
   T get() throws IOException;
