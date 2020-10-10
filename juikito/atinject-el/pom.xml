@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>net.gcolin.smallee</groupId>
 		<artifactId>juikito</artifactId>
-		<version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>atinject-el</artifactId>
 	<description>atinject with expression language integration</description>
