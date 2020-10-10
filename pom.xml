@@ -4,7 +4,7 @@
 	<groupId>net.gcolin.smallee</groupId>
 	<artifactId>smallee</artifactId>
 	<packaging>pom</packaging>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3</version>
 	<!-- mvn release:clean release:prepare -->
 	<!-- mvn clean org.jacoco:jacoco-maven-plugin:0.8.4:prepare-agent install sonar:sonar site:site site:stage -->
 
@@ -12,7 +12,7 @@
 		<connection>scm:git:git@github.com:gcolin/smallee.git</connection>
 		<developerConnection>scm:git:git@github.com:gcolin/smallee.git</developerConnection>
 		<url>git@github.com:gcolin/smallee.git</url>
-		<tag>HEAD</tag>
+		<tag>smallee-1.3</tag>
 	</scm>
 
 	<licenses>
