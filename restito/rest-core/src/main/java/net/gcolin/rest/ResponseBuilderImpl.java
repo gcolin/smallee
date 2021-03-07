@@ -65,7 +65,7 @@ public class ResponseBuilderImpl extends ResponseBuilder implements Cloneable {
    */
   public ResponseBuilderImpl(ServerInvocationContext context) {
     this.context = context;
-    if (context.getResource() != null) {
+    if (context != null && context.getResource() != null) {
       annotations = context.getResource().getAnnotations();
     } else {
       annotations = new Annotation[0];
@@ -85,7 +85,7 @@ public class ResponseBuilderImpl extends ResponseBuilder implements Cloneable {
 
   @Override
   public Response build() {
-    return new ServerResponse(entity, headers, stringheaders, context.getOutputStream(), status,
+    return new ServerResponse(entity, headers, stringheaders, context == null ? null : context.getOutputStream(), status,
         annotations, entityAnnotations);
   }
 
@@ -169,7 +169,7 @@ public class ResponseBuilderImpl extends ResponseBuilder implements Cloneable {
   @Override
   public ResponseBuilder location(URI location) {
     return headerSingle(HttpHeader.LOCATION, location == null ? null
-        : location.isAbsolute() ? location : context.getUriInfo().getBaseUri().resolve(location));
+        : location.isAbsolute() || context == null ? location : context.getUriInfo().getBaseUri().resolve(location));
   }
 
   @Override

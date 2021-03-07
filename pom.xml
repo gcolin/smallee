@@ -51,6 +51,13 @@
 	</properties>
 
 	<profiles>
+        <profile>
+            <id>notest</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+				<maven.javadoc.skip>true</maven.javadoc.skip>
+            </properties>
+        </profile>
 		<profile>
 			<id>onjar</id>
 			<activation>
@@ -572,7 +579,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.12</version>
+				<version>4.13.1</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
