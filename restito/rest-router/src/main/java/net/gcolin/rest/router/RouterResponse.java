@@ -13,7 +13,7 @@
  * the License.
  */
 
-package net.gcolin.rest.util;
+package net.gcolin.rest.router;
 
 import java.util.HashMap;
 import java.util.List;

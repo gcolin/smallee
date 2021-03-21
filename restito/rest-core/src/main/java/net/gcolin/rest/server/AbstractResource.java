@@ -30,7 +30,7 @@ import javax.ws.rs.ext.WriterInterceptor;
 
 import net.gcolin.rest.Logs;
 import net.gcolin.rest.MessageBodyWriterDecorator;
-import net.gcolin.rest.util.HasPath;
+import net.gcolin.rest.router.HasPath;
 
 /**
  * A partial server REST service.

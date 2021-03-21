@@ -39,7 +39,7 @@ import net.gcolin.common.reflect.TypedInvocationHandler;
 import net.gcolin.rest.Environment;
 import net.gcolin.rest.FeatureBuilder;
 import net.gcolin.rest.RestConfiguration;
-import net.gcolin.rest.util.Router;
+import net.gcolin.rest.router.Router;
 
 /**
  * A class for enabling all features of the REST server side.

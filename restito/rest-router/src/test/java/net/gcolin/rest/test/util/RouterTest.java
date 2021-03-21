@@ -22,9 +22,9 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.gcolin.rest.util.HasPath;
-import net.gcolin.rest.util.Router;
-import net.gcolin.rest.util.RouterResponse;
+import net.gcolin.rest.router.HasPath;
+import net.gcolin.rest.router.Router;
+import net.gcolin.rest.router.RouterResponse;
 
 public class RouterTest {
 
@@ -248,7 +248,7 @@ public class RouterTest {
 	@Test
 	public void testutf16Resource() {
 		Resource res = new Resource("/ǽȁ");
-		Router<Resource> router = new Router<>(0xffff);
+		Router<Resource> router = new Router<>();
 		router.add(res);
 		Assert.assertNull(router.get("/Є"));
 		Assert.assertNull(router.get("/Љ"));

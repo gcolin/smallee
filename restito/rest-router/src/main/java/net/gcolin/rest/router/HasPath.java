@@ -13,7 +13,7 @@
  * the License.
  */
 
-package net.gcolin.rest.util;
+package net.gcolin.rest.router;
 
 /**
  * The interface for getting the path of a routed resource.

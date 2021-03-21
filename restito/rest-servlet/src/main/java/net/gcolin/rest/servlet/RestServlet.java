@@ -60,6 +60,8 @@ import net.gcolin.rest.param.SingletonParam;
 import net.gcolin.rest.provider.Configurator;
 import net.gcolin.rest.provider.SimpleProviders;
 import net.gcolin.rest.provider.SingletonSupplier;
+import net.gcolin.rest.router.Router;
+import net.gcolin.rest.router.RouterResponse;
 import net.gcolin.rest.server.AbstractResource;
 import net.gcolin.rest.server.Builder;
 import net.gcolin.rest.server.Contexts;
@@ -70,8 +72,6 @@ import net.gcolin.rest.server.ServerFeatureBuilder;
 import net.gcolin.rest.server.ServerInvocationContext;
 import net.gcolin.rest.server.ServerProviders;
 import net.gcolin.rest.server.ServerResponse;
-import net.gcolin.rest.util.Router;
-import net.gcolin.rest.util.RouterResponse;
 
 /**
  * Servlet for dispatching requests to Rest.

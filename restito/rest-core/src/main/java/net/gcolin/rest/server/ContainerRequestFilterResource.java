@@ -15,10 +15,6 @@
 
 package net.gcolin.rest.server;
 
-import net.gcolin.rest.MessageBodyWriterDecorator;
-import net.gcolin.rest.provider.SimpleProviders;
-import net.gcolin.rest.util.Filters;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -33,6 +29,10 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
+
+import net.gcolin.rest.MessageBodyWriterDecorator;
+import net.gcolin.rest.provider.SimpleProviders;
+import net.gcolin.rest.util.Filters;
 
 /**
  * A resource filtered by ContainerRequestFilters.

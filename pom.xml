@@ -132,7 +132,7 @@
 						<artifactId>maven-compiler-plugin</artifactId>
 						<version>3.8.1</version>
 						<configuration>
-							<release>11</release>
+							<release>8</release>
 							<encoding>${project.build.sourceEncoding}</encoding>
 						</configuration>
 					</plugin>
@@ -372,6 +372,11 @@
 			<dependency>
 				<groupId>net.gcolin.smallee</groupId>
 				<artifactId>atinject-web</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.gcolin.smallee</groupId>
+				<artifactId>rest-router</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

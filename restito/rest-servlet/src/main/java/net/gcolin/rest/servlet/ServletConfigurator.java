@@ -33,8 +33,8 @@ import net.gcolin.rest.parambuilder.ParamBuilder;
 import net.gcolin.rest.provider.Configurator;
 import net.gcolin.rest.provider.SimpleProviders;
 import net.gcolin.rest.provider.SingletonSupplier;
+import net.gcolin.rest.router.Router;
 import net.gcolin.rest.server.ServerProviders;
-import net.gcolin.rest.util.Router;
 
 /**
  * Custom configuration.

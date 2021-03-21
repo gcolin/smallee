@@ -9,6 +9,7 @@
 	<packaging>pom</packaging>
 	
 	<modules>
+		<module>rest-router</module>
 		<module>rest-core</module>
 		<module>rest-servlet</module>
 		<module>rest-ext-cdi</module>

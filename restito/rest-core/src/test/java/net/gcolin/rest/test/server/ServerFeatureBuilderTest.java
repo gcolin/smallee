@@ -29,6 +29,8 @@ import org.mockito.Mockito;
 
 import net.gcolin.rest.Environment;
 import net.gcolin.rest.RestConfiguration;
+import net.gcolin.rest.router.Router;
+import net.gcolin.rest.router.RouterResponse;
 import net.gcolin.rest.server.AbstractResource;
 import net.gcolin.rest.server.Contexts;
 import net.gcolin.rest.server.ResourceArray;
@@ -36,8 +38,6 @@ import net.gcolin.rest.server.RestContainer;
 import net.gcolin.rest.server.ServerFeatureBuilder;
 import net.gcolin.rest.server.ServerInvocationContext;
 import net.gcolin.rest.server.ServerProviders;
-import net.gcolin.rest.util.Router;
-import net.gcolin.rest.util.RouterResponse;
 
 /** 
  * @author Gaël COLIN

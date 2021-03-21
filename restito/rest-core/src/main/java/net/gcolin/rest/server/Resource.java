@@ -56,8 +56,8 @@ import net.gcolin.rest.param.Param;
 import net.gcolin.rest.param.PostParam;
 import net.gcolin.rest.provider.Provider;
 import net.gcolin.rest.provider.SimpleProviders;
+import net.gcolin.rest.router.HasPath;
 import net.gcolin.rest.util.Filters;
-import net.gcolin.rest.util.HasPath;
 import net.gcolin.rest.util.HttpHeader;
 
 /**

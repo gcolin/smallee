@@ -8,6 +8,10 @@
 	<artifactId>rest-core</artifactId>
 	<dependencies>
 		<dependency>
+			<groupId>net.gcolin.smallee</groupId>
+			<artifactId>rest-router</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 		</dependency>

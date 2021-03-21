@@ -22,7 +22,7 @@ import java.util.Set;
 
 import net.gcolin.rest.Environment;
 import net.gcolin.rest.FastMediaType;
-import net.gcolin.rest.util.Router;
+import net.gcolin.rest.router.Router;
 
 /**
  * Internal data for building a REST Service.

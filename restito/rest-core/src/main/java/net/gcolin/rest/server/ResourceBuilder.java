@@ -42,8 +42,8 @@ import net.gcolin.rest.Environment;
 import net.gcolin.rest.FastMediaType;
 import net.gcolin.rest.Logs;
 import net.gcolin.rest.param.Param;
+import net.gcolin.rest.router.Router;
 import net.gcolin.rest.util.ReflectRest;
-import net.gcolin.rest.util.Router;
 
 /**
  * Build REST services from an object or a class.

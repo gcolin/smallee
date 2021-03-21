@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.HttpMethod;
 
-import net.gcolin.rest.util.HasPath;
+import net.gcolin.rest.router.HasPath;
 
 /**
  * Contains the resources for each HTTP method type.
