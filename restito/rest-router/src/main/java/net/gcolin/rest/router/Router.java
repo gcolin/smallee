@@ -15,18 +15,17 @@
 
 package net.gcolin.rest.router;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import net.gcolin.common.collection.ArrayQueue;
 
 /**
  * A fast rest like router. Algorithm in O(n) (i.e. read only one time each char
@@ -372,26 +371,26 @@ public class Router<T extends HasPath> {
 
 		boolean newdir;
 
-		final Queue<Integer> pile = new ArrayQueue<>();
-		final Queue<Router<T>> rp = new ArrayQueue<>();
-		pile.offer(0);
+		final Deque<Integer> pile = new ArrayDeque<>();
+		final Deque<Router<T>> rp = new ArrayDeque<>();
+		pile.offerLast(0);
 		while (true) {
 			// get children
 			List<Router<T>> cchildren = getChildrens(current);
 
-			index = pile.poll();
+			index = pile.pollLast();
 			// they may not have a new directory
 			newdir = false;
 			// explore the children
 			if (index < cchildren.size()) {
 				// can go deeper
 				newdir = true;
-				pile.offer(index + 1);
-				pile.offer(0);
+				pile.offerLast(index + 1);
+				pile.offerLast(0);
 			}
 			// go deeper
 			if (newdir) {
-				rp.offer(current);
+				rp.offerLast(current);
 				current = cchildren.get(index);
 
 			} else {
@@ -407,7 +406,7 @@ public class Router<T extends HasPath> {
 				}
 				// back
 				if (!current.equals(root)) {
-					current = rp.poll();
+					current = rp.pollLast();
 				} else {
 					// all files viewed
 					break;

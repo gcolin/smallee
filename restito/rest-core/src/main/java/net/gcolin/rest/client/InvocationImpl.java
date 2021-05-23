@@ -186,8 +186,6 @@ public class InvocationImpl implements Invocation, AsyncInvoker {
 			}
 
 			if (hasContent) {
-				HttpURLConnection c = (HttpURLConnection) conn;
-				c.setChunkedStreamingMode(2048);
 				out.writeTo(conn.getOutputStream());
 			}
 

@@ -7,9 +7,5 @@
 	</parent>
 	<artifactId>rest-router</artifactId>
 	<dependencies>
-		<dependency>
-			<groupId>net.gcolin.smallee</groupId>
-			<artifactId>common</artifactId>
-		</dependency>
 	</dependencies>
 </project>
